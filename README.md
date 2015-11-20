@@ -1,0 +1,2 @@
+# evalGo
+Golang expression evaluator
