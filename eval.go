@@ -371,6 +371,16 @@ func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error)
 			return left.(int) * right.(int), nil
 		case float64:
 			return float64(left.(int)) * right.(float64), nil
+		case string:
+			vali, err := strconv.ParseInt(right.(string), 10, 64)
+			if err == nil {
+				return int64(left.(int)) * vali, nil
+			}
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return float64(left.(int)) * valf, nil
 		}
 	case float64:
 		switch right.(type) {
@@ -380,6 +390,16 @@ func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error)
 			return left.(float64) * float64(right.(int)), nil
 		case float64:
 			return left.(float64) * right.(float64), nil
+		case string:
+			vali, err := strconv.ParseInt(right.(string), 10, 64)
+			if err == nil {
+				return left.(float64) * float64(vali), nil
+			}
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return left.(float64) * valf, nil
 		}
 	case string:
 		switch right.(type) {
@@ -424,6 +444,16 @@ func evalBinaryExprQUO(left interface{}, right interface{}) (interface{}, error)
 				return nil, err
 			}
 			return float64(left.(int64)) / valf, nil
+		case string:
+			vali, err := strconv.ParseInt(right.(string), 10, 64)
+			if err == nil {
+				return left.(int64) / vali, nil
+			}
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return float64(left.(int64)) / valf, nil
 		}
 	case int:
 		switch right.(type) {
@@ -433,6 +463,16 @@ func evalBinaryExprQUO(left interface{}, right interface{}) (interface{}, error)
 			return left.(int) / right.(int), nil
 		case float64:
 			return float64(left.(int)) / right.(float64), nil
+		case string:
+			vali, err := strconv.ParseInt(right.(string), 10, 64)
+			if err == nil {
+				return int64(left.(int)) / vali, nil
+			}
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return float64(left.(int)) / valf, nil
 		}
 	case float64:
 		switch right.(type) {
@@ -442,6 +482,16 @@ func evalBinaryExprQUO(left interface{}, right interface{}) (interface{}, error)
 			return left.(float64) / float64(right.(int)), nil
 		case float64:
 			return left.(float64) / right.(float64), nil
+		case string:
+			vali, err := strconv.ParseInt(right.(string), 10, 64)
+			if err == nil {
+				return left.(float64) / float64(vali), nil
+			}
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return left.(float64) / valf, nil
 		}
 	}
 	return nil, fmt.Errorf("Unimplemented quo for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
