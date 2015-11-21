@@ -156,6 +156,38 @@ func TestMulIntString(t *testing.T) {
 	}
 }
 
+func TestMulIntBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = true
+
+	val, err := Eval("a * b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
+func TestMulIntBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = false
+
+	val, err := Eval("a * b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 0 {
+		t.Error("Expected 0 get ", val)
+	}
+}
+
 func TestMulInt64Int(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
@@ -217,6 +249,38 @@ func TestMulInt64String(t *testing.T) {
 	}
 }
 
+func TestMulInt64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = true
+
+	val, err := Eval("a * b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
+func TestMulInt64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = false
+
+	val, err := Eval("a * b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 0 {
+		t.Error("Expected 0 get ", val)
+	}
+}
+
 func TestMulFloat64Int(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
@@ -275,6 +339,38 @@ func TestMulFloat64String(t *testing.T) {
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestMulFloat64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(2)
+	ctxt["b"] = true
+
+	val, err := Eval("a * b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float64) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
+func TestMulFloat64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(2)
+	ctxt["b"] = false
+
+	val, err := Eval("a * b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float64) != 0 {
+		t.Error("Expected 0 get ", val)
 	}
 }
 

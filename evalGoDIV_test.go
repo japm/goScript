@@ -150,6 +150,35 @@ func TestDivIntString(t *testing.T) {
 	}
 }
 
+func TestDivIntBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = true
+
+	val, err := Eval("a / b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
+func TestDivIntBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = false
+
+	_, err := Eval("a / b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
 func TestDivInt64Int(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
@@ -203,6 +232,35 @@ func TestDivInt64String(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = int64(1)
 	ctxt["b"] = "z"
+
+	_, err := Eval("a / b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestDivInt64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = true
+
+	val, err := Eval("a / b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
+func TestDivInt64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = false
 
 	_, err := Eval("a / b", ctxt)
 
@@ -272,6 +330,35 @@ func TestDivFloat64String(t *testing.T) {
 	}
 }
 
+func TestDivFloat64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(2)
+	ctxt["b"] = true
+
+	val, err := Eval("a / b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float64) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
+func TestDivFloat64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = false
+
+	_, err := Eval("a / b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
 func TestDivStringInt(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
@@ -316,6 +403,32 @@ func TestDivStingString(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = "x"
 	ctxt["b"] = "z"
+
+	_, err := Eval("a / b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestDivStringBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "x"
+	ctxt["b"] = true
+
+	_, err := Eval("a / b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestDivStringBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "x"
+	ctxt["b"] = false
 
 	_, err := Eval("a / b", ctxt)
 

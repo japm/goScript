@@ -151,6 +151,14 @@ func evalBinaryExpr(expr *ast.BinaryExpr, context map[string]interface{}) (inter
 }
 
 func evalIdent(expr *ast.Ident, context map[string]interface{}) (interface{}, error) {
+
+	lname := len(expr.Name)
+	if lname == 4 && expr.Name == "true" {
+		return true, nil
+	} else if lname == 5 && expr.Name == "false" {
+		return false, nil
+	}
+
 	if context == nil {
 		return nil, fmt.Errorf("Context is null, no ident possible", expr.Name)
 	}

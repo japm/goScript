@@ -102,8 +102,8 @@ func TestAddConstIntBool(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(float64) != 3.25 {
-		t.Error("Expected 3.25 get ", val)
+	if val.(int64) != 3 {
+		t.Error("Expected 3 get ", val)
 	}
 }
 
@@ -168,6 +168,38 @@ func TestAddIntString(t *testing.T) {
 	}
 }
 
+func TestAddIntBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = true
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddIntBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = false
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
 func TestAddInt64Int(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
@@ -226,6 +258,38 @@ func TestAddInt64String(t *testing.T) {
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestAddInt64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = true
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddInt64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = false
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 2 {
+		t.Error("Expected 2 get ", val)
 	}
 }
 
@@ -290,6 +354,38 @@ func TestAddFloat64String(t *testing.T) {
 	}
 }
 
+func TestAddFloat64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(2)
+	ctxt["b"] = true
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float64) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddFloat64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(2)
+	ctxt["b"] = false
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float64) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
 func TestAddStringInt(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
@@ -351,5 +447,37 @@ func TestAddStingString(t *testing.T) {
 	}
 	if val.(string) != "xz" {
 		t.Error("Expected xz get ", val)
+	}
+}
+
+func TestAddStringBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = true
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(string) != "ztrue" {
+		t.Error("Expected ztrue get ", val)
+	}
+}
+
+func TestAddStringBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = false
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(string) != "zfalse" {
+		t.Error("Expected ztrue get ", val)
 	}
 }

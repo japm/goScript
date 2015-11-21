@@ -156,6 +156,38 @@ func TestSubIntString(t *testing.T) {
 	}
 }
 
+func TestSubIntBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = true
+
+	val, err := Eval("a - b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 1 {
+		t.Error("Expected 1 get ", val)
+	}
+}
+
+func TestSubIntBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = false
+
+	val, err := Eval("a - b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
 func TestSubInt64Int(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
@@ -214,6 +246,38 @@ func TestSubInt64String(t *testing.T) {
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestSubInt64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = true
+
+	val, err := Eval("a - b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 1 {
+		t.Error("Expected 1 get ", val)
+	}
+}
+
+func TestSubInt64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = false
+
+	val, err := Eval("a - b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 2 {
+		t.Error("Expected 2 get ", val)
 	}
 }
 
@@ -278,6 +342,38 @@ func TestSubFloat64String(t *testing.T) {
 	}
 }
 
+func TestSubFloat64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(2)
+	ctxt["b"] = true
+
+	val, err := Eval("a - b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float64) != 1 {
+		t.Error("Expected 1 get ", val)
+	}
+}
+
+func TestSubFloat64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(2)
+	ctxt["b"] = false
+
+	val, err := Eval("a - b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float64) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
 func TestSubStringInt(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
@@ -339,5 +435,37 @@ func TestSubStingString(t *testing.T) {
 	}
 	if val.(string) != "xx" {
 		t.Error("Expected xx get ", val)
+	}
+}
+
+func TestSubStringBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "2true2"
+	ctxt["b"] = true
+
+	val, err := Eval("a - b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(string) != "22" {
+		t.Error("Expected 22 get ", val)
+	}
+}
+
+func TestSubStringBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "false2false"
+	ctxt["b"] = false
+
+	val, err := Eval("a - b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(string) != "2" {
+		t.Error("Expected 2 get ", val)
 	}
 }
