@@ -151,6 +151,10 @@ func evalBinaryExpr(expr *ast.BinaryExpr, context map[string]interface{}) (inter
 }
 
 func evalIdent(expr *ast.Ident, context map[string]interface{}) (interface{}, error) {
+	if context == nil {
+		return nil, fmt.Errorf("Context is null, no ident possible", expr.Name)
+	}
+
 	val, ok := context[expr.Name]
 	if !ok {
 		return nil, fmt.Errorf("Symbol %s not found", expr.Name)
