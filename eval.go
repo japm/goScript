@@ -7,6 +7,7 @@ import (
 	"go/token"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 func Eval(expr string, context map[string]interface{}) (interface{}, error) {
@@ -159,7 +160,6 @@ func evalIdent(expr *ast.Ident, context map[string]interface{}) (interface{}, er
 
 func evalBasicLit(expr *ast.BasicLit, context map[string]interface{}) (interface{}, error) {
 	switch expr.Kind {
-
 	case token.INT:
 		return strconv.ParseInt(expr.Value, 10, 64)
 	case token.FLOAT:
@@ -208,14 +208,14 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 			return float64(left.(int64)) + right.(float64), nil
 		case string:
 			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err != nil {
-				valf, err := strconv.ParseFloat(right.(string), 10)
-				if err != nil {
-					return nil, err
-				}
-				return float64(left.(int64)) + valf, nil
+			if err == nil {
+				return left.(int64) + vali, nil
 			}
-			return left.(int64) + vali, nil
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return float64(left.(int64)) + valf, nil
 		}
 	case int:
 		switch right.(type) {
@@ -227,14 +227,15 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 			return float64(left.(int)) + right.(float64), nil
 		case string:
 			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err != nil {
-				valf, err := strconv.ParseFloat(right.(string), 10)
-				if err != nil {
-					return nil, err
-				}
-				return float64(left.(int)) + valf, nil
+			if err == nil {
+				return int64(left.(int)) + vali, nil
 			}
-			return int64(left.(int)) + vali, nil
+
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return float64(left.(int)) + valf, nil
 		}
 	case float64:
 		switch right.(type) {
@@ -277,6 +278,16 @@ func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error)
 			return left.(int64) - int64(right.(int)), nil
 		case float64:
 			return float64(left.(int64)) - right.(float64), nil
+		case string:
+			vali, err := strconv.ParseInt(right.(string), 10, 64)
+			if err == nil {
+				return left.(int64) - vali, nil
+			}
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return float64(left.(int64)) - valf, nil
 		}
 	case int:
 		switch right.(type) {
@@ -286,6 +297,16 @@ func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error)
 			return left.(int) - right.(int), nil
 		case float64:
 			return float64(left.(int)) - right.(float64), nil
+		case string:
+			vali, err := strconv.ParseInt(right.(string), 10, 64)
+			if err == nil {
+				return int64(left.(int)) - vali, nil
+			}
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return float64(left.(int)) - valf, nil
 		}
 	case float64:
 		switch right.(type) {
@@ -295,6 +316,23 @@ func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error)
 			return left.(float64) - float64(right.(int)), nil
 		case float64:
 			return left.(float64) - right.(float64), nil
+		case string:
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return left.(float64) - valf, nil
+		}
+	case string:
+		switch right.(type) {
+		case string:
+			return strings.Replace(left.(string), right.(string), "", -1), nil
+		case int64:
+			return strings.Replace(left.(string), strconv.FormatInt(right.(int64), 10), "", -1), nil
+		case int:
+			return strings.Replace(left.(string), strconv.Itoa(right.(int)), "", -1), nil
+		case float64:
+			return strings.Replace(left.(string), strconv.FormatFloat(right.(float64), 'f', -1, 64), "", -1), nil
 		}
 	}
 	return nil, fmt.Errorf("Unimplemented sub for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
@@ -310,6 +348,16 @@ func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error)
 			return left.(int64) * int64(right.(int)), nil
 		case float64:
 			return float64(left.(int64)) * right.(float64), nil
+		case string:
+			vali, err := strconv.ParseInt(right.(string), 10, 64)
+			if err == nil {
+				return left.(int64) * vali, nil
+			}
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return float64(left.(int64)) * valf, nil
 		}
 	case int:
 		switch right.(type) {
@@ -329,6 +377,26 @@ func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error)
 		case float64:
 			return left.(float64) * right.(float64), nil
 		}
+	case string:
+		switch right.(type) {
+		case string:
+			vali, err := strconv.ParseInt(right.(string), 10, 64)
+			if err != nil {
+				valf, err := strconv.ParseFloat(right.(string), 10)
+				if err != nil {
+					return nil, err
+				}
+				vali = int64(valf)
+			}
+			return strings.Repeat(left.(string), int(vali)), nil
+		case int64:
+			return strings.Repeat(left.(string), int(right.(int64))), nil
+		case int:
+			return strings.Repeat(left.(string), right.(int)), nil
+		case float64:
+			return strings.Repeat(left.(string), int(right.(float64))), nil
+		}
+
 	}
 	return nil, fmt.Errorf("Unimplemented mul for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
@@ -343,6 +411,15 @@ func evalBinaryExprQUO(left interface{}, right interface{}) (interface{}, error)
 			return left.(int64) / int64(right.(int)), nil
 		case float64:
 			return float64(left.(int64)) / right.(float64), nil
+			vali, err := strconv.ParseInt(right.(string), 10, 64)
+			if err == nil {
+				return left.(int64) / vali, nil
+			}
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return float64(left.(int64)) / valf, nil
 		}
 	case int:
 		switch right.(type) {
@@ -376,6 +453,16 @@ func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error)
 			return left.(int64) % int64(right.(int)), nil
 		case float64:
 			return left.(int64) % int64(right.(float64)), nil
+		case string:
+			vali, err := strconv.ParseInt(right.(string), 10, 64)
+			if err == nil {
+				return left.(int64) % vali, nil
+			}
+			valf, err := strconv.ParseFloat(right.(string), 10)
+			if err != nil {
+				return nil, err
+			}
+			return left.(int64) % int64(valf), nil
 		}
 	case int:
 		switch right.(type) {
@@ -393,7 +480,7 @@ func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error)
 		case int:
 			return int64(left.(float64)) % int64(right.(int)), nil
 		case float64:
-			return int64(left.(float64)) * int64(right.(float64)), nil
+			return int64(left.(float64)) % int64(right.(float64)), nil
 		}
 	}
 	return nil, fmt.Errorf("Unimplemented rem for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
