@@ -223,9 +223,8 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 		case bool:
 			if right.(bool) {
 				return left.(int64) + int64(1), nil
-			} else {
-				return left, nil
 			}
+			return left, nil
 		}
 	case int:
 		switch right.(type) {
@@ -249,9 +248,8 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 		case bool:
 			if right.(bool) {
 				return left.(int) + 1, nil
-			} else {
-				return left, nil
 			}
+			return left, nil
 		}
 	case float64:
 		switch right.(type) {
@@ -270,9 +268,8 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 		case bool:
 			if right.(bool) {
 				return left.(float64) + float64(1), nil
-			} else {
-				return left, nil
 			}
+			return left, nil
 		}
 	case string:
 		switch right.(type) {
@@ -315,9 +312,8 @@ func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error)
 		case bool:
 			if right.(bool) {
 				return left.(int64) - int64(1), nil
-			} else {
-				return left, nil
 			}
+			return left, nil
 		}
 	case int:
 		switch right.(type) {
@@ -340,9 +336,8 @@ func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error)
 		case bool:
 			if right.(bool) {
 				return left.(int) - 1, nil
-			} else {
-				return left, nil
 			}
+			return left, nil
 		}
 	case float64:
 		switch right.(type) {
@@ -361,9 +356,8 @@ func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error)
 		case bool:
 			if right.(bool) {
 				return left.(float64) - float64(1), nil
-			} else {
-				return left, nil
 			}
+			return left, nil
 		}
 	case string:
 		switch right.(type) {
@@ -376,7 +370,7 @@ func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error)
 		case float64:
 			return strings.Replace(left.(string), strconv.FormatFloat(right.(float64), 'f', -1, 64), "", -1), nil
 		case bool:
-			return strings.Replace(left.(string), strconv.FormatBool(right.(bool))), nil
+			return strings.Replace(left.(string), strconv.FormatBool(right.(bool)), "", -1), nil
 		}
 	}
 	return nil, fmt.Errorf("Unimplemented sub for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
@@ -405,9 +399,8 @@ func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error)
 		case bool:
 			if right.(bool) {
 				return left, nil
-			} else {
-				return int64(0), nil
 			}
+			return int64(0), nil
 		}
 	case int:
 		switch right.(type) {
@@ -430,9 +423,8 @@ func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error)
 		case bool:
 			if right.(bool) {
 				return left, nil
-			} else {
-				return 0, nil
 			}
+			return 0, nil
 		}
 	case float64:
 		switch right.(type) {
@@ -455,9 +447,8 @@ func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error)
 		case bool:
 			if right.(bool) {
 				return left, nil
-			} else {
-				return float64(0), nil
 			}
+			return float64(0), nil
 		}
 	case string:
 		switch right.(type) {
@@ -480,11 +471,9 @@ func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error)
 		case bool:
 			if right.(bool) {
 				return left, nil
-			} else {
-				return "", nil
 			}
+			return "", nil
 		}
-
 	}
 	return nil, fmt.Errorf("Unimplemented mul for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
@@ -572,7 +561,6 @@ func evalBinaryExprQUO(left interface{}, right interface{}) (interface{}, error)
 			}
 			return nil, fmt.Errorf("Divide by false no allowed")
 		}
-
 	}
 	return nil, fmt.Errorf("Unimplemented quo for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
@@ -631,7 +619,6 @@ func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error)
 			}
 			return nil, fmt.Errorf("Mod by false no allowed")
 		}
-
 	}
 	return nil, fmt.Errorf("Unimplemented rem for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }

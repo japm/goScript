@@ -82,13 +82,10 @@ func TestDivConstIntString2(t *testing.T) {
 
 func TestDivConstStringString(t *testing.T) {
 
-	val, err := Eval("\"2\" * \"2\"", nil)
+	_, err := Eval("\"2\" / \"2\"", nil)
 
-	if err != nil {
-		t.Error("err not nil", err)
-	}
-	if val.(string) != "22" {
-		t.Error("Expected 22 get ", val)
+	if err == nil {
+		t.Error("Expected err and error is nil")
 	}
 }
 
@@ -98,13 +95,13 @@ func TestDivIntInt(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = 2
 
-	val, err := Eval("a * b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 4 {
-		t.Error("Expected 4 get ", val)
+	if val.(int) != 1 {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -114,13 +111,13 @@ func TestDivIntInt64(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = int64(2)
 
-	val, err := Eval("a * b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int64) != 4 {
-		t.Error("Expected 4 get ", val)
+	if val.(int64) != 1 {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -130,13 +127,13 @@ func TestDivIntFloat64(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = float64(2)
 
-	val, err := Eval("a * b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(float64) != 4 {
-		t.Error("Expected 4 get ", val)
+	if val.(float64) != 1 {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -146,7 +143,7 @@ func TestDivIntString(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = "z"
 
-	_, err := Eval("a * b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -159,13 +156,13 @@ func TestDivInt64Int(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = 2
 
-	val, err := Eval("a * b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int64) != 4 {
-		t.Error("Expected 4 get ", val)
+	if val.(int64) != 1 {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -175,29 +172,29 @@ func TestDivInt64Int64(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = int64(2)
 
-	val, err := Eval("a * b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int64) != 4 {
-		t.Error("Expected 3 get ", val)
+	if val.(int64) != 1 {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
 func TestDivInt64Float64(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
-	ctxt["a"] = int64(2)
-	ctxt["b"] = float64(2)
+	ctxt["a"] = int64(1)
+	ctxt["b"] = float64(1)
 
-	val, err := Eval("a * b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(float64) != 4 {
-		t.Error("Expected 4 get ", val)
+	if val.(float64) != 1 {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -207,7 +204,7 @@ func TestDivInt64String(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = "z"
 
-	_, err := Eval("a * b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -220,13 +217,13 @@ func TestDivFloat64Int(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = 2
 
-	val, err := Eval("a * b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(float64) != 4 {
-		t.Error("Expected 4 get ", val)
+	if val.(float64) != 1 {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -236,13 +233,13 @@ func TestDivFloat64Int64(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = int64(2)
 
-	val, err := Eval("a * b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(float64) != 4 {
-		t.Error("Expected 4 get ", val)
+	if val.(float64) != 1 {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -252,13 +249,13 @@ func TestDivFloat64Float64(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = float64(2)
 
-	val, err := Eval("a * b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(float64) != 4 {
-		t.Error("Expected 4 get ", val)
+	if val.(float64) != 1 {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -268,7 +265,7 @@ func TestDivFloat64String(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = "z"
 
-	_, err := Eval("a * b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -281,13 +278,10 @@ func TestDivStringInt(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = 2
 
-	val, err := Eval("a * b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
-	if err != nil {
-		t.Error("err not nil", err)
-	}
-	if val.(string) != "zz" {
-		t.Error("Expected zz get ", val)
+	if err == nil {
+		t.Error("Expected err and error is nil")
 	}
 }
 
@@ -297,13 +291,10 @@ func TestDivStringInt64(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = int64(2)
 
-	val, err := Eval("a * b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
-	if err != nil {
-		t.Error("err not nil", err)
-	}
-	if val.(string) != "zz" {
-		t.Error("Expected zz get ", val)
+	if err == nil {
+		t.Error("Expected err and error is nil")
 	}
 }
 
@@ -313,13 +304,10 @@ func TestDivStringFloat64(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = float64(2)
 
-	val, err := Eval("a * b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
-	if err != nil {
-		t.Error("err not nil", err)
-	}
-	if val.(string) != "zz" {
-		t.Error("Expected zz get ", val)
+	if err == nil {
+		t.Error("Expected err and error is nil")
 	}
 }
 
@@ -329,7 +317,7 @@ func TestDivStingString(t *testing.T) {
 	ctxt["a"] = "x"
 	ctxt["b"] = "z"
 
-	_, err := Eval("a * b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")

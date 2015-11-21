@@ -95,6 +95,18 @@ func TestAddConstStringString(t *testing.T) {
 	}
 }
 
+func TestAddConstIntBool(t *testing.T) {
+
+	val, err := Eval("2 + true", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float64) != 3.25 {
+		t.Error("Expected 3.25 get ", val)
+	}
+}
+
 func TestAddIntInt(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
