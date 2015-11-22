@@ -139,7 +139,7 @@ func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	case *ast.TypeSwitchStmt:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.UnaryExpr:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		return evalUnaryExpr(expr.(*ast.UnaryExpr), context)
 	case *ast.ValueSpec:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	default:
@@ -147,22 +147,32 @@ func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	}
 }
 
-func evalSelectorExpr(expr *ast.SelectorExpr, context map[string]interface{}) (interface{}, error) {
+func evalUnaryExpr(expr *ast.UnaryExpr, context map[string]interface{}) (interface{}, error) {
+	val, err := eval(expr.X, context)
+	if err != nil {
+		return nil, err
+	}
+	switch expr.Op {
+	case token.NOT:
+		return evalUnaryExprNOT(val)
+	case token.SUB:
+		return evalUnaryExprSUB(val)
+	default:
+		return nil, fmt.Errorf("Unary operation %d not implemented", expr.Op)
+	}
+}
 
+func evalSelectorExpr(expr *ast.SelectorExpr, context map[string]interface{}) (interface{}, error) {
 	callee, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err
 	}
-
-	fnName := expr.Sel.Name
-
-	return &callSyte{callee, fnName}, nil
+	return &callSyte{callee, expr.Sel.Name}, nil
 }
 
 func evalCallExpr(expr *ast.CallExpr, context map[string]interface{}) (interface{}, error) {
 
 	args := make([]reflect.Value, len(expr.Args))
-
 	for key, value := range expr.Args {
 		val, err := eval(value, context)
 		if err != nil {
@@ -190,7 +200,6 @@ func evalCallExpr(expr *ast.CallExpr, context map[string]interface{}) (interface
 
 	caleeVal := reflect.ValueOf(callsite.callee)
 	method := caleeVal.MethodByName(callsite.fnName)
-
 	retVal := method.Call(args)
 
 	return retVal[0].Interface(), nil
@@ -1154,4 +1163,46 @@ func evalBinaryExprNEQ(left interface{}, right interface{}) (interface{}, error)
 		return nil, err
 	}
 	return !val.(bool), nil
+}
+
+func evalUnaryExprNOT(value interface{}) (interface{}, error) {
+	switch value.(type) {
+	case int64:
+		return value.(int64) == int64(0), nil
+	case int:
+		return value.(int) == 0, nil
+	case float64:
+		return value.(float64) == float64(0), nil
+	case string:
+		valb, err := strconv.ParseBool(value.(string))
+		if err == nil {
+			return !valb, nil
+		}
+		vali, err := strconv.ParseInt(value.(string), 10, 64)
+		if err == nil {
+			return vali == 0, nil
+		}
+		valf, err := strconv.ParseFloat(value.(string), 10)
+		if err != nil {
+			return nil, err
+		}
+		return valf == float64(0), nil
+	case bool:
+		return !value.(bool), nil
+	}
+	return nil, fmt.Errorf("Unimplemented not for type %s", reflect.TypeOf(value))
+}
+
+func evalUnaryExprSUB(value interface{}) (interface{}, error) {
+	switch value.(type) {
+	case int64:
+		return -value.(int64), nil
+	case int:
+		return -value.(int), nil
+	case float64:
+		return -value.(float64), nil
+	case bool:
+		return !value.(bool), nil
+	}
+	return nil, fmt.Errorf("Unimplemented not for type %s", reflect.TypeOf(value))
 }
