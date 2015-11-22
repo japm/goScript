@@ -17,7 +17,6 @@ type callSyte struct {
 
 //Eval expression within a context
 func Eval(expr string, context map[string]interface{}) (val interface{}, err error) {
-
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("Eval paniked. %s", r)
@@ -278,6 +277,10 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 		return evalBinaryExprGEQ(left, right)
 	case token.LEQ: // <=
 		return evalBinaryExprLEQ(left, right)
+	case token.LAND: // &&
+		return evalBinaryExprAND(left, right)
+	case token.LOR: // ||
+		return evalBinaryExprOR(left, right)
 	default:
 		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
 	}
@@ -323,7 +326,6 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 			if err == nil {
 				return int64(left.(int)) + vali, nil
 			}
-
 			valf, err := strconv.ParseFloat(right.(string), 10)
 			if err != nil {
 				return nil, err
@@ -1205,4 +1207,63 @@ func evalUnaryExprSUB(value interface{}) (interface{}, error) {
 		return !value.(bool), nil
 	}
 	return nil, fmt.Errorf("Unimplemented not for type %s", reflect.TypeOf(value))
+}
+
+func evalBinaryExprAND(left interface{}, right interface{}) (interface{}, error) {
+	lbool, err := castBool(left)
+	if err != nil {
+		return nil, err
+	}
+	if !lbool {
+		return false, nil
+	}
+	rbool, err := castBool(right)
+
+	if err != nil {
+		return nil, err
+	}
+	return rbool, nil
+}
+
+func evalBinaryExprOR(left interface{}, right interface{}) (interface{}, error) {
+	lbool, err := castBool(left)
+	if err != nil {
+		return nil, err
+	}
+	if lbool {
+		return true, nil
+	}
+	rbool, err := castBool(right)
+	if err != nil {
+		return nil, err
+	}
+	return rbool, nil
+}
+
+func castBool(value interface{}) (bool, error) {
+	switch value.(type) {
+	case int64:
+		return value.(int64) != int64(0), nil
+	case int:
+		return value.(int) != 0, nil
+	case float64:
+		return value.(float64) != float64(0), nil
+	case string:
+		valb, err := strconv.ParseBool(value.(string))
+		if err == nil {
+			return valb, nil
+		}
+		vali, err := strconv.ParseInt(value.(string), 10, 64)
+		if err == nil {
+			return vali != 0, nil
+		}
+		valf, err := strconv.ParseFloat(value.(string), 10)
+		if err != nil {
+			return false, err
+		}
+		return valf != float64(0), nil
+	case bool:
+		return value.(bool), nil
+	}
+	return false, fmt.Errorf("Unimplemented cast to bool for type %s", reflect.TypeOf(value))
 }
