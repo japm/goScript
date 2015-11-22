@@ -10,8 +10,19 @@ import (
 	"strings"
 )
 
+type callSyte struct {
+	callee interface{}
+	fnName string
+}
+
 //Eval expression within a context
-func Eval(expr string, context map[string]interface{}) (interface{}, error) {
+func Eval(expr string, context map[string]interface{}) (val interface{}, err error) {
+
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("Eval paniked. %s", r)
+		}
+	}()
 
 	exp, err := parser.ParseExpr(expr)
 
@@ -19,6 +30,7 @@ func Eval(expr string, context map[string]interface{}) (interface{}, error) {
 		return nil, err
 	}
 
+	val, err = eval(exp, context)
 	return eval(exp, context)
 }
 
@@ -43,7 +55,7 @@ func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	case *ast.BranchStmt:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.CallExpr:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		return evalCallExpr(expr.(*ast.CallExpr), context)
 	case *ast.CaseClause:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.ChanType:
@@ -109,7 +121,7 @@ func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	case *ast.SelectStmt:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.SelectorExpr:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		return evalSelectorExpr(expr.(*ast.SelectorExpr), context)
 	case *ast.SendStmt:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.SliceExpr:
@@ -133,6 +145,55 @@ func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	default:
 		return nil, fmt.Errorf("Default %s not suported", reflect.TypeOf(expr))
 	}
+}
+
+func evalSelectorExpr(expr *ast.SelectorExpr, context map[string]interface{}) (interface{}, error) {
+
+	callee, err := eval(expr.X, context)
+	if err != nil {
+		return nil, err
+	}
+
+	fnName := expr.Sel.Name
+
+	return &callSyte{callee, fnName}, nil
+}
+
+func evalCallExpr(expr *ast.CallExpr, context map[string]interface{}) (interface{}, error) {
+
+	args := make([]reflect.Value, len(expr.Args))
+
+	for key, value := range expr.Args {
+		val, err := eval(value, context)
+		if err != nil {
+			return nil, err
+		}
+		args[key] = reflect.ValueOf(val)
+	}
+
+	val, err := eval(expr.Fun, context)
+	if err != nil {
+		return nil, err
+	}
+	switch val.(type) {
+	case *callSyte:
+		break
+	default:
+		return nil, fmt.Errorf("Waiting callsite found %s", reflect.TypeOf(val))
+	}
+
+	callsite := val.(*callSyte)
+	_, ok := reflect.TypeOf(callsite.callee).MethodByName(callsite.fnName)
+	if !ok {
+		return nil, fmt.Errorf("Method %s not found", callsite.fnName)
+	}
+
+	caleeVal := reflect.ValueOf(callsite.callee)
+	method := caleeVal.MethodByName(callsite.fnName)
+
+	retVal := method.Call(args)
+
+	return retVal[0].Interface(), nil
 }
 
 func evalBinaryExpr(expr *ast.BinaryExpr, context map[string]interface{}) (interface{}, error) {
