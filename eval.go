@@ -15,6 +15,29 @@ type callSyte struct {
 	fnName string
 }
 
+type Expr struct {
+	expr ast.Expr
+}
+
+func (e *Expr) Prepare(expr string) error {
+	exp, err := parser.ParseExpr(expr)
+	if err != nil {
+		return err
+	}
+	e.expr = exp
+	return err
+}
+
+func (e *Expr) Eval(context map[string]interface{}) (val interface{}, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("Eval paniked. %s", r)
+		}
+	}()
+	val, err = eval(e.expr, context)
+	return val, err
+}
+
 //Eval expression within a context
 func Eval(expr string, context map[string]interface{}) (val interface{}, err error) {
 	defer func() {
