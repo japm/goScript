@@ -112,7 +112,7 @@ func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	case *ast.Package:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.ParenExpr:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		return evalParenExpr(expr.(*ast.ParenExpr), context)
 	case *ast.RangeStmt:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.ReturnStmt:
@@ -144,6 +144,10 @@ func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	default:
 		return nil, fmt.Errorf("Default %s not suported", reflect.TypeOf(expr))
 	}
+}
+
+func evalParenExpr(expr *ast.ParenExpr, context map[string]interface{}) (interface{}, error) {
+	return eval(expr.X, context)
 }
 
 func evalUnaryExpr(expr *ast.UnaryExpr, context map[string]interface{}) (interface{}, error) {
