@@ -198,15 +198,6 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context map[string]interface{}) (i
 
 func evalCallExpr(expr *ast.CallExpr, context map[string]interface{}) (interface{}, error) {
 
-	args := make([]reflect.Value, len(expr.Args))
-	for key, value := range expr.Args {
-		val, err := eval(value, context)
-		if err != nil {
-			return nil, err
-		}
-		args[key] = reflect.ValueOf(val)
-	}
-
 	val, err := eval(expr.Fun, context)
 	if err != nil {
 		return nil, err
@@ -219,13 +210,41 @@ func evalCallExpr(expr *ast.CallExpr, context map[string]interface{}) (interface
 	}
 
 	callsite := val.(callSyte)
-	_, ok := reflect.TypeOf(callsite.callee).MethodByName(callsite.fnName)
+	tpM, ok := reflect.TypeOf(callsite.callee).MethodByName(callsite.fnName)
 	if !ok {
 		return nil, fmt.Errorf("Method %s not found", callsite.fnName)
 	}
 
+	numArgs := tpM.Type.NumIn()
+	argsOffset := 0
+	if callsite.callee != nil {
+		numArgs = numArgs - 1
+		argsOffset = 1
+	}
+	if len(expr.Args) != numArgs {
+		return nil, fmt.Errorf("Method alguments count mismatch. Expected %d get %d", numArgs, len(expr.Args))
+	}
+
 	caleeVal := reflect.ValueOf(callsite.callee)
 	method := caleeVal.MethodByName(callsite.fnName)
+
+	args := make([]reflect.Value, len(expr.Args))
+	for key, value := range expr.Args {
+		tpArg := tpM.Type.In(key + argsOffset)
+
+		val, err := eval(value, context)
+		if err != nil {
+			return nil, err
+		}
+
+		rVal := reflect.ValueOf(val)
+		if !rVal.Type().ConvertibleTo(tpArg) {
+			return nil, fmt.Errorf("Method alguments type mismatch. Expected %d get %d", tpArg, rVal.Type())
+		}
+
+		args[key] = rVal
+	}
+
 	retVal := method.Call(args)
 
 	return retVal[0].Interface(), nil
