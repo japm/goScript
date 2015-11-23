@@ -193,7 +193,7 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context map[string]interface{}) (i
 	if err != nil {
 		return nil, err
 	}
-	return &callSyte{callee, expr.Sel.Name}, nil
+	return callSyte{callee, expr.Sel.Name}, nil
 }
 
 func evalCallExpr(expr *ast.CallExpr, context map[string]interface{}) (interface{}, error) {
@@ -212,13 +212,13 @@ func evalCallExpr(expr *ast.CallExpr, context map[string]interface{}) (interface
 		return nil, err
 	}
 	switch val.(type) {
-	case *callSyte:
+	case callSyte:
 		break
 	default:
 		return nil, fmt.Errorf("Waiting callsite found %s", reflect.TypeOf(val))
 	}
 
-	callsite := val.(*callSyte)
+	callsite := val.(callSyte)
 	_, ok := reflect.TypeOf(callsite.callee).MethodByName(callsite.fnName)
 	if !ok {
 		return nil, fmt.Errorf("Method %s not found", callsite.fnName)
