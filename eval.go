@@ -56,6 +56,14 @@ func Eval(expr string, context map[string]interface{}) (val interface{}, err err
 	return eval(exp, context)
 }
 
+func evalInt(expr ast.Node, context map[string]interface{}) (int, error) {
+	val, err := eval(expr, context)
+	if err != nil {
+		return 0, err
+	}
+	return castInt(val)
+}
+
 func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	switch expr.(type) {
 	case *ast.ArrayType:
@@ -147,7 +155,7 @@ func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	case *ast.SendStmt:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.SliceExpr:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		return evalSliceExpr(expr.(*ast.SliceExpr), context)
 	case *ast.StarExpr:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.StructType:
@@ -167,6 +175,48 @@ func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	default:
 		return nil, fmt.Errorf("Default %s not suported", reflect.TypeOf(expr))
 	}
+}
+
+func evalSliceExpr(expr *ast.SliceExpr, context map[string]interface{}) (interface{}, error) {
+
+	val, err := eval(expr.X, context)
+	if err != nil {
+		return nil, err
+	}
+	sl := reflect.ValueOf(val)
+
+	if sl.Kind() != reflect.Array &&
+		sl.Kind() != reflect.Slice {
+		return nil, fmt.Errorf("Expected array %d, found %d ", reflect.Array, sl.Kind())
+	}
+
+	var i, j, k int
+	if expr.Low == nil {
+		i = 0
+	} else {
+		i, err = evalInt(expr.Low, context)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if expr.High == nil {
+		j = sl.Len()
+	} else {
+		j, err = evalInt(expr.High, context)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if expr.Slice3 {
+		k, err = evalInt(expr.Max, context)
+		if err != nil {
+			return nil, err
+		}
+		return sl.Slice3(i, j, k).Interface(), nil
+	}
+	return sl.Slice(i, j).Interface(), nil
 }
 
 func evalParenExpr(expr *ast.ParenExpr, context map[string]interface{}) (interface{}, error) {
@@ -1399,4 +1449,28 @@ func castBool(value interface{}) (bool, error) {
 		return false, nil
 	}
 	return false, fmt.Errorf("Unimplemented cast to bool for type %s", reflect.TypeOf(value))
+}
+
+func castInt(value interface{}) (int, error) {
+	switch value.(type) {
+	case int64:
+		return int(value.(int64)), nil
+	case int:
+		return value.(int), nil
+	case float64:
+		return int(value.(float64)), nil
+	case string:
+		vali, err := strconv.ParseInt(value.(string), 10, 64)
+		if err == nil {
+			return int(vali), nil
+		}
+		valf, err := strconv.ParseFloat(value.(string), 10)
+		if err != nil {
+			return 0, err
+		}
+		return int(valf), nil
+	case nil:
+		return 0, nil
+	}
+	return 0, fmt.Errorf("Unimplemented cast to bool for type %s", reflect.TypeOf(value))
 }
