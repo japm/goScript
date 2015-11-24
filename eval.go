@@ -131,7 +131,7 @@ func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	case *ast.IncDecStmt:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.IndexExpr:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		return evalIndexExpr(expr.(*ast.IndexExpr), context)
 	case *ast.InterfaceType:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.KeyValueExpr:
@@ -175,6 +175,34 @@ func eval(expr ast.Node, context map[string]interface{}) (interface{}, error) {
 	default:
 		return nil, fmt.Errorf("Default %s not suported", reflect.TypeOf(expr))
 	}
+}
+
+func evalIndexExpr(expr *ast.IndexExpr, context map[string]interface{}) (interface{}, error) {
+
+	val, err := eval(expr.X, context)
+	if err != nil {
+		return nil, err
+	}
+	sl := reflect.ValueOf(val)
+
+	if sl.Kind() != reflect.Map {
+		return nil, fmt.Errorf("Expected map %d, found %d ", reflect.Array, sl.Kind())
+	}
+
+	idx, err := eval(expr.Index, context)
+	if err != nil {
+		return nil, err
+	}
+
+	retVal := sl.MapIndex(reflect.ValueOf(idx))
+
+	if !retVal.IsValid() {
+		return nil, nil
+	}
+	if retVal.IsNil() {
+		return nil, nil
+	}
+	return sl.MapIndex(reflect.ValueOf(idx)).Interface(), nil
 }
 
 func evalSliceExpr(expr *ast.SliceExpr, context map[string]interface{}) (interface{}, error) {
