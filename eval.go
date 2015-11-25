@@ -263,6 +263,8 @@ func evalUnaryExpr(expr *ast.UnaryExpr, context map[string]interface{}) (interfa
 		return evalUnaryExprNOT(val)
 	case token.SUB:
 		return evalUnaryExprSUB(val)
+	case token.AND:
+		return evalUnaryExprAND(val)
 	default:
 		return nil, fmt.Errorf("Unary operation %d not implemented", expr.Op)
 	}
@@ -1426,6 +1428,20 @@ func evalUnaryExprSUB(value interface{}) (interface{}, error) {
 		return nil, nil
 	}
 	return nil, fmt.Errorf("Unimplemented not for type %s", reflect.TypeOf(value))
+}
+
+func evalUnaryExprAND(value interface{}) (interface{}, error) {
+
+	val := reflect.ValueOf(value)
+
+	if !val.CanAddr() {
+		return nil, fmt.Errorf("Value is not addressable %s", val)
+	}
+	if val.IsNil() {
+		return nil, fmt.Errorf("Value is nill, not addressable %s", val)
+	}
+
+	return val.Addr(), nil
 }
 
 func evalBinaryExprAND(left interface{}, right interface{}) (interface{}, error) {
