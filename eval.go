@@ -11,8 +11,10 @@ import (
 )
 
 type callSyte struct {
-	callee interface{}
-	fnName string
+	callee     interface{}
+	fnName     string
+	calleeVal  reflect.Value
+	calleeType reflect.Type
 }
 
 type Expr struct {
@@ -271,7 +273,15 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context map[string]interface{}) (i
 	if err != nil {
 		return nil, err
 	}
-	return callSyte{callee, expr.Sel.Name}, nil
+
+	calleeVal := reflect.ValueOf(callee)
+	calleeType := reflect.TypeOf(callee)
+
+	_, ok := calleeType.FieldByName(expr.Sel.Name)
+	if ok {
+		return calleeVal.FieldByName(expr.Sel.Name).Interface(), nil
+	}
+	return callSyte{callee, expr.Sel.Name, calleeVal, calleeType}, nil
 }
 
 func evalCallExpr(expr *ast.CallExpr, context map[string]interface{}) (interface{}, error) {
@@ -288,7 +298,7 @@ func evalCallExpr(expr *ast.CallExpr, context map[string]interface{}) (interface
 	}
 
 	callsite := val.(callSyte)
-	tpM, ok := reflect.TypeOf(callsite.callee).MethodByName(callsite.fnName)
+	tpM, ok := callsite.calleeType.MethodByName(callsite.fnName)
 	if !ok {
 		return nil, fmt.Errorf("Method %s not found", callsite.fnName)
 	}
@@ -303,7 +313,7 @@ func evalCallExpr(expr *ast.CallExpr, context map[string]interface{}) (interface
 		return nil, fmt.Errorf("Method alguments count mismatch. Expected %d get %d", numArgs, len(expr.Args))
 	}
 
-	caleeVal := reflect.ValueOf(callsite.callee)
+	caleeVal := callsite.calleeVal
 	method := caleeVal.MethodByName(callsite.fnName)
 
 	args := make([]reflect.Value, len(expr.Args))
