@@ -11,10 +11,9 @@ import (
 )
 
 type callSyte struct {
-	callee     interface{}
-	fnName     string
-	calleeVal  reflect.Value
-	calleeType reflect.Type
+	callee    interface{}
+	fnName    string
+	calleeVal reflect.Value
 }
 
 type Expr struct {
@@ -62,6 +61,8 @@ func Eval(expr string, context interface{}) (val interface{}, err error) {
 
 	var ctxt interface{}
 	switch context.(type) {
+	case *map[string]interface{}:
+		ctxt = context
 	case map[string]interface{}:
 		ctxt = context
 	case reflect.Value:
@@ -292,21 +293,25 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context interface{}) (interface{},
 	}
 
 	calleeVal := reflect.ValueOf(callee)
-	calleeType := reflect.TypeOf(callee)
-	_, ok := calleeType.FieldByName(expr.Sel.Name)
-	if ok {
-		return calleeVal.FieldByName(expr.Sel.Name).Interface(), nil
+	fieldVal := calleeVal
+	if fieldVal.Kind() == reflect.Ptr {
+		fieldVal = calleeVal.Elem() //FieldByName panics on pointers
 	}
-	return callSyte{callee, expr.Sel.Name, calleeVal, calleeType}, nil
+	_, ok := fieldVal.Type().FieldByName(expr.Sel.Name)
+	if ok {
+		return fieldVal.FieldByName(expr.Sel.Name).Interface(), nil
+	}
+	return callSyte{callee, expr.Sel.Name, calleeVal}, nil
 }
 
 func evalCallExpr(expr *ast.CallExpr, context interface{}) (interface{}, error) {
 
-	val, err := eval(expr.Fun, context)
+	val, err := eval(expr.Fun, context) //Find the type called, this calls evalSelectorExpr
 	if err != nil {
 		return nil, err
 	}
-	switch val.(type) {
+
+	switch val.(type) { //The return value must be a callSyte
 	case callSyte:
 		break
 	default:
@@ -314,7 +319,10 @@ func evalCallExpr(expr *ast.CallExpr, context interface{}) (interface{}, error) 
 	}
 
 	callsite := val.(callSyte)
-	tpM, ok := callsite.calleeType.MethodByName(callsite.fnName)
+	caleeVal := callsite.calleeVal
+
+	//-------------------Check Method------------------------
+	tpM, ok := caleeVal.Type().MethodByName(callsite.fnName)
 	if !ok {
 		return nil, fmt.Errorf("Method %s not found", callsite.fnName)
 	}
@@ -329,12 +337,11 @@ func evalCallExpr(expr *ast.CallExpr, context interface{}) (interface{}, error) 
 		return nil, fmt.Errorf("Method alguments count mismatch. Expected %d get %d", numArgs, len(expr.Args))
 	}
 
-	caleeVal := callsite.calleeVal
+	//-------------------Prepare call arguments ------------
 	method := caleeVal.MethodByName(callsite.fnName)
-
 	var args []reflect.Value
 	if len(expr.Args) == 0 {
-		args = zeroArg
+		args = zeroArg //Zero arg constant
 	} else {
 		args = make([]reflect.Value, len(expr.Args))
 	}
@@ -354,8 +361,10 @@ func evalCallExpr(expr *ast.CallExpr, context interface{}) (interface{}, error) 
 		args[key] = rVal
 	}
 
+	//Call
 	retVal := method.Call(args)
 
+	//Evaluate result
 	if len(retVal) == 0 {
 		return nil, nil
 	}
@@ -363,6 +372,9 @@ func evalCallExpr(expr *ast.CallExpr, context interface{}) (interface{}, error) 
 }
 
 func evalBinaryExpr(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
+	//This must be lazy
+	//We should create two function pointers
+	//And allow calling the function inside each evalBinaryExprOp
 	left, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err
@@ -395,15 +407,24 @@ func evalIdent(expr *ast.Ident, context interface{}) (interface{}, error) {
 	switch context.(type) {
 	case map[string]interface{}:
 		val, ok = context.(map[string]interface{})[expr.Name]
+	case *map[string]interface{}:
+		val, ok = (*context.(*map[string]interface{}))[expr.Name]
 	case reflect.Value:
-		fld := context.(reflect.Value).FieldByName(expr.Name)
+		refVal := context.(reflect.Value)
+		if refVal.Kind() == reflect.Ptr {
+			refVal = refVal.Elem()
+		}
+		fld := refVal.FieldByName(expr.Name)
 		ok = fld.IsValid()
 		if ok {
 			val = fld.Interface()
 		}
 	default:
-		ctxt := reflect.ValueOf(context)
-		fld := ctxt.FieldByName(expr.Name)
+		refVal := reflect.ValueOf(context)
+		if refVal.Kind() == reflect.Ptr {
+			refVal = refVal.Elem()
+		}
+		fld := refVal.FieldByName(expr.Name)
 		ok = fld.IsValid()
 		if ok {
 			val = fld.Interface()
