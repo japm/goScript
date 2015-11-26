@@ -4,7 +4,7 @@ import "testing"
 
 func TestCtxMapBasics(t *testing.T) {
 	ctxt := make(map[string]interface{})
-	ctxt["a"] = 1
+	ctxt["a"] = helper{1}
 	val, err := Eval("a", ctxt)
 	if err != nil {
 		t.Error("err not nil", err)

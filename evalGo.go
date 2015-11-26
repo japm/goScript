@@ -177,7 +177,7 @@ func eval(expr ast.Node, context interface{}) (interface{}, error) {
 	case *ast.SliceExpr:
 		return evalSliceExpr(expr.(*ast.SliceExpr), context)
 	case *ast.StarExpr:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		return evalStarExpr(expr.(*ast.StarExpr), context)
 	case *ast.StructType:
 		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	case *ast.SwitchStmt:
@@ -223,19 +223,37 @@ func evalIndexExpr(expr *ast.IndexExpr, context interface{}) (interface{}, error
 	return sl.MapIndex(reflect.ValueOf(idx)).Interface(), nil
 }
 
+func evalStarExpr(expr *ast.StarExpr, context interface{}) (interface{}, error) {
+
+	val, err := eval(expr.X, context)
+	if err != nil {
+		return nil, err
+	}
+
+	refVal := reflect.ValueOf(val)
+	if refVal.Kind() != reflect.Ptr {
+		return nil, fmt.Errorf("Expected poiner, found %d ", refVal.Type())
+	}
+
+	return refVal.Elem(), nil
+}
+
 func evalSliceExpr(expr *ast.SliceExpr, context interface{}) (interface{}, error) {
 
+	//Get array object
 	val, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err
 	}
 	sl := reflect.ValueOf(val)
 
+	//Check the type
 	if sl.Kind() != reflect.Array &&
 		sl.Kind() != reflect.Slice {
-		return nil, fmt.Errorf("Expected array %d, found %d ", reflect.Array, sl.Kind())
+		return nil, fmt.Errorf("Expected array, found %d ", sl.Type())
 	}
 
+	//calculate i,j,j from a[i:j:k]
 	var i, j, k int
 	if expr.Low == nil {
 		i = 0
@@ -255,6 +273,7 @@ func evalSliceExpr(expr *ast.SliceExpr, context interface{}) (interface{}, error
 		}
 	}
 
+	//Calculate subslice
 	if expr.Slice3 {
 		k, err = evalInt(expr.Max, context)
 		if err != nil {
@@ -354,10 +373,12 @@ func evalCallExpr(expr *ast.CallExpr, context interface{}) (interface{}, error) 
 		}
 
 		rVal := reflect.ValueOf(val)
-		if !rVal.Type().ConvertibleTo(tpArg) {
-			return nil, fmt.Errorf("Method alguments type mismatch. Expected %d get %d", tpArg, rVal.Type())
+		if rVal.Type() != tpArg {
+			if !rVal.Type().ConvertibleTo(tpArg) {
+				return nil, fmt.Errorf("Method alguments type mismatch. Expected %d get %d", tpArg, rVal.Type())
+			}
+			rVal = rVal.Convert(tpArg)
 		}
-
 		args[key] = rVal
 	}
 
@@ -372,9 +393,12 @@ func evalCallExpr(expr *ast.CallExpr, context interface{}) (interface{}, error) 
 }
 
 func evalBinaryExpr(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
-	//This must be lazy
-	//We should create two function pointers
-	//And allow calling the function inside each evalBinaryExprOp
+
+	if expr.Op == token.LAND ||
+		expr.Op == token.LOR {
+		return evalBinaryExprOpLazy(expr, context)
+	}
+
 	left, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err
@@ -477,14 +501,21 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 		return evalBinaryExprGEQ(left, right)
 	case token.LEQ: // <=
 		return evalBinaryExprLEQ(left, right)
-	case token.LAND: // &&
-		return evalBinaryExprAND(left, right)
-	case token.LOR: // ||
-		return evalBinaryExprOR(left, right)
 	default:
 		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
 	}
 
+}
+
+func evalBinaryExprOpLazy(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
+	switch expr.Op {
+	case token.LAND: // &&
+		return evalBinaryExprAND(expr, context)
+	case token.LOR: // ||
+		return evalBinaryExprOR(expr, context)
+	default:
+		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
+	}
 }
 
 func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error) {
@@ -1506,7 +1537,12 @@ func evalUnaryExprAND(value interface{}) (interface{}, error) {
 	return val.Addr(), nil
 }
 
-func evalBinaryExprAND(left interface{}, right interface{}) (interface{}, error) {
+func evalBinaryExprAND(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
+	left, err := eval(expr.X, context)
+	if err != nil {
+		return nil, err
+	}
+
 	lbool, err := castBool(left)
 	if err != nil {
 		return nil, err
@@ -1514,21 +1550,34 @@ func evalBinaryExprAND(left interface{}, right interface{}) (interface{}, error)
 	if !lbool {
 		return false, nil
 	}
-	rbool, err := castBool(right)
+	right, err := eval(expr.Y, context)
+	if err != nil {
+		return nil, err
+	}
 
+	rbool, err := castBool(right)
 	if err != nil {
 		return nil, err
 	}
 	return rbool, nil
 }
 
-func evalBinaryExprOR(left interface{}, right interface{}) (interface{}, error) {
+func evalBinaryExprOR(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
+	left, err := eval(expr.X, context)
+	if err != nil {
+		return nil, err
+	}
 	lbool, err := castBool(left)
 	if err != nil {
 		return nil, err
 	}
 	if lbool {
 		return true, nil
+	}
+
+	right, err := eval(expr.Y, context)
+	if err != nil {
+		return nil, err
 	}
 	rbool, err := castBool(right)
 	if err != nil {
