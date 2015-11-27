@@ -380,29 +380,26 @@ func evalCallExpr(expr *ast.CallExpr, context interface{}) (interface{}, error) 
 			return nil, err
 		}
 		rVal := reflect.ValueOf(val)
+		var parArg reflect.Type
 
+		//If true we are in the variadic parameters
 		if key >= numArgs {
-			if rVal.Type() != vaArgsTp {
-				if !rVal.Type().ConvertibleTo(vaArgsTp) {
-					return nil, fmt.Errorf("Variadic algument type mismatch. Expected %s get %s", vaArgsTp, rVal.Type())
-				}
-				rVal = rVal.Convert(vaArgsTp)
-			}
+			parArg = vaArgsTp
 		} else {
-			tpArg := mType.In(key)
-			if rVal.Type() != tpArg {
-				if !rVal.Type().ConvertibleTo(tpArg) {
-					return nil, fmt.Errorf("Method alguments type mismatch. Expected %s get %s", tpArg, rVal.Type())
-				}
-				rVal = rVal.Convert(tpArg)
+			parArg = mType.In(key)
+		}
+		if rVal.Type() != parArg {
+			if !rVal.Type().ConvertibleTo(parArg) {
+				return nil, fmt.Errorf("Method argument %s type mismatch. Expected %s get %s", key, parArg, rVal.Type())
 			}
+			rVal = rVal.Convert(parArg)
 		}
 		args[key] = rVal
 	}
-	//Last parameter
 
 	//Call
 	retVal := method.Call(args)
+
 	//Evaluate result
 	if len(retVal) == 0 {
 		return nil, nil
