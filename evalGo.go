@@ -341,50 +341,68 @@ func evalCallExpr(expr *ast.CallExpr, context interface{}) (interface{}, error) 
 	caleeVal := callsite.calleeVal
 
 	//-------------------Check Method------------------------
-	tpM, ok := caleeVal.Type().MethodByName(callsite.fnName)
-	if !ok {
+	method := caleeVal.MethodByName(callsite.fnName)
+	if !method.IsValid() {
 		return nil, fmt.Errorf("Method %s not found", callsite.fnName)
 	}
 
-	numArgs := tpM.Type.NumIn()
-	argsOffset := 0
-	if callsite.callee != nil {
+	mType := method.Type()
+	numArgs := mType.NumIn()
+
+	if !mType.IsVariadic() {
+		if len(expr.Args) != numArgs {
+			return nil, fmt.Errorf("Method alguments count mismatch. Expected %d get %d", numArgs, len(expr.Args))
+		}
+	} else {
 		numArgs = numArgs - 1
-		argsOffset = 1
-	}
-	if len(expr.Args) != numArgs {
-		return nil, fmt.Errorf("Method alguments count mismatch. Expected %d get %d", numArgs, len(expr.Args))
+		if len(expr.Args) < numArgs {
+			return nil, fmt.Errorf("Method alguments count mismatch. Expected at least %d get %d", (numArgs - 1), len(expr.Args))
+		}
 	}
 
 	//-------------------Prepare call arguments ------------
-	method := caleeVal.MethodByName(callsite.fnName)
 	var args []reflect.Value
 	if len(expr.Args) == 0 {
 		args = zeroArg //Zero arg constant
 	} else {
 		args = make([]reflect.Value, len(expr.Args))
 	}
+
+	var vaArgsTp reflect.Type
+	if mType.IsVariadic() {
+		vaArgsTp = mType.In(numArgs).Elem() //Type declared
+	}
+
 	for key, value := range expr.Args {
-		tpArg := tpM.Type.In(key + argsOffset)
 
 		val, err := eval(value, context)
 		if err != nil {
 			return nil, err
 		}
-
 		rVal := reflect.ValueOf(val)
-		if rVal.Type() != tpArg {
-			if !rVal.Type().ConvertibleTo(tpArg) {
-				return nil, fmt.Errorf("Method alguments type mismatch. Expected %d get %d", tpArg, rVal.Type())
+
+		if key >= numArgs {
+			if rVal.Type() != vaArgsTp {
+				if !rVal.Type().ConvertibleTo(vaArgsTp) {
+					return nil, fmt.Errorf("Variadic algument type mismatch. Expected %s get %s", vaArgsTp, rVal.Type())
+				}
+				rVal = rVal.Convert(vaArgsTp)
 			}
-			rVal = rVal.Convert(tpArg)
+		} else {
+			tpArg := mType.In(key)
+			if rVal.Type() != tpArg {
+				if !rVal.Type().ConvertibleTo(tpArg) {
+					return nil, fmt.Errorf("Method alguments type mismatch. Expected %s get %s", tpArg, rVal.Type())
+				}
+				rVal = rVal.Convert(tpArg)
+			}
 		}
 		args[key] = rVal
 	}
+	//Last parameter
 
 	//Call
 	retVal := method.Call(args)
-
 	//Evaluate result
 	if len(retVal) == 0 {
 		return nil, nil

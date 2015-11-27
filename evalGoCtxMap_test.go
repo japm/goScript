@@ -9,7 +9,7 @@ func TestCtxMapBasics(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 1 {
+	if val.(helper).A != 1 {
 		t.Error("Expected 1 get ", val)
 	}
 

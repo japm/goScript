@@ -18,6 +18,10 @@ func (a helper) Test4(z ...int) []int {
 	return z
 }
 
+func (a helper) Test5(x int, z ...interface{}) []interface{} {
+	return z
+}
+
 func TestCallBasics(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = helper{1}
@@ -53,4 +57,11 @@ func TestCallBasics(t *testing.T) {
 		t.Errorf("Expected arr returned %d", val)
 	}
 
+	val, err = Eval("a.Test5(2,4)", ctxt)
+	if err != nil {
+		t.Errorf("err not nil", err)
+	}
+	if len(val.([]interface{})) != 1 {
+		t.Errorf("Expected arr returned %d", val)
+	}
 }
