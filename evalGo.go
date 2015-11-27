@@ -196,24 +196,32 @@ func evalIndexExpr(expr *ast.IndexExpr, context interface{}) (interface{}, error
 	if err != nil {
 		return nil, err
 	}
-	sl := reflect.ValueOf(val)
-	if sl.Kind() != reflect.Map {
-		return nil, fmt.Errorf("Expected map %d, found %d ", reflect.Array, sl.Kind())
-	}
 
 	idx, err := eval(expr.Index, context)
 	if err != nil {
 		return nil, err
 	}
+	var retVal reflect.Value
+	v := reflect.ValueOf(val)
+	if v.Kind() == reflect.Map {
+		retVal = v.MapIndex(reflect.ValueOf(idx))
+	} else if v.Kind() == reflect.Array ||
+		v.Kind() == reflect.Slice {
+		i, err := castInt(idx)
+		if err != nil {
+			return nil, err
+		}
+		retVal = v.Index(i)
 
-	retVal := sl.MapIndex(reflect.ValueOf(idx))
+	} else {
+		return nil, fmt.Errorf("Unexpected indexer [] type %s ", v)
+	}
 	if !retVal.IsValid() {
 		return nil, nil
 	}
-	if retVal.IsNil() {
-		return nil, nil
-	}
-	return sl.MapIndex(reflect.ValueOf(idx)).Interface(), nil
+
+	return retVal.Interface(), nil
+
 }
 
 func evalStarExpr(expr *ast.StarExpr, context interface{}) (interface{}, error) {

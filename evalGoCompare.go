@@ -31,7 +31,7 @@ func evalBinaryExprLEQ(left interface{}, right interface{}) (interface{}, error)
 			return float64(left.(int64)) <= valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(int64) != int64(0), nil
+				return left.(int64) <= int64(1), nil
 			}
 			return left.(int64) <= int64(0), nil
 		}
@@ -55,7 +55,7 @@ func evalBinaryExprLEQ(left interface{}, right interface{}) (interface{}, error)
 			return float64(left.(int)) <= valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(int) != 0, nil
+				return left.(int) <= 1, nil
 			}
 			return left.(int) <= 0, nil
 		}
@@ -75,7 +75,7 @@ func evalBinaryExprLEQ(left interface{}, right interface{}) (interface{}, error)
 			return left.(float64) <= valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(float64) != float64(0), nil
+				return left.(float64) <= float64(1), nil
 			}
 			return left.(float64) <= float64(0), nil
 		}
@@ -255,7 +255,7 @@ func evalBinaryExprLSS(left interface{}, right interface{}) (interface{}, error)
 			return float64(left.(int64)) < valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(int64) != int64(0), nil
+				return left.(int64) < int64(1), nil
 			}
 			return left.(int64) < int64(0), nil
 		}
@@ -279,7 +279,7 @@ func evalBinaryExprLSS(left interface{}, right interface{}) (interface{}, error)
 			return float64(left.(int)) < valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(int) != 0, nil
+				return left.(int) < 1, nil
 			}
 			return left.(int) < 0, nil
 		}
@@ -299,7 +299,7 @@ func evalBinaryExprLSS(left interface{}, right interface{}) (interface{}, error)
 			return left.(float64) < valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(float64) != float64(0), nil
+				return left.(float64) < float64(1), nil
 			}
 			return left.(float64) < float64(0), nil
 		}
@@ -347,7 +347,7 @@ func evalBinaryExprGTR(left interface{}, right interface{}) (interface{}, error)
 			return float64(left.(int64)) > valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(int64) != int64(0), nil
+				return left.(int64) > int64(1), nil
 			}
 			return left.(int64) > int64(0), nil
 		}
@@ -371,7 +371,7 @@ func evalBinaryExprGTR(left interface{}, right interface{}) (interface{}, error)
 			return float64(left.(int)) > valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(int) != 0, nil
+				return left.(int) > 1, nil
 			}
 			return left.(int) > 0, nil
 		}
@@ -391,7 +391,7 @@ func evalBinaryExprGTR(left interface{}, right interface{}) (interface{}, error)
 			return left.(float64) > valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(float64) != float64(0), nil
+				return left.(float64) > float64(1), nil
 			}
 			return left.(float64) > float64(0), nil
 		}
@@ -439,7 +439,7 @@ func evalBinaryExprGEQ(left interface{}, right interface{}) (interface{}, error)
 			return float64(left.(int64)) >= valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(int64) != int64(0), nil
+				return left.(int64) >= int64(1), nil
 			}
 			return left.(int64) >= int64(0), nil
 		}
@@ -463,7 +463,7 @@ func evalBinaryExprGEQ(left interface{}, right interface{}) (interface{}, error)
 			return float64(left.(int)) >= valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(int) != 0, nil
+				return left.(int) >= 1, nil
 			}
 			return left.(int) >= 0, nil
 		}
@@ -483,7 +483,7 @@ func evalBinaryExprGEQ(left interface{}, right interface{}) (interface{}, error)
 			return left.(float64) >= valf, nil
 		case bool:
 			if right.(bool) {
-				return left.(float64) != float64(0), nil
+				return left.(float64) >= float64(1), nil
 			}
 			return left.(float64) >= float64(0), nil
 		}

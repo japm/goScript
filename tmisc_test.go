@@ -58,3 +58,64 @@ func TestIdent4(t *testing.T) {
 		t.Error("Expected 1.4 get ", val)
 	}
 }
+
+func TestSlice1(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	a := make([]int, 1)
+	a[0] = 3
+	ctxt["a"] = a
+
+	val, err := Eval("a[0]", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestSlice2(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	a := make([]int, 3)
+	a[0] = 3
+	ctxt["a"] = a
+
+	val, err := Eval("a[0:2]", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if len(val.([]int)) != 2 {
+		t.Error("Expected slice of 2 get ", val)
+	}
+}
+func TestArray1(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	a := []int{3, 1, 2, 3}
+	ctxt["a"] = a
+
+	val, err := Eval("a[0]", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestArray2(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	a := []int{0, 1, 2, 3}
+	ctxt["a"] = a
+
+	val, err := Eval("a[0:2]", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if len(val.([]int)) != 2 {
+		t.Error("Expected slice of 2 get ", val)
+	}
+}
