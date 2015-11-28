@@ -545,7 +545,7 @@ func TestLssStringBool(t *testing.T) {
 		t.Error("err not nil", err)
 	}
 	if val.(bool) == true {
-		t.Error("Expected false get ", val)
+		t.Error("Expected true get ", val)
 	}
 }
 
