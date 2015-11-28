@@ -236,7 +236,7 @@ func evalStarExpr(expr *ast.StarExpr, context interface{}) (interface{}, error) 
 		return nil, fmt.Errorf("Expected poiner, found %d ", refVal.Type())
 	}
 
-	return refVal.Elem(), nil
+	return refVal.Elem().Interface(), nil
 }
 
 func evalSliceExpr(expr *ast.SliceExpr, context interface{}) (interface{}, error) {

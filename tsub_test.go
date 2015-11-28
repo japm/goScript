@@ -469,3 +469,27 @@ func TestSubStringBool2(t *testing.T) {
 		t.Error("Expected 2 get ", val)
 	}
 }
+
+func TestSubUnConstInt(t *testing.T) {
+
+	val, err := Eval("-2", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != -2 {
+		t.Error("Expected -1 get ", val)
+	}
+}
+
+func TestSubUnConstFloat(t *testing.T) {
+
+	val, err := Eval("-2.25", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+		if val.(float64) != -2.25 {
+		}
+		t.Error("Expected -2.25 get ", val)
+	}
+}

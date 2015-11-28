@@ -423,7 +423,7 @@ func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error)
 			return left.(int64) % int64(valf), nil
 		case bool:
 			if right.(bool) {
-				return left, nil
+				return int64(0), nil
 			}
 			return nil, fmt.Errorf("Mod by false no allowed")
 		case nil:
@@ -439,7 +439,7 @@ func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error)
 			return int64(left.(int)) % int64(right.(float64)), nil
 		case bool:
 			if right.(bool) {
-				return left, nil
+				return 0, nil
 			}
 			return nil, fmt.Errorf("Mod by false no allowed")
 		case nil:
@@ -455,7 +455,7 @@ func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error)
 			return int64(left.(float64)) % int64(right.(float64)), nil
 		case bool:
 			if right.(bool) {
-				return left, nil
+				return int64(0), nil
 			}
 			return nil, fmt.Errorf("Mod by false no allowed")
 		case nil:
