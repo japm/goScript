@@ -1,9 +1,7 @@
-package evalGoTest
+package evalGo
 
 import (
 	"testing"
-
-	"github.com/japm/evalGo"
 )
 
 func (a helper) Test() int {
@@ -29,7 +27,7 @@ func (a helper) Test5(x int, z ...interface{}) []interface{} {
 func TestCallBasics(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = helper{1}
-	val, err := evalGo.Eval("a.Test()", ctxt)
+	val, err := Eval("a.Test()", ctxt)
 	if err != nil {
 		t.Errorf("err not nil", err)
 	}
@@ -37,7 +35,7 @@ func TestCallBasics(t *testing.T) {
 		t.Errorf("Expected 1 returned %d", val)
 	}
 
-	val, err = evalGo.Eval("a.Test2(2)", ctxt)
+	val, err = Eval("a.Test2(2)", ctxt)
 	if err != nil {
 		t.Errorf("err not nil", err)
 	}
@@ -45,7 +43,7 @@ func TestCallBasics(t *testing.T) {
 		t.Errorf("Expected 2 returned %d", val)
 	}
 
-	val, err = evalGo.Eval("a.Test3(2)", ctxt)
+	val, err = Eval("a.Test3(2)", ctxt)
 	if err != nil {
 		t.Errorf("err not nil", err)
 	}
@@ -53,7 +51,7 @@ func TestCallBasics(t *testing.T) {
 		t.Errorf("Expected arr returned %d", val)
 	}
 
-	val, err = evalGo.Eval("a.Test4(2)", ctxt)
+	val, err = Eval("a.Test4(2)", ctxt)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -61,7 +59,7 @@ func TestCallBasics(t *testing.T) {
 		t.Errorf("Expected arr returned %d", val)
 	}
 
-	val, err = evalGo.Eval("a.Test5(2,4)", ctxt)
+	val, err = Eval("a.Test5(2,4)", ctxt)
 	if err != nil {
 		t.Errorf("err not nil", err)
 	}
@@ -74,7 +72,7 @@ func TestIdent(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = "z"
 
-	val, err := evalGo.Eval("a", ctxt)
+	val, err := Eval("a", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -89,7 +87,7 @@ func TestIdent2(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = "z"
 
-	_, err := evalGo.Eval("b", ctxt)
+	_, err := Eval("b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -101,7 +99,7 @@ func TestIdent3(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = 1
 
-	val, err := evalGo.Eval("a", ctxt)
+	val, err := Eval("a", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -116,7 +114,7 @@ func TestIdent4(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = 1.4
 
-	val, err := evalGo.Eval("a", ctxt)
+	val, err := Eval("a", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -132,7 +130,7 @@ func TestSlice1(t *testing.T) {
 	a[0] = 3
 	ctxt["a"] = a
 
-	val, err := evalGo.Eval("a[0]", ctxt)
+	val, err := Eval("a[0]", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -148,7 +146,7 @@ func TestSlice2(t *testing.T) {
 	a[0] = 3
 	ctxt["a"] = a
 
-	val, err := evalGo.Eval("a[0:2]", ctxt)
+	val, err := Eval("a[0:2]", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -162,7 +160,7 @@ func TestArray1(t *testing.T) {
 	a := []int{3, 1, 2, 3}
 	ctxt["a"] = a
 
-	val, err := evalGo.Eval("a[0]", ctxt)
+	val, err := Eval("a[0]", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -177,7 +175,7 @@ func TestArray2(t *testing.T) {
 	a := []int{0, 1, 2, 3}
 	ctxt["a"] = a
 
-	val, err := evalGo.Eval("a[0:2]", ctxt)
+	val, err := Eval("a[0:2]", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -193,7 +191,7 @@ func TestMap1(t *testing.T) {
 	a["a"] = 3
 	ctxt["a"] = a
 
-	val, err := evalGo.Eval("a[\"a\"]", ctxt)
+	val, err := Eval("a[\"a\"]", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -209,7 +207,7 @@ func TestStar1(t *testing.T) {
 	*a = 3
 	ctxt["a"] = a
 
-	val, err := evalGo.Eval("*a", ctxt)
+	val, err := Eval("*a", ctxt)
 	if err != nil {
 		t.Error("err not nil", err)
 	}

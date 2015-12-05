@@ -1,15 +1,13 @@
-package evalGoTest
+package evalGo
 
 import (
 	"testing"
-
-	"github.com/japm/evalGo"
 )
 
 func TestCtxIMapBasics(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = helper{1}
-	val, err := evalGo.Eval("a", &ctxt)
+	val, err := Eval("a", &ctxt)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -17,7 +15,7 @@ func TestCtxIMapBasics(t *testing.T) {
 		t.Error("Expected 1 get ", val)
 	}
 
-	val, err = evalGo.Eval("b", &ctxt)
+	val, err = Eval("b", &ctxt)
 	if err == nil {
 		t.Error("Expected err", err)
 	}
@@ -29,7 +27,7 @@ type helper struct {
 
 func TestCtxInterfBasics(t *testing.T) {
 	ctxt := helper{1}
-	val, err := evalGo.Eval("A", ctxt)
+	val, err := Eval("A", ctxt)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -37,13 +35,13 @@ func TestCtxInterfBasics(t *testing.T) {
 		t.Error("Expected 1 get ", val)
 	}
 
-	val, err = evalGo.Eval("b", ctxt)
+	val, err = Eval("b", ctxt)
 	if err == nil {
 		t.Error("Expected err", err)
 	}
 
 	ctxt2 := &helper{1}
-	val, err = evalGo.Eval("A", ctxt2)
+	val, err = Eval("A", ctxt2)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -51,7 +49,7 @@ func TestCtxInterfBasics(t *testing.T) {
 		t.Error("Expected 1 get ", val)
 	}
 
-	val, err = evalGo.Eval("b", ctxt2)
+	val, err = Eval("b", ctxt2)
 	if err == nil {
 		t.Error("Expected err", err)
 	}
@@ -60,7 +58,7 @@ func TestCtxInterfBasics(t *testing.T) {
 func TestCtxMapBasics(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = helper{1}
-	val, err := evalGo.Eval("a", ctxt)
+	val, err := Eval("a", ctxt)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -68,7 +66,7 @@ func TestCtxMapBasics(t *testing.T) {
 		t.Error("Expected 1 get ", val)
 	}
 
-	val, err = evalGo.Eval("b", ctxt)
+	val, err = Eval("b", ctxt)
 	if err == nil {
 		t.Error("Expected err", err)
 	}

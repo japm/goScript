@@ -415,6 +415,8 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 		return evalBinaryExprGEQ(left, right)
 	case token.LEQ: // <=
 		return evalBinaryExprLEQ(left, right)
+	case token.AND:
+		return evalBinaryExprAND(left, right)
 	default:
 		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
 	}
@@ -424,9 +426,9 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 func evalBinaryExprOpLazy(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
 	switch expr.Op {
 	case token.LAND: // &&
-		return evalBinaryExprAND(expr, context)
+		return evalBinaryExprLAND(expr, context)
 	case token.LOR: // ||
-		return evalBinaryExprOR(expr, context)
+		return evalBinaryExprLOR(expr, context)
 	default:
 		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
 	}
@@ -434,10 +436,24 @@ func evalBinaryExprOpLazy(expr *ast.BinaryExpr, context interface{}) (interface{
 
 func evalUnaryExprSUB(value interface{}) (interface{}, error) {
 	switch value.(type) {
-	case int64:
-		return -value.(int64), nil
+	case uint8:
+		return -value.(uint8), nil
+	case uint16:
+		return -value.(uint16), nil
+	case uint:
+		return -value.(uint), nil
+	case uint64:
+		return -value.(uint64), nil
+	case int8:
+		return -value.(int8), nil
+	case int16:
+		return -value.(int16), nil
 	case int:
 		return -value.(int), nil
+	case int64:
+		return -value.(int64), nil
+	case float32:
+		return -value.(float32), nil
 	case float64:
 		return -value.(float64), nil
 	case bool:
@@ -460,58 +476,4 @@ func evalUnaryExprAND(value interface{}) (interface{}, error) {
 	}
 
 	return val.Addr(), nil
-}
-
-func castBool(value interface{}) (bool, error) {
-	switch value.(type) {
-	case int64:
-		return value.(int64) != int64(0), nil
-	case int:
-		return value.(int) != 0, nil
-	case float64:
-		return value.(float64) != float64(0), nil
-	case string:
-		valb, err := strconv.ParseBool(value.(string))
-		if err == nil {
-			return valb, nil
-		}
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return vali != 0, nil
-		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return false, err
-		}
-		return valf != float64(0), nil
-	case bool:
-		return value.(bool), nil
-	case nil:
-		return false, nil
-	}
-	return false, fmt.Errorf("Unimplemented cast to bool for type %s", reflect.TypeOf(value))
-}
-
-func castInt(value interface{}) (int, error) {
-	switch value.(type) {
-	case int64:
-		return int(value.(int64)), nil
-	case int:
-		return value.(int), nil
-	case float64:
-		return int(value.(float64)), nil
-	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return int(vali), nil
-		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
-		}
-		return int(valf), nil
-	case nil:
-		return 0, nil
-	}
-	return 0, fmt.Errorf("Unimplemented cast to bool for type %s", reflect.TypeOf(value))
 }

@@ -1,13 +1,11 @@
-package evalGoTest
+package evalGo
 
 import (
 	"testing"
-
-	"github.com/japm/evalGo"
 )
 
 func TestEvalBasics(t *testing.T) {
-	exp := evalGo.Expr{}
+	exp := Expr{}
 	//err := exp.Prepare("a.Day()")
 	err := exp.Prepare("1+1")
 

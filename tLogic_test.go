@@ -1,13 +1,9 @@
-package evalGoTest
+package evalGo
 
-import (
-	"testing"
+import "testing"
 
-	"github.com/japm/evalGo"
-)
-
-func TestAndBasics(t *testing.T) {
-	val, err := evalGo.Eval("true && true", nil)
+func TestLAndBasics(t *testing.T) {
+	val, err := Eval("true && true", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -16,7 +12,7 @@ func TestAndBasics(t *testing.T) {
 		t.Error("Expected true get ", val)
 	}
 
-	val, err = evalGo.Eval("false && true", nil)
+	val, err = Eval("false && true", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -25,7 +21,7 @@ func TestAndBasics(t *testing.T) {
 		t.Error("Expected false get ", val)
 	}
 
-	val, err = evalGo.Eval("true && false", nil)
+	val, err = Eval("true && false", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -34,7 +30,7 @@ func TestAndBasics(t *testing.T) {
 		t.Error("Expected false get ", val)
 	}
 
-	val, err = evalGo.Eval("false && false", nil)
+	val, err = Eval("false && false", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -43,8 +39,8 @@ func TestAndBasics(t *testing.T) {
 	}
 }
 
-func TestOrBasics(t *testing.T) {
-	val, err := evalGo.Eval("true || true", nil)
+func TestLOrBasics(t *testing.T) {
+	val, err := Eval("true || true", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -53,7 +49,7 @@ func TestOrBasics(t *testing.T) {
 		t.Error("Expected true get ", val)
 	}
 
-	val, err = evalGo.Eval("false || true", nil)
+	val, err = Eval("false || true", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -62,7 +58,7 @@ func TestOrBasics(t *testing.T) {
 		t.Error("Expected true get ", val)
 	}
 
-	val, err = evalGo.Eval("true || false", nil)
+	val, err = Eval("true || false", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -71,7 +67,7 @@ func TestOrBasics(t *testing.T) {
 		t.Error("Expected true get ", val)
 	}
 
-	val, err = evalGo.Eval("false || false", nil)
+	val, err = Eval("false || false", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -80,8 +76,8 @@ func TestOrBasics(t *testing.T) {
 	}
 }
 
-func TestNotBasics(t *testing.T) {
-	val, err := evalGo.Eval("!true", nil)
+func TestLNotBasics(t *testing.T) {
+	val, err := Eval("!true", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -89,7 +85,7 @@ func TestNotBasics(t *testing.T) {
 		t.Error("Expected false get ", val)
 	}
 
-	val, err = evalGo.Eval("!false", nil)
+	val, err = Eval("!false", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -97,7 +93,7 @@ func TestNotBasics(t *testing.T) {
 		t.Error("Expected true get ", val)
 	}
 
-	val, err = evalGo.Eval("!2", nil)
+	val, err = Eval("!2", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -105,7 +101,7 @@ func TestNotBasics(t *testing.T) {
 		t.Error("Expected false get ", val)
 	}
 
-	val, err = evalGo.Eval("!2.0", nil)
+	val, err = Eval("!2.0", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -113,7 +109,7 @@ func TestNotBasics(t *testing.T) {
 		t.Error("Expected false get ", val)
 	}
 
-	val, err = evalGo.Eval("!0", nil)
+	val, err = Eval("!0", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -121,7 +117,7 @@ func TestNotBasics(t *testing.T) {
 		t.Error("Expected true get ", val)
 	}
 
-	val, err = evalGo.Eval("!0.0", nil)
+	val, err = Eval("!0.0", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -129,7 +125,7 @@ func TestNotBasics(t *testing.T) {
 		t.Error("Expected true get ", val)
 	}
 
-	val, err = evalGo.Eval("!\"true\"", nil)
+	val, err = Eval("!\"true\"", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -137,7 +133,7 @@ func TestNotBasics(t *testing.T) {
 		t.Error("Expected false get ", val)
 	}
 
-	val, err = evalGo.Eval("!\"4\"", nil)
+	val, err = Eval("!\"4\"", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -145,7 +141,7 @@ func TestNotBasics(t *testing.T) {
 		t.Error("Expected false get ", val)
 	}
 
-	val, err = evalGo.Eval("!\"4.1\"", nil)
+	val, err = Eval("!\"4.1\"", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -153,7 +149,7 @@ func TestNotBasics(t *testing.T) {
 		t.Error("Expected false get ", val)
 	}
 
-	val, err = evalGo.Eval("!\"false\"", nil)
+	val, err = Eval("!\"false\"", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -161,7 +157,7 @@ func TestNotBasics(t *testing.T) {
 		t.Error("Expected false get ", val)
 	}
 
-	val, err = evalGo.Eval("!\"0\"", nil)
+	val, err = Eval("!\"0\"", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}
@@ -169,7 +165,7 @@ func TestNotBasics(t *testing.T) {
 		t.Error("Expected false get ", val)
 	}
 
-	val, err = evalGo.Eval("!\"0.0\"", nil)
+	val, err = Eval("!\"0.0\"", nil)
 	if err != nil {
 		t.Error("err not nil", err)
 	}

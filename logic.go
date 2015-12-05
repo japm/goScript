@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func evalBinaryExprAND(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
+func evalBinaryExprLAND(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
 	left, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func evalBinaryExprAND(expr *ast.BinaryExpr, context interface{}) (interface{}, 
 	return rbool, nil
 }
 
-func evalBinaryExprOR(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
+func evalBinaryExprLOR(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
 	left, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err

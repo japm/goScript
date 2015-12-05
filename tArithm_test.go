@@ -1,14 +1,10 @@
-package evalGoTest
+package evalGo
 
-import (
-	"testing"
-
-	"github.com/japm/evalGo"
-)
+import "testing"
 
 func TestAddConstInt(t *testing.T) {
 
-	val, err := evalGo.Eval("1 + 2", nil)
+	val, err := Eval("1 + 2", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -20,7 +16,7 @@ func TestAddConstInt(t *testing.T) {
 
 func TestAddConstFloat(t *testing.T) {
 
-	val, err := evalGo.Eval("1.15 + 2.25", nil)
+	val, err := Eval("1.15 + 2.25", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -32,7 +28,7 @@ func TestAddConstFloat(t *testing.T) {
 
 func TestAddConstFloatInt1(t *testing.T) {
 
-	val, err := evalGo.Eval("1 + 2.25", nil)
+	val, err := Eval("1 + 2.25", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -44,7 +40,7 @@ func TestAddConstFloatInt1(t *testing.T) {
 
 func TestAddConstFloatInt2(t *testing.T) {
 
-	val, err := evalGo.Eval("2.25 + 1", nil)
+	val, err := Eval("2.25 + 1", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -56,7 +52,7 @@ func TestAddConstFloatInt2(t *testing.T) {
 
 func TestAddConstStringInt(t *testing.T) {
 
-	val, err := evalGo.Eval("\"a\" + 1", nil)
+	val, err := Eval("\"a\" + 1", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -68,7 +64,7 @@ func TestAddConstStringInt(t *testing.T) {
 
 func TestAddConstIntString(t *testing.T) {
 
-	_, err := evalGo.Eval("1 + \"a\" ", nil)
+	_, err := Eval("1 + \"a\" ", nil)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -77,7 +73,7 @@ func TestAddConstIntString(t *testing.T) {
 
 func TestAddConstIntString2(t *testing.T) {
 
-	val, err := evalGo.Eval("1 + \"2\" ", nil)
+	val, err := Eval("1 + \"2\" ", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -89,7 +85,7 @@ func TestAddConstIntString2(t *testing.T) {
 
 func TestAddConstStringString(t *testing.T) {
 
-	val, err := evalGo.Eval("\"1\" + \"2\"", nil)
+	val, err := Eval("\"1\" + \"2\"", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -101,7 +97,7 @@ func TestAddConstStringString(t *testing.T) {
 
 func TestAddConstIntBool(t *testing.T) {
 
-	val, err := evalGo.Eval("2 + true", nil)
+	val, err := Eval("2 + true", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -117,7 +113,7 @@ func TestAddIntInt(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -133,7 +129,7 @@ func TestAddIntInt64(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -149,7 +145,7 @@ func TestAddIntFloat64(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -165,7 +161,7 @@ func TestAddIntString(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a + b", ctxt)
+	_, err := Eval("a + b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -178,7 +174,7 @@ func TestAddIntBool(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -194,7 +190,7 @@ func TestAddIntBool2(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = false
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -210,7 +206,7 @@ func TestAddInt64Int(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -226,7 +222,7 @@ func TestAddInt64Int64(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -242,7 +238,7 @@ func TestAddInt64Float64(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -258,7 +254,7 @@ func TestAddInt64String(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a + b", ctxt)
+	_, err := Eval("a + b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -271,7 +267,7 @@ func TestAddInt64Bool(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -287,7 +283,7 @@ func TestAddInt64Bool2(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = false
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -303,7 +299,7 @@ func TestAddFloat64Int(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -319,7 +315,7 @@ func TestAddFloat64Int64(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -335,7 +331,7 @@ func TestAddFloat64Float64(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -351,7 +347,7 @@ func TestAddFloat64String(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a + b", ctxt)
+	_, err := Eval("a + b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -364,7 +360,7 @@ func TestAddFloat64Bool(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -380,7 +376,7 @@ func TestAddFloat64Bool2(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = false
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -396,7 +392,7 @@ func TestAddStringInt(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -412,7 +408,7 @@ func TestAddStringInt64(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -428,7 +424,7 @@ func TestAddStringFloat64(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -444,7 +440,7 @@ func TestAddStingString(t *testing.T) {
 	ctxt["a"] = "x"
 	ctxt["b"] = "z"
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -460,7 +456,7 @@ func TestAddStringBool(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -476,7 +472,7 @@ func TestAddStringBool2(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = false
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -488,7 +484,7 @@ func TestAddStringBool2(t *testing.T) {
 
 func TestDivConstInt(t *testing.T) {
 
-	val, err := evalGo.Eval("2 / 2", nil)
+	val, err := Eval("2 / 2", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -500,7 +496,7 @@ func TestDivConstInt(t *testing.T) {
 
 func TestDivConstFloat(t *testing.T) {
 
-	val, err := evalGo.Eval("1.15 / 2.25", nil)
+	val, err := Eval("1.15 / 2.25", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -512,7 +508,7 @@ func TestDivConstFloat(t *testing.T) {
 
 func TestDivConstFloatInt1(t *testing.T) {
 
-	val, err := evalGo.Eval("2 / 2.25", nil)
+	val, err := Eval("2 / 2.25", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -524,7 +520,7 @@ func TestDivConstFloatInt1(t *testing.T) {
 
 func TestDivConstFloatInt2(t *testing.T) {
 
-	val, err := evalGo.Eval("2.25 / 2", nil)
+	val, err := Eval("2.25 / 2", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -536,7 +532,7 @@ func TestDivConstFloatInt2(t *testing.T) {
 
 func TestDivConstStringInt(t *testing.T) {
 
-	_, err := evalGo.Eval("\"a\" / 3", nil)
+	_, err := Eval("\"a\" / 3", nil)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -545,7 +541,7 @@ func TestDivConstStringInt(t *testing.T) {
 
 func TestDivConstIntString(t *testing.T) {
 
-	_, err := evalGo.Eval("1 / \"a\" ", nil)
+	_, err := Eval("1 / \"a\" ", nil)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -554,7 +550,7 @@ func TestDivConstIntString(t *testing.T) {
 
 func TestDivConstIntString2(t *testing.T) {
 
-	val, err := evalGo.Eval("2 / \"2\" ", nil)
+	val, err := Eval("2 / \"2\" ", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -566,7 +562,7 @@ func TestDivConstIntString2(t *testing.T) {
 
 func TestDivConstStringString(t *testing.T) {
 
-	_, err := evalGo.Eval("\"2\" / \"2\"", nil)
+	_, err := Eval("\"2\" / \"2\"", nil)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -579,7 +575,7 @@ func TestDivIntInt(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -595,7 +591,7 @@ func TestDivIntInt64(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -611,7 +607,7 @@ func TestDivIntFloat64(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -627,7 +623,7 @@ func TestDivIntString(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -640,7 +636,7 @@ func TestDivIntBool(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -656,7 +652,7 @@ func TestDivIntBool2(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = false
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -669,7 +665,7 @@ func TestDivInt64Int(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -685,7 +681,7 @@ func TestDivInt64Int64(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -701,7 +697,7 @@ func TestDivInt64Float64(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = float64(1)
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -717,7 +713,7 @@ func TestDivInt64String(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -730,7 +726,7 @@ func TestDivInt64Bool(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -746,7 +742,7 @@ func TestDivInt64Bool2(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = false
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -759,7 +755,7 @@ func TestDivFloat64Int(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -775,7 +771,7 @@ func TestDivFloat64Int64(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -791,7 +787,7 @@ func TestDivFloat64Float64(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -807,7 +803,7 @@ func TestDivFloat64String(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -820,7 +816,7 @@ func TestDivFloat64Bool(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a / b", ctxt)
+	val, err := Eval("a / b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -836,7 +832,7 @@ func TestDivFloat64Bool2(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = false
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -849,7 +845,7 @@ func TestDivStringInt(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = 2
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -862,7 +858,7 @@ func TestDivStringInt64(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = int64(2)
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -875,7 +871,7 @@ func TestDivStringFloat64(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = float64(2)
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -888,7 +884,7 @@ func TestDivStingString(t *testing.T) {
 	ctxt["a"] = "x"
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -901,7 +897,7 @@ func TestDivStringBool(t *testing.T) {
 	ctxt["a"] = "x"
 	ctxt["b"] = true
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -914,7 +910,7 @@ func TestDivStringBool2(t *testing.T) {
 	ctxt["a"] = "x"
 	ctxt["b"] = false
 
-	_, err := evalGo.Eval("a / b", ctxt)
+	_, err := Eval("a / b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -923,7 +919,7 @@ func TestDivStringBool2(t *testing.T) {
 
 func TestMulConstInt(t *testing.T) {
 
-	val, err := evalGo.Eval("2 * 2", nil)
+	val, err := Eval("2 * 2", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -935,7 +931,7 @@ func TestMulConstInt(t *testing.T) {
 
 func TestMulConstFloat(t *testing.T) {
 
-	val, err := evalGo.Eval("1.15 * 2.25", nil)
+	val, err := Eval("1.15 * 2.25", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -947,7 +943,7 @@ func TestMulConstFloat(t *testing.T) {
 
 func TestMulConstFloatInt1(t *testing.T) {
 
-	val, err := evalGo.Eval("2 * 2.25", nil)
+	val, err := Eval("2 * 2.25", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -959,7 +955,7 @@ func TestMulConstFloatInt1(t *testing.T) {
 
 func TestMulConstFloatInt2(t *testing.T) {
 
-	val, err := evalGo.Eval("2.25 * 2", nil)
+	val, err := Eval("2.25 * 2", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -971,7 +967,7 @@ func TestMulConstFloatInt2(t *testing.T) {
 
 func TestMulConstStringInt(t *testing.T) {
 
-	val, err := evalGo.Eval("\"a\" * 3", nil)
+	val, err := Eval("\"a\" * 3", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -983,7 +979,7 @@ func TestMulConstStringInt(t *testing.T) {
 
 func TestMulConstIntString(t *testing.T) {
 
-	_, err := evalGo.Eval("1 * \"a\" ", nil)
+	_, err := Eval("1 * \"a\" ", nil)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -992,7 +988,7 @@ func TestMulConstIntString(t *testing.T) {
 
 func TestMulConstIntString2(t *testing.T) {
 
-	val, err := evalGo.Eval("2 * \"2\" ", nil)
+	val, err := Eval("2 * \"2\" ", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1004,7 +1000,7 @@ func TestMulConstIntString2(t *testing.T) {
 
 func TestMulConstStringString(t *testing.T) {
 
-	val, err := evalGo.Eval("\"2\" * \"2\"", nil)
+	val, err := Eval("\"2\" * \"2\"", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1020,7 +1016,7 @@ func TestMulIntInt(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1036,7 +1032,7 @@ func TestMulIntInt64(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1052,7 +1048,7 @@ func TestMulIntFloat64(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1068,7 +1064,7 @@ func TestMulIntString(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a * b", ctxt)
+	_, err := Eval("a * b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -1081,7 +1077,7 @@ func TestMulIntBool(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1097,7 +1093,7 @@ func TestMulIntBool2(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = false
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1113,7 +1109,7 @@ func TestMulInt64Int(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1129,7 +1125,7 @@ func TestMulInt64Int64(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1145,7 +1141,7 @@ func TestMulInt64Float64(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1161,7 +1157,7 @@ func TestMulInt64String(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a * b", ctxt)
+	_, err := Eval("a * b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -1174,7 +1170,7 @@ func TestMulInt64Bool(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1190,7 +1186,7 @@ func TestMulInt64Bool2(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = false
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1206,7 +1202,7 @@ func TestMulFloat64Int(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1222,7 +1218,7 @@ func TestMulFloat64Int64(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1238,7 +1234,7 @@ func TestMulFloat64Float64(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1254,7 +1250,7 @@ func TestMulFloat64String(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a * b", ctxt)
+	_, err := Eval("a * b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -1267,7 +1263,7 @@ func TestMulFloat64Bool(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1283,7 +1279,7 @@ func TestMulFloat64Bool2(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = false
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1299,7 +1295,7 @@ func TestMulStringInt(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1315,7 +1311,7 @@ func TestMulStringInt64(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1331,7 +1327,7 @@ func TestMulStringFloat64(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a * b", ctxt)
+	val, err := Eval("a * b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1347,7 +1343,7 @@ func TestMulStingString(t *testing.T) {
 	ctxt["a"] = "x"
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a * b", ctxt)
+	_, err := Eval("a * b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -1356,7 +1352,7 @@ func TestMulStingString(t *testing.T) {
 
 func TestRemConstInt(t *testing.T) {
 
-	val, err := evalGo.Eval("1 % 2", nil)
+	val, err := Eval("1 % 2", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1368,7 +1364,7 @@ func TestRemConstInt(t *testing.T) {
 
 func TestRemConstFloat(t *testing.T) {
 
-	val, err := evalGo.Eval("1.15 % 2.25", nil)
+	val, err := Eval("1.15 % 2.25", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1380,7 +1376,7 @@ func TestRemConstFloat(t *testing.T) {
 
 func TestRemConstFloatInt1(t *testing.T) {
 
-	val, err := evalGo.Eval("1 % 2.25", nil)
+	val, err := Eval("1 % 2.25", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1392,7 +1388,7 @@ func TestRemConstFloatInt1(t *testing.T) {
 
 func TestRemConstFloatInt2(t *testing.T) {
 
-	val, err := evalGo.Eval("2.25 % 1", nil)
+	val, err := Eval("2.25 % 1", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1404,7 +1400,7 @@ func TestRemConstFloatInt2(t *testing.T) {
 
 func TestRemConstStringInt(t *testing.T) {
 
-	_, err := evalGo.Eval("\"a\" % 1", nil)
+	_, err := Eval("\"a\" % 1", nil)
 
 	if err == nil {
 		t.Error("Expected error on string % int")
@@ -1413,7 +1409,7 @@ func TestRemConstStringInt(t *testing.T) {
 
 func TestRemConstIntString(t *testing.T) {
 
-	_, err := evalGo.Eval("1 % \"a\" ", nil)
+	_, err := Eval("1 % \"a\" ", nil)
 
 	if err == nil {
 		t.Error("Expected error on int % string")
@@ -1422,7 +1418,7 @@ func TestRemConstIntString(t *testing.T) {
 
 func TestRemConstIntString2(t *testing.T) {
 
-	val, err := evalGo.Eval("1 % \"2\" ", nil)
+	val, err := Eval("1 % \"2\" ", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1434,7 +1430,7 @@ func TestRemConstIntString2(t *testing.T) {
 
 func TestRemConstStringString(t *testing.T) {
 
-	_, err := evalGo.Eval("\"1\" % \"2\"", nil)
+	_, err := Eval("\"1\" % \"2\"", nil)
 
 	if err == nil {
 		t.Error("Expected error on string % string")
@@ -1443,7 +1439,7 @@ func TestRemConstStringString(t *testing.T) {
 
 func TestRemConstIntBool(t *testing.T) {
 
-	val, err := evalGo.Eval("2 % true", nil)
+	val, err := Eval("2 % true", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1459,7 +1455,7 @@ func TestRemIntInt(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1475,7 +1471,7 @@ func TestRemIntInt64(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1491,7 +1487,7 @@ func TestRemIntFloat64(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1507,7 +1503,7 @@ func TestRemIntString(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -1520,7 +1516,7 @@ func TestRemIntBool(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1536,7 +1532,7 @@ func TestRemIntBool2(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = false
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 
 	if err == nil {
 		t.Error("Expected error in int % false")
@@ -1549,7 +1545,7 @@ func TestRemInt64Int(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1565,7 +1561,7 @@ func TestRemInt64Int64(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1581,7 +1577,7 @@ func TestRemInt64Float64(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1597,7 +1593,7 @@ func TestRemInt64String(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -1610,7 +1606,7 @@ func TestRemInt64Bool(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1626,7 +1622,7 @@ func TestRemInt64Bool2(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = false
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 
 	if err == nil {
 		t.Error("Expected error in int % false")
@@ -1640,7 +1636,7 @@ func TestRemFloat64Int(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1656,7 +1652,7 @@ func TestRemFloat64Int64(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1672,7 +1668,7 @@ func TestRemFloat64Float64(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1688,7 +1684,7 @@ func TestRemFloat64String(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -1701,7 +1697,7 @@ func TestRemFloat64Bool(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a % b", ctxt)
+	val, err := Eval("a % b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1717,7 +1713,7 @@ func TestRemFloat64Bool2(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = false
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 
 	if err == nil {
 		t.Error("Expected error in int % false")
@@ -1730,7 +1726,7 @@ func TestRemStringInt(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = 2
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 
 	if err == nil {
 		t.Error("Expected error in string % int")
@@ -1743,7 +1739,7 @@ func TestRemStringInt64(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = int64(2)
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 
 	if err == nil {
 		t.Error("Expected error in string % int64")
@@ -1756,7 +1752,7 @@ func TestRemStringFloat64(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = float64(2)
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 
 	if err == nil {
 		t.Error("Expected error in string % flaot64")
@@ -1769,7 +1765,7 @@ func TestRemStingString(t *testing.T) {
 	ctxt["a"] = "x"
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 	if err == nil {
 		t.Error("Expected error in string % int")
 	}
@@ -1781,7 +1777,7 @@ func TestRemStringBool(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = true
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 	if err == nil {
 		t.Error("Expected error in string % bool")
 	}
@@ -1793,7 +1789,7 @@ func TestRemStringBool2(t *testing.T) {
 	ctxt["a"] = "z"
 	ctxt["b"] = false
 
-	_, err := evalGo.Eval("a % b", ctxt)
+	_, err := Eval("a % b", ctxt)
 	if err == nil {
 		t.Error("Expected error in string % bool")
 	}
@@ -1801,7 +1797,7 @@ func TestRemStringBool2(t *testing.T) {
 
 func TestSubConstInt(t *testing.T) {
 
-	val, err := evalGo.Eval("1 - 2", nil)
+	val, err := Eval("1 - 2", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1813,7 +1809,7 @@ func TestSubConstInt(t *testing.T) {
 
 func TestSubConstFloat(t *testing.T) {
 
-	val, err := evalGo.Eval("1.15 - 2.25", nil)
+	val, err := Eval("1.15 - 2.25", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1825,7 +1821,7 @@ func TestSubConstFloat(t *testing.T) {
 
 func TestSubConstFloatInt1(t *testing.T) {
 
-	val, err := evalGo.Eval("1 - 2.25", nil)
+	val, err := Eval("1 - 2.25", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1837,7 +1833,7 @@ func TestSubConstFloatInt1(t *testing.T) {
 
 func TestSubConstFloatInt2(t *testing.T) {
 
-	val, err := evalGo.Eval("2.25 - 1", nil)
+	val, err := Eval("2.25 - 1", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1849,7 +1845,7 @@ func TestSubConstFloatInt2(t *testing.T) {
 
 func TestSubConstStringInt(t *testing.T) {
 
-	val, err := evalGo.Eval("\"a\" - 1", nil)
+	val, err := Eval("\"a\" - 1", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1861,7 +1857,7 @@ func TestSubConstStringInt(t *testing.T) {
 
 func TestSubConstIntString(t *testing.T) {
 
-	_, err := evalGo.Eval("1 - \"a\" ", nil)
+	_, err := Eval("1 - \"a\" ", nil)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -1870,7 +1866,7 @@ func TestSubConstIntString(t *testing.T) {
 
 func TestSubConstIntString2(t *testing.T) {
 
-	val, err := evalGo.Eval("1 - \"2\" ", nil)
+	val, err := Eval("1 - \"2\" ", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1882,7 +1878,7 @@ func TestSubConstIntString2(t *testing.T) {
 
 func TestSubConstStringString(t *testing.T) {
 
-	val, err := evalGo.Eval("\"abc\" - \"b\" ", nil)
+	val, err := Eval("\"abc\" - \"b\" ", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1898,7 +1894,7 @@ func TestSubIntInt(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1914,7 +1910,7 @@ func TestSubIntInt64(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a + b", ctxt)
+	val, err := Eval("a + b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1930,7 +1926,7 @@ func TestSubIntFloat64(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1946,7 +1942,7 @@ func TestSubIntString(t *testing.T) {
 	ctxt["a"] = 1
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a - b", ctxt)
+	_, err := Eval("a - b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -1959,7 +1955,7 @@ func TestSubIntBool(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1975,7 +1971,7 @@ func TestSubIntBool2(t *testing.T) {
 	ctxt["a"] = 2
 	ctxt["b"] = false
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -1991,7 +1987,7 @@ func TestSubInt64Int(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2007,7 +2003,7 @@ func TestSubInt64Int64(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2023,7 +2019,7 @@ func TestSubInt64Float64(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2039,7 +2035,7 @@ func TestSubInt64String(t *testing.T) {
 	ctxt["a"] = int64(1)
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a - b", ctxt)
+	_, err := Eval("a - b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -2052,7 +2048,7 @@ func TestSubInt64Bool(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2068,7 +2064,7 @@ func TestSubInt64Bool2(t *testing.T) {
 	ctxt["a"] = int64(2)
 	ctxt["b"] = false
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2084,7 +2080,7 @@ func TestSubFloat64Int(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2100,7 +2096,7 @@ func TestSubFloat64Int64(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2116,7 +2112,7 @@ func TestSubFloat64Float64(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2132,7 +2128,7 @@ func TestSubFloat64String(t *testing.T) {
 	ctxt["a"] = float64(1)
 	ctxt["b"] = "z"
 
-	_, err := evalGo.Eval("a - b", ctxt)
+	_, err := Eval("a - b", ctxt)
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
@@ -2145,7 +2141,7 @@ func TestSubFloat64Bool(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2161,7 +2157,7 @@ func TestSubFloat64Bool2(t *testing.T) {
 	ctxt["a"] = float64(2)
 	ctxt["b"] = false
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2177,7 +2173,7 @@ func TestSubStringInt(t *testing.T) {
 	ctxt["a"] = "2z2"
 	ctxt["b"] = 2
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2193,7 +2189,7 @@ func TestSubStringInt64(t *testing.T) {
 	ctxt["a"] = "z2"
 	ctxt["b"] = int64(2)
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2209,7 +2205,7 @@ func TestSubStringFloat64(t *testing.T) {
 	ctxt["a"] = "2z"
 	ctxt["b"] = float64(2)
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2225,7 +2221,7 @@ func TestSubStingString(t *testing.T) {
 	ctxt["a"] = "xzx"
 	ctxt["b"] = "z"
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2241,7 +2237,7 @@ func TestSubStringBool(t *testing.T) {
 	ctxt["a"] = "2true2"
 	ctxt["b"] = true
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2257,7 +2253,7 @@ func TestSubStringBool2(t *testing.T) {
 	ctxt["a"] = "false2false"
 	ctxt["b"] = false
 
-	val, err := evalGo.Eval("a - b", ctxt)
+	val, err := Eval("a - b", ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2269,7 +2265,7 @@ func TestSubStringBool2(t *testing.T) {
 
 func TestSubUnConstInt(t *testing.T) {
 
-	val, err := evalGo.Eval("-2", nil)
+	val, err := Eval("-2", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -2281,12 +2277,469 @@ func TestSubUnConstInt(t *testing.T) {
 
 func TestSubUnConstFloat(t *testing.T) {
 
-	val, err := evalGo.Eval("-2.25", nil)
+	val, err := Eval("-2.25", nil)
 
 	if err != nil {
 		t.Error("err not nil", err)
 		if val.(float64) != -2.25 {
 		}
 		t.Error("Expected -2.25 get ", val)
+	}
+}
+
+func TestAndConstInt(t *testing.T) {
+
+	val, err := Eval("1 & 2", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != (int64(1) & int64(2)) {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAndConstFloat(t *testing.T) {
+
+	val, err := Eval("1.15 & 2.25", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != (int64(1) & int64(2)) {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAndConstFloatInt1(t *testing.T) {
+
+	val, err := Eval("1 & 2.25", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != (int64(1) & int64(2)) {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAndConstFloatInt2(t *testing.T) {
+
+	val, err := Eval("2.25 & 1", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != (int64(2) & int64(1)) {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAndConstStringInt(t *testing.T) {
+
+	_, err := Eval("\"a\" & 1", nil)
+
+	if err == nil {
+		t.Error("Expected error on string & int64", err)
+	}
+
+}
+
+func TestAndConstIntString(t *testing.T) {
+
+	_, err := Eval("1 & \"a\" ", nil)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestAndConstIntString2(t *testing.T) {
+
+	val, err := Eval("1 & \"1\" ", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != (int64(1) & int64(1)) {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAndConstStringString(t *testing.T) {
+
+	_, err := Eval("\"1\" & \"1\"", nil)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestAndConstIntBool(t *testing.T) {
+
+	val, err := Eval("1 & true", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != (int64(1) & int64(1)) {
+		t.Error("Expected (int64(1) & int64(1)) get ", val)
+	}
+}
+
+func TestAndIntInt(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = 2
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != (2 & 2) {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAndIntInt64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 1
+	ctxt["b"] = int64(1)
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 1 {
+		t.Error("Expected 1 get ", val)
+	}
+}
+
+func TestAndIntFloat64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 33
+	ctxt["b"] = float64(33)
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 33 {
+		t.Error("Expected 33 get ", val)
+	}
+}
+
+func TestAndIntString(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 1
+	ctxt["b"] = "z"
+
+	_, err := Eval("a & b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestAndIntBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 1
+	ctxt["b"] = true
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 1 {
+		t.Error("Expected 1 get ", val)
+	}
+}
+
+func TestAndIntBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = false
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 0 {
+		t.Error("Expected 0 get ", val)
+	}
+}
+
+func TestAndInt64Int(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(3)
+	ctxt["b"] = 3
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAndInt64Int64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(3)
+	ctxt["b"] = int64(2)
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 2 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAndInt64Float64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = float64(3)
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 2 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAndInt64String(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = "z"
+
+	_, err := Eval("a & b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestAndInt64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = true
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 0 {
+		t.Error("Expected 0 get ", val)
+	}
+}
+
+func TestAndInt64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = false
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 0 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
+func TestAndFloat64Int(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(55)
+	ctxt["b"] = 55
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 55 {
+		t.Error("Expected 55 get ", val)
+	}
+}
+
+func TestAndFloat64Int64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(789)
+	ctxt["b"] = int64(789)
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 789 {
+		t.Error("Expected 789 get ", val)
+	}
+}
+
+func TestAndFloat64Float64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(966234)
+	ctxt["b"] = float64(966234)
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 966234 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAndFloat64String(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = "z"
+
+	_, err := Eval("a & b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestAndFloat64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = true
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 1 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAndFloat64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(2)
+	ctxt["b"] = false
+
+	val, err := Eval("a & b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 0 {
+		t.Error("Expected 0 get ", val)
+	}
+}
+
+func TestAndStringInt(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = 2
+
+	_, err := Eval("a & b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestAndStringInt64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = int64(2)
+
+	_, err := Eval("a & b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestAndStringFloat64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = float64(2)
+
+	_, err := Eval("a & b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestAndStingString(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "x"
+	ctxt["b"] = "z"
+
+	_, err := Eval("a & b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestAndStringBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = true
+
+	_, err := Eval("a & b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestAndStringBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = false
+
+	_, err := Eval("a & b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
 	}
 }

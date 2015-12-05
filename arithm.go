@@ -3,466 +3,972 @@ package evalGo
 import (
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 )
 
 func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error) {
-	switch left.(type) {
-	case int64:
-		switch right.(type) {
-		case int64:
-			return left.(int64) + right.(int64), nil
-		case int:
-			return left.(int64) + int64(right.(int)), nil
-		case float64:
-			return float64(left.(int64)) + right.(float64), nil
-		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err == nil {
-				return left.(int64) + vali, nil
-			}
-			valf, err := strconv.ParseFloat(right.(string), 10)
-			if err != nil {
-				return nil, err
-			}
-			return float64(left.(int64)) + valf, nil
-		case bool:
-			if right.(bool) {
-				return left.(int64) + int64(1), nil
-			}
-			return left, nil
-		case nil:
-			return left.(int64), nil
-		}
-	case int:
-		switch right.(type) {
-		case int64:
-			return int64(left.(int)) + right.(int64), nil
-		case int:
-			return left.(int) + right.(int), nil
-		case float64:
-			return float64(left.(int)) + right.(float64), nil
-		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err == nil {
-				return int64(left.(int)) + vali, nil
-			}
-			valf, err := strconv.ParseFloat(right.(string), 10)
-			if err != nil {
-				return nil, err
-			}
-			return float64(left.(int)) + valf, nil
-		case bool:
-			if right.(bool) {
-				return left.(int) + 1, nil
-			}
-			return left, nil
-		case nil:
-			return left.(int), nil
-		}
-	case float64:
-		switch right.(type) {
-		case int64:
-			return left.(float64) + float64(right.(int64)), nil
-		case int:
-			return left.(float64) + float64(right.(int)), nil
-		case float64:
-			return left.(float64) + right.(float64), nil
-		case string:
-			valf, err := strconv.ParseFloat(right.(string), 10)
-			if err != nil {
-				return nil, err
-			}
-			return left.(float64) + valf, nil
-		case bool:
-			if right.(bool) {
-				return left.(float64) + float64(1), nil
-			}
-			return left, nil
-		case nil:
-			return left.(float64), nil
-		}
-	case string:
-		switch right.(type) {
-		case string:
-			return left.(string) + right.(string), nil
-		case int64:
-			return left.(string) + strconv.FormatInt(right.(int64), 10), nil
-		case int:
-			return left.(string) + strconv.Itoa(right.(int)), nil
-		case float64:
-			return left.(string) + strconv.FormatFloat(right.(float64), 'f', -1, 64), nil
-		case bool:
-			return left.(string) + strconv.FormatBool(right.(bool)), nil
-		case nil:
-			return left.(string), nil
-		}
-	case nil:
+	tp, e := binaryOperType(left, right)
+	if e != nil {
+		return nil, e
+	}
+	if tp.IsNil {
 		return nil, nil
 	}
+	if !tp.IsNumeric {
+		switch left.(type) {
+		case string:
+			val, err := castString(right)
+			if err != nil {
+				return nil, err
+			}
+			return left.(string) + val, nil
 
+		case bool:
+			vall, err := castInt(left)
+			if err != nil {
+				return nil, err
+			}
+			valr, err := castInt(right)
+			if err != nil {
+				return nil, err
+			}
+
+			return vall + valr, nil
+
+		case nil:
+			return right, nil
+		}
+	} else if tp.Signed {
+		if tp.Float {
+			if tp.Size == 32 {
+				l, err := castFloat32(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castFloat32(right)
+				if err != nil {
+					return nil, err
+				}
+				return l + r, nil
+			} else {
+				l, err := castFloat64(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castFloat64(right)
+				if err != nil {
+					return nil, err
+				}
+				return l + r, nil
+			}
+		} else if tp.Size == 64 {
+			l, err := castInt64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l + r, nil
+		} else if tp.Size == 32 {
+			l, err := castInt(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt(right)
+			if err != nil {
+				return nil, err
+			}
+			return l + r, nil
+		} else if tp.Size == 16 {
+			l, err := castInt16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l + r, nil
+		} else if tp.Size == 8 {
+			l, err := castInt8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l + r, nil
+		}
+	} else {
+		if tp.Size == 64 {
+			l, err := castUint64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l + r, nil
+		} else if tp.Size == 32 {
+			l, err := castUint(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint(right)
+			if err != nil {
+				return nil, err
+			}
+			return l + r, nil
+		} else if tp.Size == 16 {
+			l, err := castUint16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l + r, nil
+		} else if tp.Size == 8 {
+			l, err := castUint8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l + r, nil
+		}
+	}
 	return nil, fmt.Errorf("Unimplemented add for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error) {
-	switch left.(type) {
-	case int64:
-		switch right.(type) {
-		case int64:
-			return left.(int64) - right.(int64), nil
-		case int:
-			return left.(int64) - int64(right.(int)), nil
-		case float64:
-			return float64(left.(int64)) - right.(float64), nil
-		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err == nil {
-				return left.(int64) - vali, nil
-			}
-			valf, err := strconv.ParseFloat(right.(string), 10)
-			if err != nil {
-				return nil, err
-			}
-			return float64(left.(int64)) - valf, nil
-		case bool:
-			if right.(bool) {
-				return left.(int64) - int64(1), nil
-			}
-			return left, nil
-		case nil:
-			return left, nil
-		}
-	case int:
-		switch right.(type) {
-		case int64:
-			return int64(left.(int)) - right.(int64), nil
-		case int:
-			return left.(int) - right.(int), nil
-		case float64:
-			return float64(left.(int)) - right.(float64), nil
-		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err == nil {
-				return int64(left.(int)) - vali, nil
-			}
-			valf, err := strconv.ParseFloat(right.(string), 10)
-			if err != nil {
-				return nil, err
-			}
-			return float64(left.(int)) - valf, nil
-		case bool:
-			if right.(bool) {
-				return left.(int) - 1, nil
-			}
-			return left, nil
-		case nil:
-			return left, nil
-		}
-	case float64:
-		switch right.(type) {
-		case int64:
-			return left.(float64) - float64(right.(int64)), nil
-		case int:
-			return left.(float64) - float64(right.(int)), nil
-		case float64:
-			return left.(float64) - right.(float64), nil
-		case string:
-			valf, err := strconv.ParseFloat(right.(string), 10)
-			if err != nil {
-				return nil, err
-			}
-			return left.(float64) - valf, nil
-		case bool:
-			if right.(bool) {
-				return left.(float64) - float64(1), nil
-			}
-			return left, nil
-		case nil:
-			return left, nil
-		}
-	case string:
-		switch right.(type) {
-		case string:
-			return strings.Replace(left.(string), right.(string), "", -1), nil
-		case int64:
-			return strings.Replace(left.(string), strconv.FormatInt(right.(int64), 10), "", -1), nil
-		case int:
-			return strings.Replace(left.(string), strconv.Itoa(right.(int)), "", -1), nil
-		case float64:
-			return strings.Replace(left.(string), strconv.FormatFloat(right.(float64), 'f', -1, 64), "", -1), nil
-		case bool:
-			return strings.Replace(left.(string), strconv.FormatBool(right.(bool)), "", -1), nil
-		case nil:
-			return left, nil
-		}
-	case nil:
+	tp, e := binaryOperType(left, right)
+	if e != nil {
+		return nil, e
+	}
+	if tp.IsNil {
 		return nil, nil
 	}
+	if !tp.IsNumeric {
+		switch left.(type) {
+		case string:
+			val, err := castString(right)
+			if err != nil {
+				return nil, err
+			}
+			return strings.Replace(left.(string), val, "", -1), nil
 
+		case bool:
+			vall, err := castInt(left)
+			if err != nil {
+				return nil, err
+			}
+			valr, err := castInt(right)
+			if err != nil {
+				return nil, err
+			}
+
+			return vall - valr, nil
+		case nil:
+			return evalUnaryExprSUB(right)
+		}
+	} else if tp.Signed {
+		if tp.Float {
+			if tp.Size == 32 {
+				l, err := castFloat32(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castFloat32(right)
+				if err != nil {
+					return nil, err
+				}
+				return l - r, nil
+			} else {
+				l, err := castFloat64(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castFloat64(right)
+				if err != nil {
+					return nil, err
+				}
+				return l - r, nil
+			}
+		} else if tp.Size == 64 {
+			l, err := castInt64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l - r, nil
+		} else if tp.Size == 32 {
+			l, err := castInt(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt(right)
+			if err != nil {
+				return nil, err
+			}
+			return l - r, nil
+		} else if tp.Size == 16 {
+			l, err := castInt16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l - r, nil
+		} else if tp.Size == 8 {
+			l, err := castInt8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l - r, nil
+		}
+	} else {
+		if tp.Size == 64 {
+			l, err := castUint64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l - r, nil
+		} else if tp.Size == 32 {
+			l, err := castUint(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint(right)
+			if err != nil {
+				return nil, err
+			}
+			return l - r, nil
+		} else if tp.Size == 16 {
+			l, err := castUint16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l - r, nil
+		} else if tp.Size == 8 {
+			l, err := castUint8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l - r, nil
+		}
+	}
 	return nil, fmt.Errorf("Unimplemented sub for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error) {
-	switch left.(type) {
-	case int64:
-		switch right.(type) {
-		case int64:
-			return left.(int64) * right.(int64), nil
-		case int:
-			return left.(int64) * int64(right.(int)), nil
-		case float64:
-			return float64(left.(int64)) * right.(float64), nil
+	tp, e := binaryOperType(left, right)
+	if e != nil {
+		return nil, e
+	}
+	if tp.IsNil {
+		return nil, nil
+	}
+	if !tp.IsNumeric {
+		switch left.(type) {
 		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err == nil {
-				return left.(int64) * vali, nil
-			}
-			valf, err := strconv.ParseFloat(right.(string), 10)
+			val, err := castInt(right)
 			if err != nil {
 				return nil, err
 			}
-			return float64(left.(int64)) * valf, nil
+			return strings.Repeat(left.(string), val), nil
+
 		case bool:
-			if right.(bool) {
-				return left, nil
-			}
-			return int64(0), nil
-		case nil:
-			return int64(0), nil
-		}
-	case int:
-		switch right.(type) {
-		case int64:
-			return int64(left.(int)) * right.(int64), nil
-		case int:
-			return left.(int) * right.(int), nil
-		case float64:
-			return float64(left.(int)) * right.(float64), nil
-		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err == nil {
-				return int64(left.(int)) * vali, nil
-			}
-			valf, err := strconv.ParseFloat(right.(string), 10)
+			vall, err := castInt(left)
 			if err != nil {
 				return nil, err
 			}
-			return float64(left.(int)) * valf, nil
-		case bool:
-			if right.(bool) {
-				return left, nil
-			}
-			return 0, nil
-		case nil:
-			return 0, nil
-		}
-	case float64:
-		switch right.(type) {
-		case int64:
-			return left.(float64) * float64(right.(int64)), nil
-		case int:
-			return left.(float64) * float64(right.(int)), nil
-		case float64:
-			return left.(float64) * right.(float64), nil
-		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err == nil {
-				return left.(float64) * float64(vali), nil
-			}
-			valf, err := strconv.ParseFloat(right.(string), 10)
+			valr, err := castInt(right)
 			if err != nil {
 				return nil, err
 			}
-			return left.(float64) * valf, nil
-		case bool:
-			if right.(bool) {
-				return left, nil
-			}
-			return float64(0), nil
+
+			return vall * valr, nil
 		case nil:
-			return float64(0), nil
+			return nil, nil
 		}
-	case string:
-		switch right.(type) {
-		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err != nil {
-				valf, err := strconv.ParseFloat(right.(string), 10)
+	} else if tp.Signed {
+		if tp.Float {
+			if tp.Size == 32 {
+				l, err := castFloat32(left)
 				if err != nil {
 					return nil, err
 				}
-				vali = int64(valf)
+				r, err := castFloat32(right)
+				if err != nil {
+					return nil, err
+				}
+				return l * r, nil
+			} else {
+				l, err := castFloat64(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castFloat64(right)
+				if err != nil {
+					return nil, err
+				}
+				return l * r, nil
 			}
-			return strings.Repeat(left.(string), int(vali)), nil
-		case int64:
-			return strings.Repeat(left.(string), int(right.(int64))), nil
-		case int:
-			return strings.Repeat(left.(string), right.(int)), nil
-		case float64:
-			return strings.Repeat(left.(string), int(right.(float64))), nil
-		case bool:
-			if right.(bool) {
-				return left, nil
+		} else if tp.Size == 64 {
+			l, err := castInt64(left)
+			if err != nil {
+				return nil, err
 			}
-			return "", nil
-		case nil:
-			return "", nil
+			r, err := castInt64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l * r, nil
+		} else if tp.Size == 32 {
+			l, err := castInt(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt(right)
+			if err != nil {
+				return nil, err
+			}
+			return l * r, nil
+		} else if tp.Size == 16 {
+			l, err := castInt16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l * r, nil
+		} else if tp.Size == 8 {
+			l, err := castInt8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l * r, nil
 		}
-	case nil:
-		return nil, nil
+	} else {
+		if tp.Size == 64 {
+			l, err := castUint64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l * r, nil
+		} else if tp.Size == 32 {
+			l, err := castUint(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint(right)
+			if err != nil {
+				return nil, err
+			}
+			return l * r, nil
+		} else if tp.Size == 16 {
+			l, err := castUint16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l * r, nil
+		} else if tp.Size == 8 {
+			l, err := castUint8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l * r, nil
+		}
 	}
 	return nil, fmt.Errorf("Unimplemented mul for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprQUO(left interface{}, right interface{}) (interface{}, error) {
-	switch left.(type) {
-	case int64:
-		switch right.(type) {
-		case int64:
-			return left.(int64) / right.(int64), nil
-		case int:
-			return left.(int64) / int64(right.(int)), nil
-		case float64:
-			return float64(left.(int64)) / right.(float64), nil
-		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err == nil {
-				return left.(int64) / vali, nil
-			}
-			valf, err := strconv.ParseFloat(right.(string), 10)
-			if err != nil {
-				return nil, err
-			}
-			return float64(left.(int64)) / valf, nil
-		case bool:
-			if right.(bool) {
-				return left, nil
-			}
-			return nil, fmt.Errorf("Divide by false no allowed")
-		case nil:
-			return nil, fmt.Errorf("Divide by <nil> no allowed")
-		}
-	case int:
-		switch right.(type) {
-		case int64:
-			return int64(left.(int)) / right.(int64), nil
-		case int:
-			return left.(int) / right.(int), nil
-		case float64:
-			return float64(left.(int)) / right.(float64), nil
-		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err == nil {
-				return int64(left.(int)) / vali, nil
-			}
-			valf, err := strconv.ParseFloat(right.(string), 10)
-			if err != nil {
-				return nil, err
-			}
-			return float64(left.(int)) / valf, nil
-		case bool:
-			if right.(bool) {
-				return left, nil
-			}
-			return nil, fmt.Errorf("Divide by false no allowed")
-		case nil:
-			return nil, fmt.Errorf("Divide by <nil> no allowed")
-		}
-	case float64:
-		switch right.(type) {
-		case int64:
-			return left.(float64) / float64(right.(int64)), nil
-		case int:
-			return left.(float64) / float64(right.(int)), nil
-		case float64:
-			return left.(float64) / right.(float64), nil
-		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err == nil {
-				return left.(float64) / float64(vali), nil
-			}
-			valf, err := strconv.ParseFloat(right.(string), 10)
-			if err != nil {
-				return nil, err
-			}
-			return left.(float64) / valf, nil
-		case bool:
-			if right.(bool) {
-				return left, nil
-			}
-			return nil, fmt.Errorf("Divide by false no allowed")
-		case nil:
-			return nil, fmt.Errorf("Divide by <nil> no allowed")
-		}
-	case nil:
+	tp, e := binaryOperType(left, right)
+	if e != nil {
+		return nil, e
+	}
+	if tp.IsNil {
 		return nil, nil
+	}
+	if !tp.IsNumeric {
+		switch left.(type) {
+		case string:
+
+		case bool:
+			vall, err := castInt(left)
+			if err != nil {
+				return nil, err
+			}
+			valr, err := castInt(right)
+			if err != nil {
+				return nil, err
+			}
+
+			return vall / valr, nil
+		case nil:
+			return nil, nil
+		}
+	} else if tp.Signed {
+		if tp.Float {
+			if tp.Size == 32 {
+				l, err := castFloat32(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castFloat32(right)
+				if err != nil {
+					return nil, err
+				}
+				return l / r, nil
+			} else {
+				l, err := castFloat64(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castFloat64(right)
+				if err != nil {
+					return nil, err
+				}
+				return l / r, nil
+			}
+		} else if tp.Size == 64 {
+			l, err := castInt64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l / r, nil
+		} else if tp.Size == 32 {
+			l, err := castInt(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt(right)
+			if err != nil {
+				return nil, err
+			}
+			return l / r, nil
+		} else if tp.Size == 16 {
+			l, err := castInt16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l / r, nil
+		} else if tp.Size == 8 {
+			l, err := castInt8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l / r, nil
+		}
+	} else {
+		if tp.Size == 64 {
+			l, err := castUint64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l / r, nil
+		} else if tp.Size == 32 {
+			l, err := castUint(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint(right)
+			if err != nil {
+				return nil, err
+			}
+			return l / r, nil
+		} else if tp.Size == 16 {
+			l, err := castUint16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l / r, nil
+		} else if tp.Size == 8 {
+			l, err := castUint8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l / r, nil
+		}
 	}
 	return nil, fmt.Errorf("Unimplemented quo for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error) {
-	switch left.(type) {
-	case int64:
-		switch right.(type) {
-		case int64:
-			return left.(int64) % right.(int64), nil
-		case int:
-			return left.(int64) % int64(right.(int)), nil
-		case float64:
-			return left.(int64) % int64(right.(float64)), nil
+	tp, e := binaryOperType(left, right)
+	if e != nil {
+		return nil, e
+	}
+	if tp.IsNil {
+		return nil, nil
+	}
+	if !tp.IsNumeric {
+		switch left.(type) {
 		case string:
-			vali, err := strconv.ParseInt(right.(string), 10, 64)
-			if err == nil {
-				return left.(int64) % vali, nil
-			}
-			valf, err := strconv.ParseFloat(right.(string), 10)
+
+		case bool:
+			l, err := castInt64(left)
 			if err != nil {
 				return nil, err
 			}
-			return left.(int64) % int64(valf), nil
-		case bool:
-			if right.(bool) {
-				return int64(0), nil
+			r, err := castInt64(right)
+			if err != nil {
+				return nil, err
 			}
-			return nil, fmt.Errorf("Mod by false no allowed")
+			return l % r, nil
 		case nil:
-			return nil, fmt.Errorf("Mod by <nil> no allowed")
+			return nil, nil
 		}
-	case int:
-		switch right.(type) {
-		case int64:
-			return int64(left.(int)) % right.(int64), nil
-		case int:
-			return left.(int) % right.(int), nil
-		case float64:
-			return int64(left.(int)) % int64(right.(float64)), nil
-		case bool:
-			if right.(bool) {
-				return 0, nil
+	} else if tp.Signed {
+		if tp.Float {
+			if tp.Size == 32 {
+				l, err := castInt64(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castInt64(right)
+				if err != nil {
+					return nil, err
+				}
+				return l % r, nil
+			} else {
+				l, err := castInt64(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castInt64(right)
+				if err != nil {
+					return nil, err
+				}
+				return l % r, nil
 			}
-			return nil, fmt.Errorf("Mod by false no allowed")
-		case nil:
-			return nil, fmt.Errorf("Mod by <nil> no allowed")
-		}
-	case float64:
-		switch right.(type) {
-		case int64:
-			return int64(left.(float64)) % right.(int64), nil
-		case int:
-			return int64(left.(float64)) % int64(right.(int)), nil
-		case float64:
-			return int64(left.(float64)) % int64(right.(float64)), nil
-		case bool:
-			if right.(bool) {
-				return int64(0), nil
+		} else if tp.Size == 64 {
+			l, err := castInt64(left)
+			if err != nil {
+				return nil, err
 			}
-			return nil, fmt.Errorf("Mod by false no allowed")
-		case nil:
-			return nil, fmt.Errorf("Mod by <nil> no allowed")
+			r, err := castInt64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l % r, nil
+		} else if tp.Size == 32 {
+			l, err := castInt(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt(right)
+			if err != nil {
+				return nil, err
+			}
+			return l % r, nil
+		} else if tp.Size == 16 {
+			l, err := castInt16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l % r, nil
+		} else if tp.Size == 8 {
+			l, err := castInt8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l % r, nil
 		}
-	case nil:
-		return nil, nil
+	} else {
+		if tp.Size == 64 {
+			l, err := castUint64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l % r, nil
+		} else if tp.Size == 32 {
+			l, err := castUint(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint(right)
+			if err != nil {
+				return nil, err
+			}
+			return l % r, nil
+		} else if tp.Size == 16 {
+			l, err := castUint16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l % r, nil
+		} else if tp.Size == 8 {
+			l, err := castUint8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l % r, nil
+		}
 	}
 	return nil, fmt.Errorf("Unimplemented rem for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+}
+
+func evalBinaryExprAND(left interface{}, right interface{}) (interface{}, error) {
+	tp, e := binaryOperType(left, right)
+	if e != nil {
+		return nil, e
+	}
+	if tp.IsNil {
+		return nil, nil
+	}
+	if !tp.IsNumeric {
+		switch left.(type) {
+		case string:
+
+		case bool:
+			l, err := castInt64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l & r, nil
+		case nil:
+			return nil, nil
+		}
+	} else if tp.Signed {
+		if tp.Float {
+			if tp.Size == 32 {
+				l, err := castInt64(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castInt64(right)
+				if err != nil {
+					return nil, err
+				}
+				return l & r, nil
+			} else {
+				l, err := castInt64(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castInt64(right)
+				if err != nil {
+					return nil, err
+				}
+				return l & r, nil
+			}
+		} else if tp.Size == 64 {
+			l, err := castInt64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l & r, nil
+		} else if tp.Size == 32 {
+			l, err := castInt(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt(right)
+			if err != nil {
+				return nil, err
+			}
+			return l & r, nil
+		} else if tp.Size == 16 {
+			l, err := castInt16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l & r, nil
+		} else if tp.Size == 8 {
+			l, err := castInt8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l & r, nil
+		}
+	} else {
+		if tp.Size == 64 {
+			l, err := castUint64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l & r, nil
+		} else if tp.Size == 32 {
+			l, err := castUint(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint(right)
+			if err != nil {
+				return nil, err
+			}
+			return l & r, nil
+		} else if tp.Size == 16 {
+			l, err := castUint16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l & r, nil
+		} else if tp.Size == 8 {
+			l, err := castUint8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l & r, nil
+		}
+	}
+
+	return nil, fmt.Errorf("Unimplemented & for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+}
+
+func evalBinaryExprOR(left interface{}, right interface{}) (interface{}, error) {
+	tp, e := binaryOperType(left, right)
+	if e != nil {
+		return nil, e
+	}
+	if tp.IsNil {
+		return nil, nil
+	}
+	if !tp.IsNumeric {
+		switch left.(type) {
+		case string:
+
+		case bool:
+			l, err := castInt64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l | r, nil
+		case nil:
+			return nil, nil
+		}
+	} else if tp.Signed {
+		if tp.Float {
+			if tp.Size == 32 {
+				l, err := castInt64(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castInt64(right)
+				if err != nil {
+					return nil, err
+				}
+				return l | r, nil
+			} else {
+				l, err := castInt64(left)
+				if err != nil {
+					return nil, err
+				}
+				r, err := castInt64(right)
+				if err != nil {
+					return nil, err
+				}
+				return l | r, nil
+			}
+		} else if tp.Size == 64 {
+			l, err := castInt64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l | r, nil
+		} else if tp.Size == 32 {
+			l, err := castInt(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt(right)
+			if err != nil {
+				return nil, err
+			}
+			return l | r, nil
+		} else if tp.Size == 16 {
+			l, err := castInt16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l | r, nil
+		} else if tp.Size == 8 {
+			l, err := castInt8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l | r, nil
+		}
+	} else {
+		if tp.Size == 64 {
+			l, err := castUint64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l | r, nil
+		} else if tp.Size == 32 {
+			l, err := castUint(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint(right)
+			if err != nil {
+				return nil, err
+			}
+			return l | r, nil
+		} else if tp.Size == 16 {
+			l, err := castUint16(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint16(right)
+			if err != nil {
+				return nil, err
+			}
+			return l | r, nil
+		} else if tp.Size == 8 {
+			l, err := castUint8(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint8(right)
+			if err != nil {
+				return nil, err
+			}
+			return l | r, nil
+		}
+	}
+
+	return nil, fmt.Errorf("Unimplemented & for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
