@@ -417,6 +417,8 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 		return evalBinaryExprLEQ(left, right)
 	case token.AND:
 		return evalBinaryExprAND(left, right)
+	case token.OR:
+		return evalBinaryExprOR(left, right)
 	default:
 		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
 	}
