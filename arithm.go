@@ -970,5 +970,5 @@ func evalBinaryExprOR(left interface{}, right interface{}) (interface{}, error) 
 		}
 	}
 
-	return nil, fmt.Errorf("Unimplemented & for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented | for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
