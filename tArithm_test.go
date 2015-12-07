@@ -123,6 +123,310 @@ func TestAddIntInt(t *testing.T) {
 	}
 }
 
+func TestAddUintUint(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint(1)
+	ctxt["b"] = uint(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(uint) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUintUint64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint(1)
+	ctxt["b"] = uint64(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(uint64) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUintFloat64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint(1)
+	ctxt["b"] = float64(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float64) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUintFloat32(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint(1)
+	ctxt["b"] = float32(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float32) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint64Float32(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint64(1)
+	ctxt["b"] = float32(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float64) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint8Uint16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = uint16(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(uint16) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint8Uint8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = uint8(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(uint8) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint8Int8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = int8(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int8) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint8Int16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = int16(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int16) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint8Int(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = int(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint8Int64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = int64(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint16Int8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint16(1)
+	ctxt["b"] = int8(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int16) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint16Int16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint16(1)
+	ctxt["b"] = int16(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int16) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint16Int(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint16(1)
+	ctxt["b"] = int(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint16Int64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint16(1)
+	ctxt["b"] = int64(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddInt8Int16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int8(1)
+	ctxt["b"] = int16(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int16) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddInt8Int8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int8(1)
+	ctxt["b"] = int8(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int8) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddInt8Int64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int8(1)
+	ctxt["b"] = int64(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint64Uint(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint64(1)
+	ctxt["b"] = uint(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(uint64) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
 func TestAddIntInt64(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
