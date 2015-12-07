@@ -17,15 +17,16 @@ type tyoeDesc struct {
 	Signed    bool
 	Float     bool
 	IsNil     bool
+	Bool      bool
 }
 
 func binaryOperType(left interface{}, right interface{}) (tp tyoeDesc, err error) {
-	lType, err := numType(left)
+	lType, err := valType(left)
 	if err != nil {
 		return lType, err
 	}
 
-	rType, err := numType(right)
+	rType, err := valType(right)
 	if err != nil {
 		return lType, err
 	}
@@ -49,38 +50,83 @@ func binaryOperType(left interface{}, right interface{}) (tp tyoeDesc, err error
 	return
 }
 
-func numType(value interface{}) (tp tyoeDesc, err error) {
+func binaryOperTypeL(left interface{}, right interface{}) (tp tyoeDesc, err error) {
+
+	lType, err := valType(left)
+	if err != nil {
+		return lType, err
+	}
+
+	rType, err := valType(right)
+	if err != nil {
+		return lType, err
+	}
+
+	//Bool have precedence here
+	if lType.Bool {
+		if !rType.IsNumeric {
+			return rType, nil
+		}
+		return lType, nil
+	}
+	if rType.Bool {
+		if !lType.IsNumeric {
+			return lType, nil
+		}
+		return rType, nil
+	}
+
+	if !lType.IsNumeric {
+		if lType.IsNil {
+			return rType, nil
+		}
+		return lType, nil
+	}
+
+	tp.IsNumeric = true
+	tp.Signed = lType.Signed || rType.Signed
+	if lType.Size > rType.Size {
+		tp.Size = lType.Size
+	} else {
+		tp.Size = rType.Size
+	}
+	tp.Float = lType.Float || rType.Float
+	err = nil
+	return
+}
+
+func valType(value interface{}) (tp tyoeDesc, err error) {
 
 	switch value.(type) {
 	case uint8:
-		return tyoeDesc{true, 8, false, false, false}, nil
+		return tyoeDesc{true, 8, false, false, false, false}, nil
 	case uint16:
-		return tyoeDesc{true, 16, false, false, false}, nil
+		return tyoeDesc{true, 16, false, false, false, false}, nil
 	case uint:
-		return tyoeDesc{true, 32, false, false, false}, nil
+		return tyoeDesc{true, 32, false, false, false, false}, nil
 	case uint64:
-		return tyoeDesc{true, 64, false, false, false}, nil
+		return tyoeDesc{true, 64, false, false, false, false}, nil
 	case int8:
-		return tyoeDesc{true, 8, true, false, false}, nil
+		return tyoeDesc{true, 8, true, false, false, false}, nil
 	case int16:
-		return tyoeDesc{true, 16, true, false, false}, nil
+		return tyoeDesc{true, 16, true, false, false, false}, nil
 	case int:
-		return tyoeDesc{true, 32, true, false, false}, nil
+		return tyoeDesc{true, 32, true, false, false, false}, nil
 	case int64:
-		return tyoeDesc{true, 64, true, false, false}, nil
+		return tyoeDesc{true, 64, true, false, false, false}, nil
 	case float32:
-		return tyoeDesc{true, 32, true, true, false}, nil
+		return tyoeDesc{true, 32, true, true, false, false}, nil
 	case float64:
-		return tyoeDesc{true, 64, true, true, false}, nil
+		return tyoeDesc{true, 64, true, true, false, false}, nil
 	case string:
-		return tyoeDesc{false, 0, false, false, false}, nil
+		return tyoeDesc{false, 0, false, false, false, false}, nil
 	case bool:
-		return tyoeDesc{false, 0, false, false, false}, nil
+		return tyoeDesc{false, 0, false, false, false, true}, nil
 	case nil:
-		return tyoeDesc{false, 0, false, false, true}, nil
+		return tyoeDesc{false, 0, false, false, true, false}, nil
 	}
 
-	return tyoeDesc{false, 0, false, false, false}, fmt.Errorf("Unimplemented type size", reflect.TypeOf(value))
+	return tyoeDesc{false, 0, false, false, false, false}, fmt.Errorf("Unimplemented type size", reflect.TypeOf(value))
 }
 
 func castUint8(value interface{}) (uint8, error) {
