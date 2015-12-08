@@ -11,10 +11,10 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 			val, err := castString(right)
@@ -39,7 +39,7 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 			return right, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castFloat32(left)
 				if err != nil {
@@ -145,7 +145,7 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 			return l + r, nil
 		}
 	}
-	return nil, fmt.Errorf("Unimplemented add for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented add for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error) {
@@ -153,10 +153,10 @@ func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 			val, err := castString(right)
@@ -180,7 +180,7 @@ func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error)
 			return evalUnaryExprSUB(right)
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castFloat32(left)
 				if err != nil {
@@ -286,7 +286,7 @@ func evalBinaryExprSUB(left interface{}, right interface{}) (interface{}, error)
 			return l - r, nil
 		}
 	}
-	return nil, fmt.Errorf("Unimplemented sub for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented sub for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error) {
@@ -294,10 +294,10 @@ func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 			val, err := castInt(right)
@@ -321,7 +321,7 @@ func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error)
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castFloat32(left)
 				if err != nil {
@@ -427,7 +427,7 @@ func evalBinaryExprMUL(left interface{}, right interface{}) (interface{}, error)
 			return l * r, nil
 		}
 	}
-	return nil, fmt.Errorf("Unimplemented mul for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented mul for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprQUO(left interface{}, right interface{}) (interface{}, error) {
@@ -435,10 +435,10 @@ func evalBinaryExprQUO(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 
@@ -457,7 +457,7 @@ func evalBinaryExprQUO(left interface{}, right interface{}) (interface{}, error)
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castFloat32(left)
 				if err != nil {
@@ -563,7 +563,7 @@ func evalBinaryExprQUO(left interface{}, right interface{}) (interface{}, error)
 			return l / r, nil
 		}
 	}
-	return nil, fmt.Errorf("Unimplemented quo for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented / for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error) {
@@ -571,10 +571,10 @@ func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 
@@ -592,7 +592,7 @@ func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error)
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castInt64(left)
 				if err != nil {
@@ -698,7 +698,7 @@ func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error)
 			return l % r, nil
 		}
 	}
-	return nil, fmt.Errorf("Unimplemented rem for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented %% for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprAND(left interface{}, right interface{}) (interface{}, error) {
@@ -706,10 +706,10 @@ func evalBinaryExprAND(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 
@@ -727,7 +727,7 @@ func evalBinaryExprAND(left interface{}, right interface{}) (interface{}, error)
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castInt64(left)
 				if err != nil {
@@ -834,7 +834,7 @@ func evalBinaryExprAND(left interface{}, right interface{}) (interface{}, error)
 		}
 	}
 
-	return nil, fmt.Errorf("Unimplemented & for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented & for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprOR(left interface{}, right interface{}) (interface{}, error) {
@@ -842,10 +842,10 @@ func evalBinaryExprOR(left interface{}, right interface{}) (interface{}, error) 
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 
@@ -863,7 +863,7 @@ func evalBinaryExprOR(left interface{}, right interface{}) (interface{}, error) 
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castInt64(left)
 				if err != nil {
@@ -970,7 +970,7 @@ func evalBinaryExprOR(left interface{}, right interface{}) (interface{}, error) 
 		}
 	}
 
-	return nil, fmt.Errorf("Unimplemented | for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented | for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprSHL(left interface{}, right interface{}) (interface{}, error) {
@@ -978,10 +978,10 @@ func evalBinaryExprSHL(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 
@@ -999,7 +999,7 @@ func evalBinaryExprSHL(left interface{}, right interface{}) (interface{}, error)
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castInt64(left)
 				if err != nil {
@@ -1106,7 +1106,7 @@ func evalBinaryExprSHL(left interface{}, right interface{}) (interface{}, error)
 		}
 	}
 
-	return nil, fmt.Errorf("Unimplemented << for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented << for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprSHR(left interface{}, right interface{}) (interface{}, error) {
@@ -1114,10 +1114,10 @@ func evalBinaryExprSHR(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 
@@ -1135,7 +1135,7 @@ func evalBinaryExprSHR(left interface{}, right interface{}) (interface{}, error)
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castInt64(left)
 				if err != nil {
@@ -1242,7 +1242,7 @@ func evalBinaryExprSHR(left interface{}, right interface{}) (interface{}, error)
 		}
 	}
 
-	return nil, fmt.Errorf("Unimplemented >> for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented >> for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprXOR(left interface{}, right interface{}) (interface{}, error) {
@@ -1250,10 +1250,10 @@ func evalBinaryExprXOR(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 
@@ -1271,7 +1271,7 @@ func evalBinaryExprXOR(left interface{}, right interface{}) (interface{}, error)
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castInt64(left)
 				if err != nil {
@@ -1378,7 +1378,7 @@ func evalBinaryExprXOR(left interface{}, right interface{}) (interface{}, error)
 		}
 	}
 
-	return nil, fmt.Errorf("Unimplemented ^ for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented ^ for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
 
 func evalBinaryExprAND_NOT(left interface{}, right interface{}) (interface{}, error) {
@@ -1386,10 +1386,10 @@ func evalBinaryExprAND_NOT(left interface{}, right interface{}) (interface{}, er
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 
@@ -1407,7 +1407,7 @@ func evalBinaryExprAND_NOT(left interface{}, right interface{}) (interface{}, er
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castInt64(left)
 				if err != nil {
@@ -1514,5 +1514,5 @@ func evalBinaryExprAND_NOT(left interface{}, right interface{}) (interface{}, er
 		}
 	}
 
-	return nil, fmt.Errorf("Unimplemented ^ for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented &^ for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }

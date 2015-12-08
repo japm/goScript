@@ -63,10 +63,10 @@ func evalUnaryExprNOT(value interface{}) (interface{}, error) {
 		return nil, e
 	}
 
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch value.(type) {
 		case string:
 			valb, err := castBool(value.(string))
@@ -90,7 +90,7 @@ func evalUnaryExprNOT(value interface{}) (interface{}, error) {
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castFloat32(value)
 				if err != nil {

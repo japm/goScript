@@ -10,10 +10,10 @@ func evalBinaryExprLEQ(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 			val, err := castString(right)
@@ -28,7 +28,7 @@ func evalBinaryExprLEQ(left interface{}, right interface{}) (interface{}, error)
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castFloat32(left)
 				if err != nil {
@@ -150,10 +150,10 @@ func evalBinaryExprEQL(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if tp.Bool {
+	if tp.Bool() {
 
 		l, err := castBool(left)
 		if err != nil {
@@ -167,7 +167,7 @@ func evalBinaryExprEQL(left interface{}, right interface{}) (interface{}, error)
 
 		return l == r, nil
 
-	} else if !tp.IsNumeric {
+	} else if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 			val, err := castString(right)
@@ -183,7 +183,7 @@ func evalBinaryExprEQL(left interface{}, right interface{}) (interface{}, error)
 			return nil, nil
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castFloat32(left)
 				if err != nil {
@@ -297,10 +297,10 @@ func evalBinaryExprLSS(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 			val, err := castString(right)
@@ -315,7 +315,7 @@ func evalBinaryExprLSS(left interface{}, right interface{}) (interface{}, error)
 
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castFloat32(left)
 				if err != nil {
@@ -429,10 +429,10 @@ func evalBinaryExprGTR(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 			val, err := castString(right)
@@ -447,7 +447,7 @@ func evalBinaryExprGTR(left interface{}, right interface{}) (interface{}, error)
 
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castFloat32(left)
 				if err != nil {
@@ -561,10 +561,10 @@ func evalBinaryExprGEQ(left interface{}, right interface{}) (interface{}, error)
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil {
+	if tp.IsNil() {
 		return nil, nil
 	}
-	if !tp.IsNumeric {
+	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
 			val, err := castString(right)
@@ -579,7 +579,7 @@ func evalBinaryExprGEQ(left interface{}, right interface{}) (interface{}, error)
 
 		}
 	} else if tp.Signed {
-		if tp.Float {
+		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castFloat32(left)
 				if err != nil {

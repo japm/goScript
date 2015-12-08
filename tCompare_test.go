@@ -285,6 +285,117 @@ func TestEqlIntBool2(t *testing.T) {
 	}
 }
 
+func TestEqlInt64Uint8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = uint8(2)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+func TestEqlInt64Uint8_2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = uint8(1)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == false {
+		t.Error("Expected true get ", val)
+	}
+}
+
+func TestEqlInt64Uint16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = uint16(2)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+
+func TestEqlInt64Uint(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = uint(2)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+
+func TestEqlInt64Uint64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = uint64(2)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+
+func TestEqlInt64Int8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = int8(2)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+
+func TestEqlInt64Int16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = int16(2)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+
 func TestEqlInt64Int(t *testing.T) {
 
 	ctxt := make(map[string]interface{})
@@ -367,6 +478,102 @@ func TestEqlInt64Bool2(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = int64(2)
 	ctxt["b"] = false
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+
+func TestEqlFloat64Uint8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = uint8(2)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+
+func TestEqlFloat64Uint16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = uint16(2)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+
+func TestEqlFloat64Uint(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = uint(2)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+
+func TestEqlFloat64Uint64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = uint64(2)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+
+func TestEqlFloat64Int8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = int8(2)
+
+	val, err := Eval("a == b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(bool) == true {
+		t.Error("Expected false get ", val)
+	}
+}
+
+func TestEqlFloat64Int16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = int16(2)
 
 	val, err := Eval("a == b", ctxt)
 
