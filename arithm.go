@@ -579,11 +579,11 @@ func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error)
 		case string:
 
 		case bool:
-			l, err := castInt64(left)
+			l, err := castInt(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castInt64(right)
+			r, err := castInt(right)
 			if err != nil {
 				return nil, err
 			}
@@ -594,11 +594,11 @@ func evalBinaryExprREM(left interface{}, right interface{}) (interface{}, error)
 	} else if tp.Signed {
 		if tp.Float() {
 			if tp.Size == 32 {
-				l, err := castInt64(left)
+				l, err := castInt(left)
 				if err != nil {
 					return nil, err
 				}
-				r, err := castInt64(right)
+				r, err := castInt(right)
 				if err != nil {
 					return nil, err
 				}
