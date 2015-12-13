@@ -113,7 +113,7 @@ func evalUnaryExprNOT(value interface{}) (interface{}, error) {
 
 			return l == 0, nil
 		} else if tp.Size == 32 {
-			l, err := castInt(value)
+			l, err := castInt32(value)
 			if err != nil {
 				return nil, err
 			}
@@ -143,7 +143,7 @@ func evalUnaryExprNOT(value interface{}) (interface{}, error) {
 
 			return l == 0, nil
 		} else if tp.Size == 32 {
-			l, err := castUint(value)
+			l, err := castUint32(value)
 			if err != nil {
 				return nil, err
 			}

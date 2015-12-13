@@ -61,11 +61,11 @@ func evalBinaryExprLEQ(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l <= r, nil
 		} else if tp.Size == 32 {
-			l, err := castInt(left)
+			l, err := castInt32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castInt(right)
+			r, err := castInt32(right)
 			if err != nil {
 				return nil, err
 			}
@@ -103,11 +103,11 @@ func evalBinaryExprLEQ(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l <= r, nil
 		} else if tp.Size == 32 {
-			l, err := castUint(left)
+			l, err := castUint32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castUint(right)
+			r, err := castUint32(right)
 			if err != nil {
 				return nil, err
 			}
@@ -216,11 +216,11 @@ func evalBinaryExprEQL(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l == r, nil
 		} else if tp.Size == 32 {
-			l, err := castInt(left)
+			l, err := castInt32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castInt(right)
+			r, err := castInt32(right)
 			if err != nil {
 				return nil, err
 			}
@@ -258,11 +258,11 @@ func evalBinaryExprEQL(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l == r, nil
 		} else if tp.Size == 32 {
-			l, err := castUint(left)
+			l, err := castUint32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castUint(right)
+			r, err := castUint32(right)
 			if err != nil {
 				return nil, err
 			}
@@ -348,11 +348,11 @@ func evalBinaryExprLSS(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l < r, nil
 		} else if tp.Size == 32 {
-			l, err := castInt(left)
+			l, err := castInt32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castInt(right)
+			r, err := castInt32(right)
 			if err != nil {
 				return nil, err
 			}
@@ -390,11 +390,11 @@ func evalBinaryExprLSS(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l < r, nil
 		} else if tp.Size == 32 {
-			l, err := castUint(left)
+			l, err := castUint32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castUint(right)
+			r, err := castUint32(right)
 			if err != nil {
 				return nil, err
 			}
@@ -480,11 +480,11 @@ func evalBinaryExprGTR(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l > r, nil
 		} else if tp.Size == 32 {
-			l, err := castInt(left)
+			l, err := castInt32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castInt(right)
+			r, err := castInt32(right)
 			if err != nil {
 				return nil, err
 			}
@@ -522,11 +522,11 @@ func evalBinaryExprGTR(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l > r, nil
 		} else if tp.Size == 32 {
-			l, err := castUint(left)
+			l, err := castUint32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castUint(right)
+			r, err := castUint32(right)
 			if err != nil {
 				return nil, err
 			}
@@ -612,11 +612,11 @@ func evalBinaryExprGEQ(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l >= r, nil
 		} else if tp.Size == 32 {
-			l, err := castInt(left)
+			l, err := castInt32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castInt(right)
+			r, err := castInt32(right)
 			if err != nil {
 				return nil, err
 			}
@@ -654,11 +654,11 @@ func evalBinaryExprGEQ(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l >= r, nil
 		} else if tp.Size == 32 {
-			l, err := castUint(left)
+			l, err := castUint32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castUint(right)
+			r, err := castUint32(right)
 			if err != nil {
 				return nil, err
 			}

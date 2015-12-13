@@ -38,6 +38,17 @@ func (e *Expr) Eval(context interface{}) (val interface{}, err error) {
 	return val, err
 }
 
+func (e *Expr) EvalInt(context interface{}) (val interface{}, err error) {
+
+	valI, err := e.Eval(context)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return castInt(valI)
+}
+
 //Eval expression within a context
 func Eval(expr string, context interface{}) (val interface{}, err error) {
 	defer func() {
@@ -66,6 +77,14 @@ func Eval(expr string, context interface{}) (val interface{}, err error) {
 
 	val, err = eval(exp, ctxt)
 	return val, err
+}
+
+func EvalInt(expr string, context interface{}) (int interface{}, err error) {
+	val, err := Eval(expr, context)
+	if err != nil {
+		return nil, err
+	}
+	return castInt(val)
 }
 
 func evalInt(expr ast.Node, context interface{}) (int, error) {
