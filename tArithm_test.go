@@ -1,6 +1,9 @@
 package evalGo
 
-import "testing"
+import (
+	"strconv"
+	"testing"
+)
 
 func TestAddConstInt(t *testing.T) {
 
@@ -118,8 +121,14 @@ func TestAddIntInt(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 3 {
-		t.Error("Expected 3 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 3 {
+			t.Error("Expected 3 get ", val)
+		}
+	} else {
+		if val.(int64) != 3 {
+			t.Error("Expected 3 get ", val)
+		}
 	}
 }
 
@@ -134,8 +143,14 @@ func TestAddUintUint(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(uint) != 3 {
-		t.Error("Expected 3 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(uint32) != 3 {
+			t.Error("Expected 3 get ", val)
+		}
+	} else {
+		if val.(uint64) != 3 {
+			t.Error("Expected 3 get ", val)
+		}
 	}
 }
 
@@ -294,8 +309,14 @@ func TestAddUint8Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 3 {
-		t.Error("Expected 3 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 3 {
+			t.Error("Expected 3 get ", val)
+		}
+	} else {
+		if val.(int64) != 3 {
+			t.Error("Expected 3 get ", val)
+		}
 	}
 }
 
@@ -358,8 +379,14 @@ func TestAddUint16Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 3 {
-		t.Error("Expected 3 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 3 {
+			t.Error("Expected 3 get ", val)
+		}
+	} else {
+		if val.(int64) != 3 {
+			t.Error("Expected 3 get ", val)
+		}
 	}
 }
 
@@ -499,8 +526,14 @@ func TestAddIntBool(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 3 {
-		t.Error("Expected 3 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 3 {
+			t.Error("Expected 3 get ", val)
+		}
+	} else {
+		if val.(int64) != 3 {
+			t.Error("Expected 3 get ", val)
+		}
 	}
 }
 
@@ -515,8 +548,14 @@ func TestAddIntBool2(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 2 {
-		t.Error("Expected 2 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
+	} else {
+		if val.(int64) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
 	}
 }
 
@@ -963,9 +1002,16 @@ func TestDivIntInt(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 1 {
-		t.Error("Expected 1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
+	} else {
+		if val.(int64) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
 	}
+
 }
 
 func TestDivIntInt64(t *testing.T) {
@@ -1024,8 +1070,14 @@ func TestDivIntBool(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 2 {
-		t.Error("Expected 2 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
+	} else {
+		if val.(int64) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
 	}
 }
 
@@ -1311,8 +1363,14 @@ func TestDivUintUint(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(uint) != 0 {
-		t.Error("Expected 0 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(uint32) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
+	} else {
+		if val.(uint64) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
 	}
 }
 
@@ -1359,8 +1417,15 @@ func TestDivUintFloat32(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(float32) != float32(0.5) {
-		t.Error("Expected 0.5 get ", val)
+
+	if strconv.IntSize == 32 {
+		if val.(float32) != float32(0.5) {
+			t.Error("Expected 0.5 get ", val)
+		}
+	} else {
+		if val.(float64) != float64(0.5) {
+			t.Error("Expected 0.5 get ", val)
+		}
 	}
 }
 
@@ -1455,8 +1520,14 @@ func TestDivUint8Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 0 {
-		t.Error("Expected 0 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
+	} else {
+		if val.(int64) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
 	}
 }
 
@@ -1519,8 +1590,14 @@ func TestDivUint16Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 0 {
-		t.Error("Expected 0 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
+	} else {
+		if val.(int64) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
 	}
 }
 
@@ -1768,8 +1845,14 @@ func TestMulIntInt(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 4 {
-		t.Error("Expected 4 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
+	} else {
+		if val.(int64) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
 	}
 }
 
@@ -1829,8 +1912,14 @@ func TestMulIntBool(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 2 {
-		t.Error("Expected 2 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
+	} else {
+		if val.(int64) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
 	}
 }
 
@@ -1845,8 +1934,14 @@ func TestMulIntBool2(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 0 {
-		t.Error("Expected 0 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
+	} else {
+		if val.(int64) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
 	}
 }
 
@@ -2108,8 +2203,14 @@ func TestMulUintUint(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(uint) != 2 {
-		t.Error("Expected 2 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(uint32) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
+	} else {
+		if val.(uint64) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
 	}
 }
 
@@ -2156,8 +2257,14 @@ func TestMulUintFloat32(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(float32) != 2 {
-		t.Error("Expected 2 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(float32) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
+	} else {
+		if val.(float64) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
 	}
 }
 
@@ -2252,8 +2359,14 @@ func TestMulUint8Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 2 {
-		t.Error("Expected 2 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
+	} else {
+		if val.(int64) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
 	}
 }
 
@@ -2316,8 +2429,14 @@ func TestMulUint16Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 2 {
-		t.Error("Expected 2 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
+	} else {
+		if val.(int64) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
 	}
 }
 
@@ -2575,8 +2694,14 @@ func TestRemIntInt(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 1 {
-		t.Error("Expected 1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
+	} else {
+		if val.(int64) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
 	}
 }
 
@@ -2636,8 +2761,14 @@ func TestRemIntBool(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 0 {
-		t.Error("Expected 0 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
+	} else {
+		if val.(int64) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
 	}
 }
 
@@ -2921,8 +3052,14 @@ func TestRemUintUint(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(uint) != 1 {
-		t.Error("Expected 1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(uint32) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
+	} else {
+		if val.(uint64) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
 	}
 }
 
@@ -2969,8 +3106,14 @@ func TestRemUintFloat32(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 1 {
-		t.Error("Expected 1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
+	} else {
+		if val.(int64) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
 	}
 }
 
@@ -3065,8 +3208,14 @@ func TestRemUint8Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 1 {
-		t.Error("Expected 1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
+	} else {
+		if val.(int64) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
 	}
 }
 
@@ -3129,8 +3278,14 @@ func TestRemUint16Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 1 {
-		t.Error("Expected 1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
+	} else {
+		if val.(int64) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
 	}
 }
 
@@ -3378,8 +3533,14 @@ func TestSubIntInt(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != -1 {
-		t.Error("Expected -1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != -1 {
+			t.Error("Expected -1 get ", val)
+		}
+	} else {
+		if val.(int64) != -1 {
+			t.Error("Expected -1 get ", val)
+		}
 	}
 }
 
@@ -3439,8 +3600,14 @@ func TestSubIntBool(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 1 {
-		t.Error("Expected 1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
+	} else {
+		if val.(int64) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
 	}
 }
 
@@ -3455,8 +3622,14 @@ func TestSubIntBool2(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 2 {
-		t.Error("Expected 2 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
+	} else {
+		if val.(int64) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
 	}
 }
 
@@ -3841,9 +4014,16 @@ func TestSubUintUint(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(uint) != 18446744073709551615 {
-		t.Error("Expected 18446744073709551615 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(uint32) != 4294967295 {
+			t.Error("Expected 4294967295 get ", val)
+		}
+	} else {
+		if val.(uint64) != 18446744073709551615 {
+			t.Error("Expected 18446744073709551615 get ", val)
+		}
 	}
+
 }
 
 func TestSubUintUint64(t *testing.T) {
@@ -3889,8 +4069,14 @@ func TestSubUintFloat32(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(float32) != -1 {
-		t.Error("Expected -1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(float32) != -1 {
+			t.Error("Expected -1 get ", val)
+		}
+	} else {
+		if val.(float64) != -1 {
+			t.Error("Expected -1 get ", val)
+		}
 	}
 }
 
@@ -3985,8 +4171,14 @@ func TestSubUint8Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != -1 {
-		t.Error("Expected -1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != -1 {
+			t.Error("Expected -1 get ", val)
+		}
+	} else {
+		if val.(int64) != -1 {
+			t.Error("Expected -1 get ", val)
+		}
 	}
 }
 
@@ -4049,8 +4241,14 @@ func TestSubUint16Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != -1 {
-		t.Error("Expected -1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != -1 {
+			t.Error("Expected -1 get ", val)
+		}
+	} else {
+		if val.(int64) != -1 {
+			t.Error("Expected -1 get ", val)
+		}
 	}
 }
 
@@ -4245,8 +4443,15 @@ func TestAndIntInt(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != (2 & 2) {
-		t.Error("Expected 3 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != (2 & 2) {
+			t.Error("Expected 3 get ", val)
+		}
+	} else {
+		if val.(int64) != (2 & 2) {
+			t.Error("Expected 3 get ", val)
+		}
+
 	}
 }
 
@@ -4306,8 +4511,14 @@ func TestAndIntBool(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 1 {
-		t.Error("Expected 1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
+	} else {
+		if val.(int64) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
 	}
 }
 
@@ -4322,8 +4533,14 @@ func TestAndIntBool2(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 0 {
-		t.Error("Expected 0 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
+	} else {
+		if val.(int64) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
 	}
 }
 
@@ -4666,8 +4883,14 @@ func TestAndUintUint(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(uint) != 0 {
-		t.Error("Expected 0 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(uint32) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
+	} else {
+		if val.(uint64) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
 	}
 }
 
@@ -4714,8 +4937,14 @@ func TestAndUintFloat32(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 0 {
-		t.Error("Expected 0 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
+	} else {
+		if val.(int64) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
 	}
 }
 
@@ -4810,8 +5039,14 @@ func TestAndUint8Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 0 {
-		t.Error("Expected 0 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
+	} else {
+		if val.(int64) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
 	}
 }
 
@@ -4874,8 +5109,14 @@ func TestAndUint16Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 0 {
-		t.Error("Expected 0 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
+	} else {
+		if val.(int64) != 0 {
+			t.Error("Expected 0 get ", val)
+		}
 	}
 }
 
@@ -5006,9 +5247,16 @@ func TestOrIntInt(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != (2 | 2) {
-		t.Error("Expected 2 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != (2 | 2) {
+			t.Error("Expected 2 get ", val)
+		}
+	} else {
+		if val.(int64) != (2 | 2) {
+			t.Error("Expected 2 get ", val)
+		}
 	}
+
 }
 
 func TestOrIntInt64(t *testing.T) {
@@ -5067,8 +5315,14 @@ func TestOrIntBool(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 1 {
-		t.Error("Expected 1 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
+	} else {
+		if val.(int64) != 1 {
+			t.Error("Expected 1 get ", val)
+		}
 	}
 }
 
@@ -5083,8 +5337,14 @@ func TestOrIntBool2(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 2 {
-		t.Error("Expected 2 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
+	} else {
+		if val.(int64) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
 	}
 }
 
@@ -5462,9 +5722,16 @@ func TestShlIntInt(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 4 {
-		t.Error("Expected 4 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
+	} else {
+		if val.(int64) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
 	}
+
 }
 
 func TestShlUintUint(t *testing.T) {
@@ -5478,8 +5745,14 @@ func TestShlUintUint(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(uint) != 4 {
-		t.Error("Expected 4 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(uint32) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
+	} else {
+		if val.(uint64) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
 	}
 }
 
@@ -5526,8 +5799,14 @@ func TestShlUintFloat32(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 4 {
-		t.Error("Expected 4 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
+	} else {
+		if val.(int64) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
 	}
 }
 
@@ -5622,8 +5901,14 @@ func TestShlUint8Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 4 {
-		t.Error("Expected 4 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
+	} else {
+		if val.(int64) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
 	}
 }
 
@@ -5686,8 +5971,14 @@ func TestShlUint16Int(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 4 {
-		t.Error("Expected 4 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
+	} else {
+		if val.(int64) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
 	}
 }
 
@@ -5827,8 +6118,14 @@ func TestShlIntBool(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 4 {
-		t.Error("Expected 4 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
+	} else {
+		if val.(int64) != 4 {
+			t.Error("Expected 4 get ", val)
+		}
 	}
 }
 
@@ -5843,8 +6140,14 @@ func TestShlIntBool2(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
-	if val.(int) != 2 {
-		t.Error("Expected 2 get ", val)
+	if strconv.IntSize == 32 {
+		if val.(int32) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
+	} else {
+		if val.(int64) != 2 {
+			t.Error("Expected 2 get ", val)
+		}
 	}
 }
 
