@@ -182,6 +182,22 @@ func TestAddUintFloat32(t *testing.T) {
 	if err != nil {
 		t.Error("err not nil", err)
 	}
+	if val.(float64) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestAddUint32Float32(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint32(1)
+	ctxt["b"] = float32(2)
+
+	val, err := Eval("a + b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
 	if val.(float32) != 3 {
 		t.Error("Expected 3 get ", val)
 	}
@@ -5333,5 +5349,829 @@ func TestOrStringBool2(t *testing.T) {
 
 	if err == nil {
 		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestShlConstInt(t *testing.T) {
+
+	val, err := Eval("1 << 2", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlConstFloat(t *testing.T) {
+
+	val, err := Eval("1.15 << 2.25", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlConstFloatInt1(t *testing.T) {
+
+	val, err := Eval("1 << 2.25", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlConstFloatInt2(t *testing.T) {
+
+	val, err := Eval("2.25 << 1", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlConstStringInt(t *testing.T) {
+
+	_, err := Eval("\"a\" << 1", nil)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestShlConstIntString(t *testing.T) {
+
+	_, err := Eval("1 << \"a\" ", nil)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestShlConstIntString2(t *testing.T) {
+
+	val, err := Eval("1 << \"2\" ", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlConstStringString(t *testing.T) {
+
+	_, err := Eval("\"1\" << \"2\"", nil)
+
+	if err == nil {
+		t.Error("Expected error on string << string")
+	}
+}
+
+func TestShlConstIntBool(t *testing.T) {
+
+	val, err := Eval("2 << true", nil)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlIntInt(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 1
+	ctxt["b"] = 2
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUintUint(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint(1)
+	ctxt["b"] = uint(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(uint) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUintUint64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint(1)
+	ctxt["b"] = uint64(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(uint64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUintFloat64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint(1)
+	ctxt["b"] = float64(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUintFloat32(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint(1)
+	ctxt["b"] = float32(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint64Float32(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint64(1)
+	ctxt["b"] = float32(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint8Uint16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = uint16(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(uint16) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint8Uint8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = uint8(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(uint8) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint8Int8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = int8(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int8) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint8Int16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = int16(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int16) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint8Int(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = int(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint8Int64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint8(1)
+	ctxt["b"] = int64(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint16Int8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint16(1)
+	ctxt["b"] = int8(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int16) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint16Int16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint16(1)
+	ctxt["b"] = int16(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int16) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint16Int(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint16(1)
+	ctxt["b"] = int(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint16Int64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint16(1)
+	ctxt["b"] = int64(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlInt8Int16(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int8(1)
+	ctxt["b"] = int16(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int16) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlInt8Int8(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int8(1)
+	ctxt["b"] = int8(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int8) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlInt8Int64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int8(1)
+	ctxt["b"] = int64(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlUint64Uint(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = uint64(1)
+	ctxt["b"] = uint(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(uint64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlIntInt64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 1
+	ctxt["b"] = int64(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlIntFloat64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 1
+	ctxt["b"] = float64(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlIntString(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 1
+	ctxt["b"] = "z"
+
+	_, err := Eval("a << b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestShlIntBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = true
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlIntBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 2
+	ctxt["b"] = false
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
+func TestShlInt64Int(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = 2
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlInt64Int64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = int64(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlInt64Float64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = float64(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlInt64String(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(1)
+	ctxt["b"] = "z"
+
+	_, err := Eval("a << b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestShlInt64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = true
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlInt64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = int64(2)
+	ctxt["b"] = false
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
+func TestShlFloat64Int(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = 2
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlFloat64Int64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = int64(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlFloat64Float64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = float64(2)
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlFloat64String(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(1)
+	ctxt["b"] = "z"
+
+	_, err := Eval("a << b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestShlFloat64Bool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(2)
+	ctxt["b"] = true
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 4 {
+		t.Error("Expected 4 get ", val)
+	}
+}
+
+func TestShlFloat64Bool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = float64(2)
+	ctxt["b"] = false
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int64) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
+func TestShlStringInt(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = 2
+
+	_, err := Eval("a << b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestShlStringInt64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = int64(2)
+
+	_, err := Eval("a << b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestShlStringFloat64(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = float64(2)
+
+	_, err := Eval("a << b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+
+}
+
+func TestShlStingString(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "x"
+	ctxt["b"] = "z"
+
+	_, err := Eval("a << b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestShlStringBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = true
+
+	_, err := Eval("a << b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+
+func TestShlStringBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "z"
+	ctxt["b"] = false
+
+	_, err := Eval("a << b", ctxt)
+
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+}
+func TestShlBoolBool(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = false
+	ctxt["b"] = true
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 0 {
+		t.Error("Expected 0 get ", val)
+	}
+}
+
+func TestShlBoolBool1(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = true
+	ctxt["b"] = false
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 1 {
+		t.Error("Expected 1 get ", val)
+	}
+}
+
+func TestShlBoolBool2(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = true
+	ctxt["b"] = true
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 2 {
+		t.Error("Expected 2 get ", val)
+	}
+}
+
+func TestShlBoolBool3(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = false
+	ctxt["b"] = false
+
+	val, err := Eval("a << b", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 0 {
+		t.Error("Expected 0 get ", val)
 	}
 }

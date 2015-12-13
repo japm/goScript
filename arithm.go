@@ -3,6 +3,7 @@ package evalGo
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -61,6 +62,16 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 				}
 				return l + r, nil
 			}
+		} else if tp.PlatformSize && tp.Size == strconv.IntSize {
+			l, err := castInt(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castInt(right)
+			if err != nil {
+				return nil, err
+			}
+			return l + r, nil
 		} else if tp.Size == 64 {
 			l, err := castInt64(left)
 			if err != nil {
@@ -72,11 +83,11 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l + r, nil
 		} else if tp.Size == 32 {
-			l, err := castInt(left)
+			l, err := castInt32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castInt(right)
+			r, err := castInt32(right)
 			if err != nil {
 				return nil, err
 			}
@@ -103,7 +114,17 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 			return l + r, nil
 		}
 	} else {
-		if tp.Size == 64 {
+		if tp.PlatformSize && tp.Size == strconv.IntSize {
+			l, err := castUint(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castUint(right)
+			if err != nil {
+				return nil, err
+			}
+			return l + r, nil
+		} else if tp.Size == 64 {
 			l, err := castUint64(left)
 			if err != nil {
 				return nil, err
@@ -114,11 +135,11 @@ func evalBinaryExprADD(left interface{}, right interface{}) (interface{}, error)
 			}
 			return l + r, nil
 		} else if tp.Size == 32 {
-			l, err := castUint(left)
+			l, err := castUint32(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castUint(right)
+			r, err := castUint32(right)
 			if err != nil {
 				return nil, err
 			}
@@ -986,11 +1007,11 @@ func evalBinaryExprSHL(left interface{}, right interface{}) (interface{}, error)
 		case string:
 
 		case bool:
-			l, err := castInt64(left)
+			l, err := castInt(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castUint64(right)
+			r, err := castUint(right)
 			if err != nil {
 				return nil, err
 			}
@@ -1001,11 +1022,11 @@ func evalBinaryExprSHL(left interface{}, right interface{}) (interface{}, error)
 	} else if tp.Signed {
 		if tp.Float() {
 			if tp.Size == 32 {
-				l, err := castInt64(left)
+				l, err := castInt(left)
 				if err != nil {
 					return nil, err
 				}
-				r, err := castUint64(right)
+				r, err := castUint(right)
 				if err != nil {
 					return nil, err
 				}
@@ -1122,11 +1143,11 @@ func evalBinaryExprSHR(left interface{}, right interface{}) (interface{}, error)
 		case string:
 
 		case bool:
-			l, err := castInt64(left)
+			l, err := castInt(left)
 			if err != nil {
 				return nil, err
 			}
-			r, err := castUint64(right)
+			r, err := castUint(right)
 			if err != nil {
 				return nil, err
 			}
