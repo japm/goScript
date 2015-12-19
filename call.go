@@ -97,7 +97,7 @@ func evalCallExpr(expr *ast.CallExpr, context interface{}) (interface{}, error) 
 		}
 		if rVal.Type() != parArg {
 			if !rVal.Type().ConvertibleTo(parArg) {
-				return nil, fmt.Errorf("Method argument %s type mismatch. Expected %s get %s", key, parArg, rVal.Type())
+				return nil, fmt.Errorf("Method argument %d type mismatch. Expected %s get %s", key, parArg, rVal.Type())
 			}
 			rVal = rVal.Convert(parArg)
 		}

@@ -9,6 +9,7 @@ import (
 	"strconv"
 )
 
+// Expr expresion holder, allows sentence preparation
 type Expr struct {
 	expr ast.Expr
 }
@@ -19,6 +20,7 @@ func init() {
 	zeroArg = make([]reflect.Value, 0)
 }
 
+// Prepare sentence for evaluation and reuse
 func (e *Expr) Prepare(expr string) error {
 	exp, err := parser.ParseExpr(expr)
 	if err != nil {
@@ -28,22 +30,25 @@ func (e *Expr) Prepare(expr string) error {
 	return err
 }
 
+// Eval a pepared sentence
 func (e *Expr) Eval(context interface{}) (val interface{}, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("Eval paniked. %s", r)
 		}
 	}()
+
 	val, err = eval(e.expr, context)
 	return val, err
 }
 
-func (e *Expr) EvalInt(context interface{}) (val interface{}, err error) {
+// EvalInt convenient function casting return type to int
+func (e *Expr) EvalInt(context interface{}) (val int, err error) {
 
 	valI, err := e.Eval(context)
 
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	return castInt(valI)
@@ -79,10 +84,11 @@ func Eval(expr string, context interface{}) (val interface{}, err error) {
 	return val, err
 }
 
-func EvalInt(expr string, context interface{}) (int interface{}, err error) {
+// EvalInt convenient function casting return type to int
+func EvalInt(expr string, context interface{}) (int, error) {
 	val, err := Eval(expr, context)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 	return castInt(val)
 }
@@ -252,7 +258,7 @@ func evalStarExpr(expr *ast.StarExpr, context interface{}) (interface{}, error) 
 
 	refVal := reflect.ValueOf(val)
 	if refVal.Kind() != reflect.Ptr {
-		return nil, fmt.Errorf("Expected poiner, found %d ", refVal.Type())
+		return nil, fmt.Errorf("Expected pointer, found %d ", refVal.Type())
 	}
 
 	return refVal.Elem().Interface(), nil
@@ -348,6 +354,7 @@ func evalBinaryExpr(expr *ast.BinaryExpr, context interface{}) (interface{}, err
 func evalIdent(expr *ast.Ident, context interface{}) (interface{}, error) {
 
 	lname := len(expr.Name)
+
 	if lname == 3 && expr.Name == "nil" {
 		return nil, nil
 	} else if lname == 4 && expr.Name == "true" {
@@ -396,11 +403,11 @@ func evalIdent(expr *ast.Ident, context interface{}) (interface{}, error) {
 func evalBasicLit(expr *ast.BasicLit, context interface{}) (interface{}, error) {
 	switch expr.Kind {
 	case token.INT:
-		return strconv.ParseInt(expr.Value, 10, 64)
+		return strconv.ParseInt(expr.Value, 10, strconv.IntSize)
 	case token.FLOAT:
 		return strconv.ParseFloat(expr.Value, 10)
 	case token.IMAG:
-		return nil, fmt.Errorf(" token.IMAG not suported")
+		return nil, fmt.Errorf("token.IMAG not suported")
 	case token.CHAR:
 		return expr.Value, nil
 	case token.STRING:
@@ -445,7 +452,7 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 	case token.XOR:
 		return evalBinaryExprXOR(left, right)
 	case token.AND_NOT:
-		return evalBinaryExprAND_NOT(left, right)
+		return evalBinaryExprANDNOT(left, right)
 	default:
 		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
 	}
@@ -500,8 +507,13 @@ func evalUnaryExprAND(value interface{}) (interface{}, error) {
 	if !val.CanAddr() {
 		return nil, fmt.Errorf("Value is not addressable %s", val)
 	}
-	if val.IsNil() {
-		return nil, fmt.Errorf("Value is nill, not addressable %s", val)
+
+	vk := val.Kind()
+	if vk == reflect.Chan || vk == reflect.Func || vk == reflect.Map ||
+		vk == reflect.Ptr || vk == reflect.Slice {
+		if val.IsNil() {
+			return nil, fmt.Errorf("Value is nill, not addressable %s", val)
+		}
 	}
 
 	return val.Addr(), nil

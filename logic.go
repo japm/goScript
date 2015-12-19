@@ -98,13 +98,13 @@ func evalUnaryExprNOT(value interface{}) (interface{}, error) {
 				}
 
 				return l == 0, nil
-			} else {
-				l, err := castFloat64(value)
-				if err != nil {
-					return nil, err
-				}
-				return l == 0, nil
 			}
+			l, err := castFloat64(value)
+			if err != nil {
+				return nil, err
+			}
+			return l == 0, nil
+
 		} else if tp.Size == 64 {
 			l, err := castInt64(value)
 			if err != nil {

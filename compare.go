@@ -39,17 +39,17 @@ func evalBinaryExprLEQ(left interface{}, right interface{}) (interface{}, error)
 					return nil, err
 				}
 				return l <= r, nil
-			} else {
-				l, err := castFloat64(left)
-				if err != nil {
-					return nil, err
-				}
-				r, err := castFloat64(right)
-				if err != nil {
-					return nil, err
-				}
-				return l <= r, nil
 			}
+			l, err := castFloat64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castFloat64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l <= r, nil
+
 		} else if tp.Size == 64 {
 			l, err := castInt64(left)
 			if err != nil {
@@ -194,17 +194,17 @@ func evalBinaryExprEQL(left interface{}, right interface{}) (interface{}, error)
 					return nil, err
 				}
 				return l == r, nil
-			} else {
-				l, err := castFloat64(left)
-				if err != nil {
-					return nil, err
-				}
-				r, err := castFloat64(right)
-				if err != nil {
-					return nil, err
-				}
-				return l == r, nil
 			}
+			l, err := castFloat64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castFloat64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l == r, nil
+
 		} else if tp.Size == 64 {
 			l, err := castInt64(left)
 			if err != nil {
@@ -326,17 +326,17 @@ func evalBinaryExprLSS(left interface{}, right interface{}) (interface{}, error)
 					return nil, err
 				}
 				return l < r, nil
-			} else {
-				l, err := castFloat64(left)
-				if err != nil {
-					return nil, err
-				}
-				r, err := castFloat64(right)
-				if err != nil {
-					return nil, err
-				}
-				return l < r, nil
 			}
+			l, err := castFloat64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castFloat64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l < r, nil
+
 		} else if tp.Size == 64 {
 			l, err := castInt64(left)
 			if err != nil {
@@ -458,17 +458,17 @@ func evalBinaryExprGTR(left interface{}, right interface{}) (interface{}, error)
 					return nil, err
 				}
 				return l > r, nil
-			} else {
-				l, err := castFloat64(left)
-				if err != nil {
-					return nil, err
-				}
-				r, err := castFloat64(right)
-				if err != nil {
-					return nil, err
-				}
-				return l > r, nil
 			}
+			l, err := castFloat64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castFloat64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l > r, nil
+
 		} else if tp.Size == 64 {
 			l, err := castInt64(left)
 			if err != nil {
@@ -590,17 +590,16 @@ func evalBinaryExprGEQ(left interface{}, right interface{}) (interface{}, error)
 					return nil, err
 				}
 				return l >= r, nil
-			} else {
-				l, err := castFloat64(left)
-				if err != nil {
-					return nil, err
-				}
-				r, err := castFloat64(right)
-				if err != nil {
-					return nil, err
-				}
-				return l >= r, nil
 			}
+			l, err := castFloat64(left)
+			if err != nil {
+				return nil, err
+			}
+			r, err := castFloat64(right)
+			if err != nil {
+				return nil, err
+			}
+			return l >= r, nil
 		} else if tp.Size == 64 {
 			l, err := castInt64(left)
 			if err != nil {

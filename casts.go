@@ -164,8 +164,7 @@ func valType(value interface{}) (tp typeDesc, err error) {
 	default:
 		return typeDesc{tpPointer, 0, false, false}, nil
 	}
-
-	return typeDesc{tpNone, 0, false, false}, fmt.Errorf("Unimplemented type size", reflect.TypeOf(value))
+	//return typeDesc{tpNone, 0, false, false}, fmt.Errorf("Unimplemented type size", reflect.TypeOf(value))
 }
 
 func castUint8(value interface{}) (uint8, error) {

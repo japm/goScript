@@ -1,8 +1,6 @@
 package evalGo
 
-import (
-	"testing"
-)
+import "testing"
 
 func (a helper) Test() int {
 	return 1
@@ -24,9 +22,19 @@ func (a helper) Test5(x int, z ...interface{}) []interface{} {
 	return z
 }
 
+func (a *helper) TestPtr1() int {
+	return 1
+}
+
+func (a helper) Test6(x float64, y float64) float64 {
+	return x + y
+}
+
 func TestCallBasics(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = helper{1}
+	ctxt["a1"] = new(helper)
+
 	val, err := Eval("a.Test()", ctxt)
 	if err != nil {
 		t.Errorf("err not nil", err)
@@ -66,6 +74,28 @@ func TestCallBasics(t *testing.T) {
 	if len(val.([]interface{})) != 1 {
 		t.Errorf("Expected arr returned %d", val)
 	}
+
+	val, err = Eval("a.TestPtr1()", ctxt)
+	if err == nil {
+		t.Error("Expected err and error is nil")
+	}
+
+	val, err = Eval("a1.TestPtr1()", ctxt)
+	if err != nil {
+		t.Errorf("err not nil", err)
+	}
+	if val.(int) != 1 {
+		t.Errorf("Expected 1 returned %d", val)
+	}
+
+	val, err = Eval("a.Test6(2, 3)", ctxt)
+	if err != nil {
+		t.Errorf("err not nil", err)
+	}
+	if val.(float64) != 5 {
+		t.Errorf("Expected 5 returned %d", val)
+	}
+
 }
 func TestIdent(t *testing.T) {
 
@@ -107,6 +137,7 @@ func TestIdent3(t *testing.T) {
 	if val.(int) != 1 {
 		t.Error("Expected 1 get ", val)
 	}
+
 }
 
 func TestIdent4(t *testing.T) {
