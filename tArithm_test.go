@@ -1,4 +1,4 @@
-package evalGo
+package goScript
 
 import (
 	"strconv"
