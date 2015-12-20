@@ -12,7 +12,7 @@ type callSyte struct {
 	calleeVal reflect.Value
 }
 
-func evalSelectorExpr(expr *ast.SelectorExpr, context interface{}) (interface{}, error) {
+func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (interface{}, error) {
 	callee, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err
@@ -23,28 +23,30 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context interface{}) (interface{},
 	if fieldVal.Kind() == reflect.Ptr {
 		fieldVal = calleeVal.Elem() //FieldByName panics on pointers
 	}
-	_, ok := fieldVal.Type().FieldByName(expr.Sel.Name)
+	sName := expr.Sel.Name
+	_, ok := fieldVal.Type().FieldByName(sName) //Faster than  fieldVal.FieldByName(sName)
 	if ok {
-		return fieldVal.FieldByName(expr.Sel.Name).Interface(), nil
+		return fieldVal.FieldByName(sName).Interface(), nil
 	}
-	return callSyte{callee, expr.Sel.Name, calleeVal}, nil
+	//Not a field, must be a function
+	return callSyte{callee, sName, calleeVal}, nil
 }
 
-func evalCallExpr(expr *ast.CallExpr, context interface{}) (interface{}, error) {
+func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 
+	//Can be optimized if allways is evalSelectorExpr
+	//The return value must be a callsite, 10% performance increase on calls
+	//with this optimization
 	val, err := eval(expr.Fun, context) //Find the type called, this calls evalSelectorExpr
 	if err != nil {
 		return nil, err
 	}
 
-	switch val.(type) { //The return value must be a callSyte
-	case callSyte:
-		break
-	default:
+	callsite, ok := val.(callSyte)
+	if !ok {
 		return nil, fmt.Errorf("Waiting callsite found %s", reflect.TypeOf(val))
 	}
 
-	callsite := val.(callSyte)
 	caleeVal := callsite.calleeVal
 
 	//-------------------Check Method------------------------

@@ -9,6 +9,48 @@ import (
 	"strconv"
 )
 
+//Context allows custom identification resolver
+type Context interface {
+	GetIdent(name string) (val interface{}, err error)
+}
+
+//Internal map context
+type mapContext struct {
+	mp map[string]interface{}
+}
+
+func (ctx mapContext) GetIdent(name string) (val interface{}, err error) {
+	val, ok := ctx.mp[name]
+	if !ok {
+		return nil, fmt.Errorf("Symbol %s not found", name)
+	}
+	return val, nil
+}
+
+//Internal reflect context
+//We can store a map to cache propertys
+//and aliviate the use of reflect
+type reflectContext struct {
+	val reflect.Value
+}
+
+func (ctx reflectContext) GetIdent(name string) (val interface{}, err error) {
+	//refVal := ctx.val
+	//Forced on construction
+	//if refVal.Kind() == reflect.Ptr {
+	//	refVal = refVal.Elem()
+	//}
+	fld := ctx.val.FieldByName(name)
+	ok := fld.IsValid()
+	if ok {
+		val = fld.Interface()
+	}
+	if !ok {
+		return nil, fmt.Errorf("Symbol %s not found", name)
+	}
+	return val, nil
+}
+
 // Expr expresion holder, allows sentence preparation
 type Expr struct {
 	expr ast.Expr
@@ -38,12 +80,14 @@ func (e *Expr) Eval(context interface{}) (val interface{}, err error) {
 		}
 	}()
 
-	val, err = eval(e.expr, context)
+	ctxt := createContext(context)
+
+	val, err = eval(e.expr, ctxt)
 	return val, err
 }
 
 // EvalInt convenient function casting return type to int
-func (e *Expr) EvalInt(context interface{}) (val int, err error) {
+func (e *Expr) EvalInt(context Context) (val int, err error) {
 
 	valI, err := e.Eval(context)
 
@@ -68,24 +112,14 @@ func Eval(expr string, context interface{}) (val interface{}, err error) {
 		return nil, err
 	}
 
-	var ctxt interface{}
-	switch context.(type) {
-	case *map[string]interface{}:
-		ctxt = context
-	case map[string]interface{}:
-		ctxt = context
-	case reflect.Value:
-		ctxt = context
-	default:
-		ctxt = reflect.ValueOf(context)
-	}
+	ctxt := createContext(context)
 
 	val, err = eval(exp, ctxt)
 	return val, err
 }
 
 // EvalInt convenient function casting return type to int
-func EvalInt(expr string, context interface{}) (int, error) {
+func EvalInt(expr string, context Context) (int, error) {
 	val, err := Eval(expr, context)
 	if err != nil {
 		return 0, err
@@ -93,7 +127,7 @@ func EvalInt(expr string, context interface{}) (int, error) {
 	return castInt(val)
 }
 
-func evalInt(expr ast.Node, context interface{}) (int, error) {
+func evalInt(expr ast.Node, context Context) (int, error) {
 	val, err := eval(expr, context)
 	if err != nil {
 		return 0, err
@@ -101,7 +135,41 @@ func evalInt(expr ast.Node, context interface{}) (int, error) {
 	return castInt(val)
 }
 
-func eval(expr ast.Node, context interface{}) (interface{}, error) {
+func createContext(context interface{}) Context {
+	var ctxt Context
+	switch context.(type) {
+	case *map[string]interface{}:
+		ctxt = mapContext{*(context.(*map[string]interface{}))}
+	case map[string]interface{}:
+		ctxt = mapContext{(context.(map[string]interface{}))}
+	case reflect.Value:
+		rval := context.(reflect.Value)
+		if rval.Kind() == reflect.Ptr {
+			rval = rval.Elem()
+		}
+		ctxt = reflectContext{rval}
+	case *reflect.Value:
+		rval := *(context.(*reflect.Value))
+		if rval.Kind() == reflect.Ptr {
+			rval = rval.Elem()
+		}
+		ctxt = reflectContext{rval}
+	default:
+		var ok bool
+		ctxt, ok = context.(Context)
+		if !ok {
+			rval := reflect.ValueOf(context)
+			if rval.Kind() == reflect.Ptr {
+				rval = rval.Elem()
+			}
+			ctxt = reflectContext{rval}
+		}
+	}
+
+	return ctxt
+}
+
+func eval(expr ast.Node, context Context) (interface{}, error) {
 	//fmt.Println(reflect.TypeOf(expr), time.Now().UnixNano()/int64(10000), expr)
 	switch expr.(type) {
 	case *ast.ArrayType:
@@ -215,7 +283,7 @@ func eval(expr ast.Node, context interface{}) (interface{}, error) {
 	}
 }
 
-func evalIndexExpr(expr *ast.IndexExpr, context interface{}) (interface{}, error) {
+func evalIndexExpr(expr *ast.IndexExpr, context Context) (interface{}, error) {
 
 	val, err := eval(expr.X, context)
 	if err != nil {
@@ -249,7 +317,7 @@ func evalIndexExpr(expr *ast.IndexExpr, context interface{}) (interface{}, error
 
 }
 
-func evalStarExpr(expr *ast.StarExpr, context interface{}) (interface{}, error) {
+func evalStarExpr(expr *ast.StarExpr, context Context) (interface{}, error) {
 
 	val, err := eval(expr.X, context)
 	if err != nil {
@@ -264,7 +332,7 @@ func evalStarExpr(expr *ast.StarExpr, context interface{}) (interface{}, error) 
 	return refVal.Elem().Interface(), nil
 }
 
-func evalSliceExpr(expr *ast.SliceExpr, context interface{}) (interface{}, error) {
+func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
 
 	//Get array object
 	val, err := eval(expr.X, context)
@@ -310,11 +378,11 @@ func evalSliceExpr(expr *ast.SliceExpr, context interface{}) (interface{}, error
 	return sl.Slice(i, j).Interface(), nil
 }
 
-func evalParenExpr(expr *ast.ParenExpr, context interface{}) (interface{}, error) {
+func evalParenExpr(expr *ast.ParenExpr, context Context) (interface{}, error) {
 	return eval(expr.X, context)
 }
 
-func evalUnaryExpr(expr *ast.UnaryExpr, context interface{}) (interface{}, error) {
+func evalUnaryExpr(expr *ast.UnaryExpr, context Context) (interface{}, error) {
 	val, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err
@@ -331,7 +399,7 @@ func evalUnaryExpr(expr *ast.UnaryExpr, context interface{}) (interface{}, error
 	}
 }
 
-func evalBinaryExpr(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
+func evalBinaryExpr(expr *ast.BinaryExpr, context Context) (interface{}, error) {
 
 	if expr.Op == token.LAND ||
 		expr.Op == token.LOR {
@@ -351,10 +419,11 @@ func evalBinaryExpr(expr *ast.BinaryExpr, context interface{}) (interface{}, err
 	return evalBinaryExprOp(expr, left, right)
 }
 
-func evalIdent(expr *ast.Ident, context interface{}) (interface{}, error) {
+func evalIdent(expr *ast.Ident, context Context) (interface{}, error) {
 
 	lname := len(expr.Name)
 
+	//Resolve reserved words
 	if lname == 3 && expr.Name == "nil" {
 		return nil, nil
 	} else if lname == 4 && expr.Name == "true" {
@@ -362,45 +431,16 @@ func evalIdent(expr *ast.Ident, context interface{}) (interface{}, error) {
 	} else if lname == 5 && expr.Name == "false" {
 		return false, nil
 	}
+	//No context, cant return one
 	if context == nil {
 		return nil, fmt.Errorf("Context is null, no ident possible for %s", expr.Name)
 	}
-	var ok bool
-	var val interface{}
 
-	switch context.(type) {
-	case map[string]interface{}:
-		val, ok = context.(map[string]interface{})[expr.Name]
-	case *map[string]interface{}:
-		val, ok = (*context.(*map[string]interface{}))[expr.Name]
-	case reflect.Value:
-		refVal := context.(reflect.Value)
-		if refVal.Kind() == reflect.Ptr {
-			refVal = refVal.Elem()
-		}
-		fld := refVal.FieldByName(expr.Name)
-		ok = fld.IsValid()
-		if ok {
-			val = fld.Interface()
-		}
-	default:
-		refVal := reflect.ValueOf(context)
-		if refVal.Kind() == reflect.Ptr {
-			refVal = refVal.Elem()
-		}
-		fld := refVal.FieldByName(expr.Name)
-		ok = fld.IsValid()
-		if ok {
-			val = fld.Interface()
-		}
-	}
-	if !ok {
-		return nil, fmt.Errorf("Symbol %s not found", expr.Name)
-	}
-	return val, nil
+	return context.GetIdent(expr.Name)
+
 }
 
-func evalBasicLit(expr *ast.BasicLit, context interface{}) (interface{}, error) {
+func evalBasicLit(expr *ast.BasicLit, context Context) (interface{}, error) {
 	switch expr.Kind {
 	case token.INT:
 		return strconv.ParseInt(expr.Value, 10, strconv.IntSize)
@@ -459,7 +499,7 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 
 }
 
-func evalBinaryExprOpLazy(expr *ast.BinaryExpr, context interface{}) (interface{}, error) {
+func evalBinaryExprOpLazy(expr *ast.BinaryExpr, context Context) (interface{}, error) {
 	switch expr.Op {
 	case token.LAND: // &&
 		return evalBinaryExprLAND(expr, context)

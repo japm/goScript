@@ -25,6 +25,13 @@ type helper struct {
 	A int
 }
 
+type helper2 struct {
+}
+
+func (a helper2) GetIdent(name string) (val interface{}, err error) {
+	return name, nil
+}
+
 func TestCtxInterfBasics(t *testing.T) {
 	ctxt := helper{1}
 	val, err := Eval("A", ctxt)
@@ -69,5 +76,25 @@ func TestCtxMapBasics(t *testing.T) {
 	val, err = Eval("b", ctxt)
 	if err == nil {
 		t.Error("Expected err", err)
+	}
+}
+
+func TestCtxContextBasics(t *testing.T) {
+	ctxt := helper2{}
+	val, err := Eval("azf", ctxt)
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(string) != "azf" {
+		t.Error("Expected a get ", val)
+	}
+
+	ctxt2 := &helper2{}
+	val, err = Eval("azf", ctxt2)
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(string) != "azf" {
+		t.Error("Expected a get ", val)
 	}
 }

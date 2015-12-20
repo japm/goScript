@@ -231,6 +231,21 @@ func TestMap1(t *testing.T) {
 		t.Error("Expected 3 get ", val)
 	}
 }
+func TestMap2(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	a := make(map[string]int)
+	a["a"] = 3
+	ctxt["a"] = &a
+
+	val, err := Eval("(*a)[\"a\"]", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
 
 func TestStar1(t *testing.T) {
 	ctxt := make(map[string]interface{})

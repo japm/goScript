@@ -16,4 +16,13 @@ in a given context.
   * True && 0 = false
   * Left operand governs the type 1 + "1" = 2,  "1" + 1 = "11"
 
+* Map, slice and array indexer access
+
+* Full control over evaluation context (Ident space)
+  *Generic map[string]interface{} or map[string]interface{} contexts
+  *Any struct with its fields as varianbles
+  *Custom Context for implentation/user defined context.
+
+* Mostly tested ;)
+
 #Roadmap
