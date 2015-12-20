@@ -19,9 +19,9 @@ in a given context.
 * Map, slice and array indexer access
 
 * Full control over evaluation context.
-  *Generic map[string]interface{} or map[string]interface{} contexts
-  *Any struct with its fields as variables
-  *Custom Context for implentation/user defined context.
+  * Generic map[string]interface{} or map[string]interface{} contexts
+  * Any struct with its fields as variables
+  * Custom Context for implentation/user defined context.
 
 * Mostly tested ;)
 
