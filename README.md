@@ -30,4 +30,4 @@ in a given context.
 * 1) Rock solid expression evaluation.
 * 2) Enrich evaluation context
 * 3) Full script program implementation
-* 4) Performance optimizactions
+* 4) Performance optimizations
