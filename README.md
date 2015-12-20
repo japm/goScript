@@ -26,3 +26,8 @@ in a given context.
 * Mostly tested ;)
 
 #Roadmap
+
+* 1) Rock solid expression evaluation.
+* 2) Enrich evaluation context
+* 3) Full script programs implenentation
+* 4) Performance optimizactions
