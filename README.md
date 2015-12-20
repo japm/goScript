@@ -18,9 +18,9 @@ in a given context.
 
 * Map, slice and array indexer access
 
-* Full control over evaluation context (Ident space)
+* Full control over evaluation context.
   *Generic map[string]interface{} or map[string]interface{} contexts
-  *Any struct with its fields as varianbles
+  *Any struct with its fields as variables
   *Custom Context for implentation/user defined context.
 
 * Mostly tested ;)
@@ -29,5 +29,5 @@ in a given context.
 
 * 1) Rock solid expression evaluation.
 * 2) Enrich evaluation context
-* 3) Full script programs implenentation
+* 3) Full script program implementation
 * 4) Performance optimizactions
