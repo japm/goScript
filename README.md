@@ -7,20 +7,15 @@ in a given context.
 
 #Highlights
 
-*Left operand governs the type 1 + "1" = 2,  "1" + 1 = "11"
+*Simple and hackable code.
 
-*Manage numeric casting automatically, casting always to the bigger more
-generic representation.
+*Fully reflect function call including variabe number of args.
 
-*True && 0 = false
+*Automatic casting
+  *Numeric casting  always to the bigger more generic representation.
 
-*Fully reflection function call.
+  *True && 0 = false
 
-*Simple and hackable code
-
-#Roadmap
-
-
-
+  *Left operand governs the type 1 + "1" = 2,  "1" + 1 = "11"
 
 #Roadmap
