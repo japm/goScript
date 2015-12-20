@@ -1,2 +1,3 @@
-# evalGo
-Golang expression evaluator
+#goScript
+
+Golang like scripting language
