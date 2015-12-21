@@ -42,13 +42,11 @@ func (ctx reflectContext) GetIdent(name string) (val interface{}, err error) {
 	//}
 	fld := ctx.val.FieldByName(name)
 	ok := fld.IsValid()
-	if ok {
-		val = fld.Interface()
-	}
 	if !ok {
 		return nil, fmt.Errorf("Symbol %s not found", name)
 	}
-	return val, nil
+
+	return fld.Interface(), nil
 }
 
 // Expr expresion holder, allows sentence preparation
@@ -56,6 +54,7 @@ type Expr struct {
 	expr ast.Expr
 }
 
+//Constant for zero arg calls
 var zeroArg []reflect.Value
 
 func init() {
@@ -87,14 +86,12 @@ func (e *Expr) Eval(context interface{}) (val interface{}, err error) {
 }
 
 // EvalInt convenient function casting return type to int
-func (e *Expr) EvalInt(context Context) (val int, err error) {
+func (e *Expr) EvalInt(context interface{}) (val int, err error) {
 
 	valI, err := e.Eval(context)
-
 	if err != nil {
 		return 0, err
 	}
-
 	return castInt(valI)
 }
 
@@ -119,7 +116,7 @@ func Eval(expr string, context interface{}) (val interface{}, err error) {
 }
 
 // EvalInt convenient function casting return type to int
-func EvalInt(expr string, context Context) (int, error) {
+func EvalInt(expr string, context interface{}) (int, error) {
 	val, err := Eval(expr, context)
 	if err != nil {
 		return 0, err
@@ -296,10 +293,11 @@ func evalIndexExpr(expr *ast.IndexExpr, context Context) (interface{}, error) {
 	}
 	var retVal reflect.Value
 	v := reflect.ValueOf(val)
-	if v.Kind() == reflect.Map {
+	vk := v.Kind()
+	if vk == reflect.Map {
 		retVal = v.MapIndex(reflect.ValueOf(idx))
-	} else if v.Kind() == reflect.Array ||
-		v.Kind() == reflect.Slice {
+	} else if vk == reflect.Array ||
+		vk == reflect.Slice {
 		i, err := castInt(idx)
 		if err != nil {
 			return nil, err
@@ -342,8 +340,9 @@ func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
 	sl := reflect.ValueOf(val)
 
 	//Check the type
-	if sl.Kind() != reflect.Array &&
-		sl.Kind() != reflect.Slice {
+	vk := sl.Kind()
+	if vk != reflect.Array &&
+		vk != reflect.Slice {
 		return nil, fmt.Errorf("Expected array, found %d ", sl.Type())
 	}
 
@@ -423,7 +422,7 @@ func evalIdent(expr *ast.Ident, context Context) (interface{}, error) {
 
 	lname := len(expr.Name)
 
-	//Resolve reserved words
+	//Resolve reserved value-words
 	if lname == 3 && expr.Name == "nil" {
 		return nil, nil
 	} else if lname == 4 && expr.Name == "true" {
@@ -431,13 +430,12 @@ func evalIdent(expr *ast.Ident, context Context) (interface{}, error) {
 	} else if lname == 5 && expr.Name == "false" {
 		return false, nil
 	}
-	//No context, cant return one
+	//No context, cant return an ident
 	if context == nil {
 		return nil, fmt.Errorf("Context is null, no ident possible for %s", expr.Name)
 	}
 
 	return context.GetIdent(expr.Name)
-
 }
 
 func evalBasicLit(expr *ast.BasicLit, context Context) (interface{}, error) {
@@ -516,6 +514,8 @@ func evalUnaryExprSUB(value interface{}) (interface{}, error) {
 		return -value.(uint8), nil
 	case uint16:
 		return -value.(uint16), nil
+	case uint32:
+		return -value.(uint32), nil
 	case uint:
 		return -value.(uint), nil
 	case uint64:
@@ -524,6 +524,8 @@ func evalUnaryExprSUB(value interface{}) (interface{}, error) {
 		return -value.(int8), nil
 	case int16:
 		return -value.(int16), nil
+	case int32:
+		return -value.(int32), nil
 	case int:
 		return -value.(int), nil
 	case int64:

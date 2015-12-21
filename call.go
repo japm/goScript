@@ -50,6 +50,7 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 	caleeVal := callsite.calleeVal
 
 	//-------------------Check Method------------------------
+	var vaArgsTp reflect.Type
 	method := caleeVal.MethodByName(callsite.fnName)
 	if !method.IsValid() {
 		return nil, fmt.Errorf("Method %s not found", callsite.fnName)
@@ -64,6 +65,7 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 		}
 	} else {
 		numArgs = numArgs - 1
+		vaArgsTp = mType.In(numArgs).Elem() //Type declared
 		if len(expr.Args) < numArgs {
 			return nil, fmt.Errorf("Method alguments count mismatch. Expected at least %d get %d", (numArgs - 1), len(expr.Args))
 		}
@@ -75,11 +77,6 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 		args = zeroArg //Zero arg constant
 	} else {
 		args = make([]reflect.Value, len(expr.Args))
-	}
-
-	var vaArgsTp reflect.Type
-	if mType.IsVariadic() {
-		vaArgsTp = mType.In(numArgs).Elem() //Type declared
 	}
 
 	for key, value := range expr.Args {
