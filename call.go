@@ -42,20 +42,23 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 		return nil, err
 	}
 
-	callsite, ok := val.(callSyte)
-	if !ok {
-		return nil, fmt.Errorf("Waiting callsite found %s", reflect.TypeOf(val))
-	}
-
-	caleeVal := callsite.calleeVal
-
 	//-------------------Check Method------------------------
 	var vaArgsTp reflect.Type
-	method := caleeVal.MethodByName(callsite.fnName)
-	if !method.IsValid() {
-		return nil, fmt.Errorf("Method %s not found", callsite.fnName)
-	}
+	var method reflect.Value
 
+	callsite, ok := val.(callSyte)
+	if !ok {
+		method = reflect.ValueOf(val)
+		if method.Kind() != reflect.Func {
+			return nil, fmt.Errorf("Waiting callsite found %s", reflect.TypeOf(val))
+		}
+	} else {
+		caleeVal := callsite.calleeVal
+		method = caleeVal.MethodByName(callsite.fnName)
+		if !method.IsValid() {
+			return nil, fmt.Errorf("Method %s not found", callsite.fnName)
+		}
+	}
 	mType := method.Type()
 	numArgs := mType.NumIn()
 
@@ -86,19 +89,20 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 			return nil, err
 		}
 		rVal := reflect.ValueOf(val)
-		var parArg reflect.Type
+		var tArg reflect.Type //Method argument type
 
 		//If true we are in the variadic parameters
 		if key >= numArgs {
-			parArg = vaArgsTp
+			tArg = vaArgsTp
 		} else {
-			parArg = mType.In(key)
+			tArg = mType.In(key)
 		}
-		if rVal.Type() != parArg {
-			if !rVal.Type().ConvertibleTo(parArg) {
-				return nil, fmt.Errorf("Method argument %d type mismatch. Expected %s get %s", key, parArg, rVal.Type())
+		tVal := rVal.Type() //Passed parameter type
+		if tVal != tArg {
+			if !tVal.ConvertibleTo(tArg) {
+				return nil, fmt.Errorf("Method argument %d type mismatch. Expected %s get %s", key, tArg, tVal)
 			}
-			rVal = rVal.Convert(parArg)
+			rVal = rVal.Convert(tArg)
 		}
 		args[key] = rVal
 	}

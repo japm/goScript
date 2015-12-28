@@ -57,6 +57,7 @@ type Expr struct {
 //Constant for zero arg calls
 var zeroArg []reflect.Value
 
+//Package initialization
 func init() {
 	zeroArg = make([]reflect.Value, 0)
 }
@@ -71,7 +72,7 @@ func (e *Expr) Prepare(expr string) error {
 	return err
 }
 
-// Eval a pepared sentence
+// Eval a prepared sentence
 func (e *Expr) Eval(context interface{}) (val interface{}, err error) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -132,6 +133,7 @@ func evalInt(expr ast.Node, context Context) (int, error) {
 	return castInt(val)
 }
 
+//Creates the apropiate execution identificaion resolver
 func createContext(context interface{}) Context {
 	var ctxt Context
 	switch context.(type) {
@@ -166,6 +168,7 @@ func createContext(context interface{}) Context {
 	return ctxt
 }
 
+//Evaluates all kinds of ast node types
 func eval(expr ast.Node, context Context) (interface{}, error) {
 	//fmt.Println(reflect.TypeOf(expr), time.Now().UnixNano()/int64(10000), expr)
 	switch expr.(type) {
@@ -457,15 +460,15 @@ func evalBasicLit(expr *ast.BasicLit, context Context) (interface{}, error) {
 
 func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{}) (interface{}, error) {
 	switch expr.Op {
-	case token.ADD:
+	case token.ADD: // +
 		return evalBinaryExprADD(left, right)
-	case token.SUB:
+	case token.SUB: // -
 		return evalBinaryExprSUB(left, right)
-	case token.MUL:
+	case token.MUL: // *
 		return evalBinaryExprMUL(left, right)
-	case token.QUO:
+	case token.QUO: // /
 		return evalBinaryExprQUO(left, right)
-	case token.REM:
+	case token.REM: // %
 		return evalBinaryExprREM(left, right)
 	case token.EQL: // ==
 		return evalBinaryExprEQL(left, right)
@@ -479,17 +482,17 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 		return evalBinaryExprGEQ(left, right)
 	case token.LEQ: // <=
 		return evalBinaryExprLEQ(left, right)
-	case token.AND:
+	case token.AND: // &
 		return evalBinaryExprAND(left, right)
-	case token.OR:
+	case token.OR: // |
 		return evalBinaryExprOR(left, right)
-	case token.SHL:
+	case token.SHL: // <<
 		return evalBinaryExprSHL(left, right)
-	case token.SHR:
+	case token.SHR: // >>
 		return evalBinaryExprSHR(left, right)
-	case token.XOR:
+	case token.XOR: // ^
 		return evalBinaryExprXOR(left, right)
-	case token.AND_NOT:
+	case token.AND_NOT: // &^
 		return evalBinaryExprANDNOT(left, right)
 	default:
 		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
