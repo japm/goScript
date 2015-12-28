@@ -9,6 +9,12 @@ import (
 	"strconv"
 )
 
+//Helper len function
+func reflLen(val interface{}) int {
+	valRefl := reflect.ValueOf(val)
+	return valRefl.Len()
+}
+
 //Context allows custom identification resolver
 type Context interface {
 	GetIdent(name string) (val interface{}, err error)
@@ -428,6 +434,8 @@ func evalIdent(expr *ast.Ident, context Context) (interface{}, error) {
 	//Resolve reserved value-words
 	if lname == 3 && expr.Name == "nil" {
 		return nil, nil
+	} else if lname == 3 && expr.Name == "len" {
+		return reflLen, nil
 	} else if lname == 4 && expr.Name == "true" {
 		return true, nil
 	} else if lname == 5 && expr.Name == "false" {
