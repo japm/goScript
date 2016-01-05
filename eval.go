@@ -1,3 +1,7 @@
+/*
+The MIT License (MIT)
+Copyright (c) 2016 Juan Pascual
+*/
 package goScript
 
 import (
@@ -432,10 +436,12 @@ func evalIdent(expr *ast.Ident, context Context) (interface{}, error) {
 	lname := len(expr.Name)
 
 	//Resolve reserved value-words
-	if lname == 3 && expr.Name == "nil" {
-		return nil, nil
-	} else if lname == 3 && expr.Name == "len" {
-		return reflLen, nil
+	if lname == 3 {
+		if expr.Name == "nil" {
+			return nil, nil
+		} else if expr.Name == "len" {
+			return reflLen, nil
+		}
 	} else if lname == 4 && expr.Name == "true" {
 		return true, nil
 	} else if lname == 5 && expr.Name == "false" {

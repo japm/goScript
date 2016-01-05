@@ -1,3 +1,7 @@
+/*
+The MIT License (MIT)
+Copyright (c) 2016 Juan Pascual
+*/
 package goScript
 
 import (
@@ -34,8 +38,8 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (interface{}, err
 
 func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 
-	//Can be optimized if allways is evalSelectorExpr
-	//The return value must be a callsite, 10% performance increase on calls
+	//Can be optimized if expr is allways evalSelectorExpr or evalIdent
+	//The return value must be a callsite, 10% performance increase on evalSelectorExpr calls
 	//with this optimization
 	val, err := eval(expr.Fun, context) //Find the type called, this calls evalSelectorExpr
 	if err != nil {
@@ -47,12 +51,15 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 	var method reflect.Value
 
 	callsite, ok := val.(callSyte)
+
 	if !ok {
+		//Not a callSyte, must be a Ident(args), so Ident must be a function
 		method = reflect.ValueOf(val)
 		if method.Kind() != reflect.Func {
 			return nil, fmt.Errorf("Waiting callsite found %s", reflect.TypeOf(val))
 		}
 	} else {
+		//A callSyte so must be f.x(args)
 		caleeVal := callsite.calleeVal
 		method = caleeVal.MethodByName(callsite.fnName)
 		if !method.IsValid() {

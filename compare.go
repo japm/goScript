@@ -1,3 +1,7 @@
+/*
+The MIT License (MIT)
+Copyright (c) 2015 Juan Pascual
+*/
 package goScript
 
 import (
