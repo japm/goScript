@@ -34,7 +34,7 @@ in a given context.
 
 #Examples
 
-```golang
+```go
 
 import (
 	"fmt"
