@@ -109,8 +109,11 @@ func examples() {
 		return
 	}
 
-	val, err := exp.Eval(&ctxt)
-	//Custom context examples
+
+  val, err := exp.Eval(ctxt)
+  //val, err := exp.Eval(&ctxt)
+  
+  //Custom context examples
 	//err := exp.Prepare("Name1")
 	//val, err := exp.Eval(ab{1})
 
