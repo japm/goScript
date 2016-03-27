@@ -21,8 +21,22 @@ func isEmpty(s string) bool {
 	return true
 }
 
-func evalBinaryNumeric(left interface{}, right interface{}, tp typeDesc, oper operation) (interface{}, error) {
-	if tp.Signed {
+func evalBinary(left interface{}, right interface{}, tp typeDesc, oper operation) (interface{}, error) {
+	if tp.IsNil() {
+		return nil, nil
+	}
+	if !tp.IsNumeric() {
+		switch left.(type) {
+		case string:
+			return oper.OperStrInterf(left.(string), right)
+
+		case bool:
+			return oper.OperBoolInterf(left.(bool), right)
+
+		case nil:
+			return oper.OperNilLeft(right)
+		}
+	} else if tp.Signed {
 		if tp.Float() {
 			if tp.Size == 32 {
 				l, err := castFloat32(left)
@@ -130,5 +144,5 @@ func evalBinaryNumeric(left interface{}, right interface{}, tp typeDesc, oper op
 			return oper.OperUI8UI8(l, r)
 		}
 	}
-	return nil, fmt.Errorf("Unimplemented add for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+	return nil, fmt.Errorf("Unimplemented op for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }

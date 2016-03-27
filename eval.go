@@ -1,5 +1,5 @@
 /*
-The MIT License (MIT)
+Package goScript  MIT License (MIT)
 Copyright (c) 2016 Juan Pascual
 */
 package goScript
@@ -182,112 +182,130 @@ func createContext(context interface{}) Context {
 func eval(expr ast.Node, context Context) (interface{}, error) {
 	//fmt.Println(reflect.TypeOf(expr), time.Now().UnixNano()/int64(10000), expr)
 	switch expr.(type) {
-	case *ast.ArrayType:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.AssignStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.BadDecl:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.BadExpr:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.BadStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+	/*
+		case *ast.ArrayType:
+			return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		case *ast.AssignStmt:
+			return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		case *ast.BadDecl:
+			return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		case *ast.BadExpr:
+			return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		case *ast.BadStmt:
+			return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+	*/
 	case *ast.BasicLit:
 		return evalBasicLit(expr.(*ast.BasicLit), context)
 	case *ast.BinaryExpr:
 		return evalBinaryExpr(expr.(*ast.BinaryExpr), context)
-	case *ast.BlockStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.BranchStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		/*
+			case *ast.BlockStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.BranchStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		*/
 	case *ast.CallExpr:
 		return evalCallExpr(expr.(*ast.CallExpr), context)
-	case *ast.CaseClause:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.ChanType:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.CommClause:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.Comment:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.CommentGroup:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.CompositeLit:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.DeclStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.DeferStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.Ellipsis:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.EmptyStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.Field:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.FieldList:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.ForStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.FuncDecl:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.FuncLit:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.FuncType:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.GenDecl:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.GoStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		/*
+			case *ast.CaseClause:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.ChanType:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.CommClause:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.Comment:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.CommentGroup:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.CompositeLit:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.DeclStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.DeferStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.Ellipsis:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.EmptyStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.Field:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.FieldList:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.ForStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.FuncDecl:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.FuncLit:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.FuncType:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.GenDecl:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.GoStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		*/
 	case *ast.Ident:
 		return evalIdent(expr.(*ast.Ident), context)
-	case *ast.IfStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.ImportSpec:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.IncDecStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		/*
+			case *ast.IfStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.ImportSpec:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.IncDecStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		*/
 	case *ast.IndexExpr:
 		return evalIndexExpr(expr.(*ast.IndexExpr), context)
-	case *ast.InterfaceType:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.KeyValueExpr:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.LabeledStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.MapType:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.Package:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		/*
+			case *ast.InterfaceType:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.KeyValueExpr:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.LabeledStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.MapType:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.Package:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		*/
 	case *ast.ParenExpr:
 		return evalParenExpr(expr.(*ast.ParenExpr), context)
-	case *ast.RangeStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.ReturnStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.SelectStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		/*
+			case *ast.RangeStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.ReturnStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.SelectStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		*/
 	case *ast.SelectorExpr:
 		return evalSelectorExpr(expr.(*ast.SelectorExpr), context)
-	case *ast.SendStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		/*
+			case *ast.SendStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		*/
 	case *ast.SliceExpr:
 		return evalSliceExpr(expr.(*ast.SliceExpr), context)
 	case *ast.StarExpr:
 		return evalStarExpr(expr.(*ast.StarExpr), context)
-	case *ast.StructType:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.SwitchStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.TypeAssertExpr:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.TypeSpec:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-	case *ast.TypeSwitchStmt:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		/*
+			case *ast.StructType:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.SwitchStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.TypeAssertExpr:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.TypeSpec:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+			case *ast.TypeSwitchStmt:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		*/
 	case *ast.UnaryExpr:
 		return evalUnaryExpr(expr.(*ast.UnaryExpr), context)
-	case *ast.ValueSpec:
-		return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		/*
+			case *ast.ValueSpec:
+				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
+		*/
 	default:
 		return nil, fmt.Errorf("Default %s not suported", reflect.TypeOf(expr))
 	}
@@ -473,44 +491,57 @@ func evalBasicLit(expr *ast.BasicLit, context Context) (interface{}, error) {
 }
 
 func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{}) (interface{}, error) {
+	var op operation
+	//op = nil
+
 	switch expr.Op {
 	case token.ADD: // +
-		return evalBinaryExprADD(left, right)
+		op = opAdd{}
 	case token.SUB: // -
-		return evalBinaryExprSUB(left, right)
+		op = opSub{}
 	case token.MUL: // *
-		return evalBinaryExprMUL(left, right)
+		op = opMul{}
 	case token.QUO: // /
-		return evalBinaryExprQUO(left, right)
+		op = opQuo{}
 	case token.REM: // %
-		return evalBinaryExprREM(left, right)
+		op = opRem{}
 	case token.EQL: // ==
 		return evalBinaryExprEQL(left, right)
 	case token.LSS: // <
-		return evalBinaryExprLSS(left, right)
+		op = opLss{}
 	case token.GTR: // >
-		return evalBinaryExprGTR(left, right)
+		op = opGtr{}
 	case token.NEQ: // !=
 		return evalBinaryExprNEQ(left, right)
 	case token.GEQ: // >=
-		return evalBinaryExprGEQ(left, right)
+		op = opGeq{}
 	case token.LEQ: // <=
-		return evalBinaryExprLEQ(left, right)
+		op = opLeq{}
 	case token.AND: // &
-		return evalBinaryExprAND(left, right)
+		op = opAnd{}
 	case token.OR: // |
-		return evalBinaryExprOR(left, right)
+		op = opOr{}
 	case token.SHL: // <<
-		return evalBinaryExprSHL(left, right)
+		op = opShl{}
 	case token.SHR: // >>
-		return evalBinaryExprSHR(left, right)
+		op = opShr{}
 	case token.XOR: // ^
-		return evalBinaryExprXOR(left, right)
+		op = opXor{}
 	case token.AND_NOT: // &^
-		return evalBinaryExprANDNOT(left, right)
+		op = opAndNot{}
 	default:
 		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
 	}
+
+	tp, e := binaryOperType(left, right)
+	if e != nil {
+		return nil, e
+	}
+	if tp.IsNil() {
+		return nil, nil
+	}
+
+	return evalBinary(left, right, tp, op)
 
 }
 

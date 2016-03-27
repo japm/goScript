@@ -984,11 +984,16 @@ func TestDivConstIntString2(t *testing.T) {
 
 func TestDivConstStringString(t *testing.T) {
 
-	_, err := Eval("\"2\" / \"2\"", nil)
+	val, err := Eval("\"2\" / \"2\"", nil)
 
-	if err == nil {
-		t.Error("Expected err and error is nil")
+	if err != nil {
+		t.Error("Error not nil unexpected")
 	}
+
+	if val.(int) != 1 {
+		t.Error("Expected 1 get ", val)
+	}
+
 }
 
 func TestDivIntInt(t *testing.T) {
@@ -2664,11 +2669,16 @@ func TestRemConstIntString2(t *testing.T) {
 
 func TestRemConstStringString(t *testing.T) {
 
-	_, err := Eval("\"1\" % \"2\"", nil)
+	val, err := Eval("\"1\" % \"2\"", nil)
 
-	if err == nil {
-		t.Error("Expected error on string % string")
+	if err != nil {
+		t.Error("Unexpected error on string % string")
 	}
+
+	if val.(int) != 1 {
+		t.Error("Expected 3 get ", val)
+	}
+
 }
 
 func TestRemConstIntBool(t *testing.T) {
@@ -4413,10 +4423,14 @@ func TestAndConstIntString2(t *testing.T) {
 
 func TestAndConstStringString(t *testing.T) {
 
-	_, err := Eval("\"1\" & \"1\"", nil)
+	val, err := Eval("\"1\" & \"1\"", nil)
 
-	if err == nil {
-		t.Error("Expected err and error is nil")
+	if err != nil {
+		t.Error("Unexpected err and error is not nil")
+	}
+
+	if val.(int) != (1 & 1) {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -5217,10 +5231,14 @@ func TestOrConstIntString2(t *testing.T) {
 
 func TestOrConstStringString(t *testing.T) {
 
-	_, err := Eval("\"1\" | \"1\"", nil)
+	val, err := Eval("\"1\" | \"1\"", nil)
 
-	if err == nil {
-		t.Error("Expected err and error is nil")
+	if err != nil {
+		t.Error("Unexpected err and error is not nil")
+	}
+
+	if val.(int) != (1 | 1) {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -5692,10 +5710,14 @@ func TestShlConstIntString2(t *testing.T) {
 
 func TestShlConstStringString(t *testing.T) {
 
-	_, err := Eval("\"1\" << \"2\"", nil)
+	val, err := Eval("\"1\" << \"2\"", nil)
 
-	if err == nil {
-		t.Error("Expected error on string << string")
+	if err != nil {
+		t.Error("Unexpected err and error is not nil")
+	}
+
+	if val.(int) != (1 << 2) {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -6559,10 +6581,14 @@ func TestShrConstIntString2(t *testing.T) {
 
 func TestShrConstStringString(t *testing.T) {
 
-	_, err := Eval("\"1\" >> \"2\"", nil)
+	val, err := Eval("\"1\" >> \"2\"", nil)
 
-	if err == nil {
-		t.Error("Expected error on string << string")
+	if err != nil {
+		t.Error("Unexpected err and error is not nil")
+	}
+
+	if val.(int) != (1 >> 2) {
+		t.Error("Expected 1 get ", val)
 	}
 }
 
@@ -7426,10 +7452,14 @@ func TestXorConstIntString2(t *testing.T) {
 
 func TestXorConstStringString(t *testing.T) {
 
-	_, err := Eval("\"1\" ^ \"2\"", nil)
+	val, err := Eval("\"1\" ^ \"2\"", nil)
 
-	if err == nil {
-		t.Error("Expected error on string ^ string")
+	if err != nil {
+		t.Error("Unexpected err and error is not nil")
+	}
+
+	if val.(int) != (1 ^ 2) {
+		t.Error("Expected 1 get ", val)
 	}
 }
 

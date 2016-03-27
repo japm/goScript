@@ -1,4 +1,5 @@
 /*
+Package goScript
 The MIT License (MIT)
 Copyright (c) 2016 Juan Pascual
 */
@@ -8,35 +9,6 @@ import (
 	"fmt"
 	"reflect"
 )
-
-func evalBinaryExprLEQ(left interface{}, right interface{}) (interface{}, error) {
-	tp, e := binaryOperType(left, right)
-	if e != nil {
-		return nil, e
-	}
-	if tp.IsNil() {
-		return nil, nil
-	}
-	if !tp.IsNumeric() {
-		switch left.(type) {
-		case string:
-			val, err := castString(right)
-			if err != nil {
-				return nil, err
-			}
-			return left.(string) <= val, nil
-
-		case bool:
-
-		case nil:
-			return nil, nil
-		}
-	} else {
-		op := opLeq{}
-		return evalBinaryNumeric(left, right, tp, op)
-	}
-	return nil, fmt.Errorf("Unimplemented <= for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
-}
 
 func evalBinaryExprNEQ(left interface{}, right interface{}) (interface{}, error) {
 	val, err := evalBinaryExprEQL(left, right)
@@ -85,94 +57,7 @@ func evalBinaryExprEQL(left interface{}, right interface{}) (interface{}, error)
 		}
 	} else {
 		op := opEql{}
-		return evalBinaryNumeric(left, right, tp, op)
+		return evalBinary(left, right, tp, op)
 	}
 	return nil, fmt.Errorf("Unimplemented == for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
-}
-
-func evalBinaryExprLSS(left interface{}, right interface{}) (interface{}, error) {
-	tp, e := binaryOperType(left, right)
-	if e != nil {
-		return nil, e
-	}
-	if tp.IsNil() {
-		return nil, nil
-	}
-	if !tp.IsNumeric() {
-		switch left.(type) {
-		case string:
-			val, err := castString(right)
-			if err != nil {
-				return nil, err
-			}
-			return left.(string) < val, nil
-
-		case bool:
-
-		case nil:
-
-		}
-	} else {
-		op := opLss{}
-		return evalBinaryNumeric(left, right, tp, op)
-	}
-	return nil, fmt.Errorf("Unimplemented < for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
-}
-
-func evalBinaryExprGTR(left interface{}, right interface{}) (interface{}, error) {
-	tp, e := binaryOperType(left, right)
-	if e != nil {
-		return nil, e
-	}
-	if tp.IsNil() {
-		return nil, nil
-	}
-	if !tp.IsNumeric() {
-		switch left.(type) {
-		case string:
-			val, err := castString(right)
-			if err != nil {
-				return nil, err
-			}
-			return left.(string) > val, nil
-
-		case bool:
-
-		case nil:
-
-		}
-	} else {
-		op := opGtr{}
-		return evalBinaryNumeric(left, right, tp, op)
-	}
-	return nil, fmt.Errorf("Unimplemented > for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
-}
-
-func evalBinaryExprGEQ(left interface{}, right interface{}) (interface{}, error) {
-	tp, e := binaryOperType(left, right)
-	if e != nil {
-		return nil, e
-	}
-	if tp.IsNil() {
-		return nil, nil
-	}
-	if !tp.IsNumeric() {
-		switch left.(type) {
-		case string:
-			val, err := castString(right)
-			if err != nil {
-				return nil, err
-			}
-			return left.(string) >= val, nil
-
-		case bool:
-
-		case nil:
-
-		}
-	} else {
-		op := opGeq{}
-		return evalBinaryNumeric(left, right, tp, op)
-	}
-	return nil, fmt.Errorf("Unimplemented >= for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }

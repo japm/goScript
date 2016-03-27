@@ -15,7 +15,7 @@ func TestCtxIMapBasics(t *testing.T) {
 		t.Error("Expected 1 get ", val)
 	}
 
-	val, err = Eval("b", &ctxt)
+	_, err = Eval("b", &ctxt)
 	if err == nil {
 		t.Error("Expected err", err)
 	}
@@ -56,7 +56,7 @@ func TestCtxInterfBasics(t *testing.T) {
 		t.Error("Expected 1 get ", val)
 	}
 
-	val, err = Eval("b", ctxt2)
+	_, err = Eval("b", ctxt2)
 	if err == nil {
 		t.Error("Expected err", err)
 	}
@@ -73,7 +73,7 @@ func TestCtxMapBasics(t *testing.T) {
 		t.Error("Expected 1 get ", val)
 	}
 
-	val, err = Eval("b", ctxt)
+	_, err = Eval("b", ctxt)
 	if err == nil {
 		t.Error("Expected err", err)
 	}

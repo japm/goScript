@@ -37,7 +37,7 @@ func TestCallBasics(t *testing.T) {
 
 	val, err := Eval("a.Test()", ctxt)
 	if err != nil {
-		t.Errorf("err not nil", err)
+		t.Error("err not nil", err)
 	}
 	if val.(int) != 1 {
 		t.Errorf("Expected 1 returned %d", val)
@@ -45,7 +45,7 @@ func TestCallBasics(t *testing.T) {
 
 	val, err = Eval("a.Test2(2)", ctxt)
 	if err != nil {
-		t.Errorf("err not nil", err)
+		t.Error("err not nil", err)
 	}
 	if val.(int) != 2 {
 		t.Errorf("Expected 2 returned %d", val)
@@ -53,7 +53,7 @@ func TestCallBasics(t *testing.T) {
 
 	val, err = Eval("a.Test3(2)", ctxt)
 	if err != nil {
-		t.Errorf("err not nil", err)
+		t.Error("err not nil", err)
 	}
 	if len(val.([]interface{})) != 1 {
 		t.Errorf("Expected arr returned %d", val)
@@ -69,7 +69,7 @@ func TestCallBasics(t *testing.T) {
 
 	val, err = Eval("a.Test5(2,4)", ctxt)
 	if err != nil {
-		t.Errorf("err not nil", err)
+		t.Error("err not nil", err)
 	}
 	if len(val.([]interface{})) != 1 {
 		t.Errorf("Expected arr returned %d", val)
@@ -82,7 +82,7 @@ func TestCallBasics(t *testing.T) {
 
 	val, err = Eval("a1.TestPtr1()", ctxt)
 	if err != nil {
-		t.Errorf("err not nil", err)
+		t.Error("err not nil", err)
 	}
 	if val.(int) != 1 {
 		t.Errorf("Expected 1 returned %d", val)
@@ -90,7 +90,7 @@ func TestCallBasics(t *testing.T) {
 
 	val, err = Eval("a.Test6(2, 3)", ctxt)
 	if err != nil {
-		t.Errorf("err not nil", err)
+		t.Error("err not nil", err)
 	}
 	if val.(float64) != 5 {
 		t.Errorf("Expected 5 returned %d", val)

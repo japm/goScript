@@ -47,7 +47,7 @@ func (t typeDesc) Bool() bool {
 	return t.Type == tpBool
 }
 
-func binaryOperType(left interface{}, right interface{}) (tp typeDesc, err error) {
+func binaryOperType(left interface{}, right interface{}) (typeDesc, error) {
 	lType, err := valType(left)
 	if err != nil {
 		return lType, err
@@ -65,6 +65,8 @@ func binaryOperType(left interface{}, right interface{}) (tp typeDesc, err error
 		return lType, nil
 	}
 
+	tp := typeDesc{}
+
 	tp.Signed = lType.Signed || rType.Signed
 	if lType.Size > rType.Size {
 		tp.Size = lType.Size
@@ -79,11 +81,10 @@ func binaryOperType(left interface{}, right interface{}) (tp typeDesc, err error
 
 	tp.PlatformSize = lType.PlatformSize && rType.PlatformSize
 
-	err = nil
-	return
+	return tp, nil
 }
 
-func binaryOperTypeL(left interface{}, right interface{}) (tp typeDesc, err error) {
+func binaryOperTypeL(left interface{}, right interface{}) (typeDesc, error) {
 
 	lType, err := valType(left)
 	if err != nil {
@@ -115,6 +116,8 @@ func binaryOperTypeL(left interface{}, right interface{}) (tp typeDesc, err erro
 		}
 		return lType, nil
 	}
+	tp := typeDesc{}
+
 	tp.Signed = lType.Signed || rType.Signed
 	if lType.Size > rType.Size {
 		tp.Size = lType.Size
@@ -128,11 +131,10 @@ func binaryOperTypeL(left interface{}, right interface{}) (tp typeDesc, err erro
 	}
 	tp.PlatformSize = lType.PlatformSize && rType.PlatformSize
 
-	err = nil
-	return
+	return tp, nil
 }
 
-func valType(value interface{}) (tp typeDesc, err error) {
+func valType(value interface{}) (typeDesc, error) {
 
 	switch value.(type) {
 	case uint8:
@@ -543,6 +545,13 @@ func castInt(value interface{}) (int, error) {
 		return 0, nil
 	}
 	return 0, fmt.Errorf("Unimplemented cast to int for type %s", reflect.TypeOf(value))
+}
+
+func castIntFromBool(value bool) (int, error) {
+	if value {
+		return 1, nil
+	}
+	return 0, nil
 }
 
 func castInt32(value interface{}) (int32, error) {
