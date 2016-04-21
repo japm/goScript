@@ -134,7 +134,7 @@ func (op opSub) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 }
 
 func (op opSub) OperNilLeft(r interface{}) (interface{}, error) {
-	return evalUnaryExprSUB(r)
+	return nil, nil
 }
 
 type opMul struct {

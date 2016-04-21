@@ -4,10 +4,6 @@ Copyright (c) 2016 Juan Pascual
 */
 package goScript
 
-import (
-	"fmt"
-	"reflect"
-)
 
 func isEmpty(s string) bool {
 	if len(s) == 0 {
@@ -21,14 +17,21 @@ func isEmpty(s string) bool {
 	return true
 }
 
-func evalBinary(left interface{}, right interface{}, tp typeDesc, oper operation) (interface{}, error) {
+func evalBinary(left value, right value, tp typeDesc, oper operation) (value, error) {
+
+  v, e := oper.OperI64I64(left.ToInt64(), right.ToInt64())
+	return buildValue(v), e
+
+}
+/*
+func evalBinary(left value, right value, tp typeDesc, oper operation) (value, error) {
 	if tp.IsNil() {
 		return nil, nil
 	}
 	if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
-			return oper.OperStrInterf(left.(string), right)
+			return oper.OperStrInterf(value.ToString(), right.ForceInterface()())
 		case bool:
 			return oper.OperBoolInterf(left.(bool), right)
 		case nil:
@@ -144,3 +147,4 @@ func evalBinary(left interface{}, right interface{}, tp typeDesc, oper operation
 	}
 	return nil, fmt.Errorf("Unimplemented op for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
+*/

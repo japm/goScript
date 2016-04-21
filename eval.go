@@ -101,7 +101,9 @@ func (e *Expr) Eval(context interface{}) (val interface{}, err error) {
 func (e *Expr) EvalNoRecover(context interface{}) (interface{}, error) {
 
 	ctxt := createContext(context)
-	return eval(e.expr, ctxt)
+	val, err := eval(e.expr, ctxt)
+  return val.ToInterface(), err
+
 }
 
 // EvalInt convenient function casting return type to int
@@ -187,7 +189,7 @@ func createContext(context interface{}) Context {
 }
 
 //Evaluates all kinds of ast node types
-func eval(expr ast.Node, context Context) (interface{}, error) {
+func eval(expr ast.Node, context Context) (value, error) {
 	//fmt.Println(reflect.TypeOf(expr), time.Now().UnixNano()/int64(10000), expr)
 	switch expr.(type) {
 	/*
@@ -319,7 +321,7 @@ func eval(expr ast.Node, context Context) (interface{}, error) {
 	}
 }
 
-func evalIndexExpr(expr *ast.IndexExpr, context Context) (interface{}, error) {
+func evalIndexExpr(expr *ast.IndexExpr, context Context) (value, error) {
 
 	val, err := eval(expr.X, context)
 	if err != nil {
@@ -350,11 +352,11 @@ func evalIndexExpr(expr *ast.IndexExpr, context Context) (interface{}, error) {
 		return nil, nil
 	}
 
-	return retVal.Interface(), nil
+	return buildValue(retVal.Interface()), nil
 
 }
 
-func evalStarExpr(expr *ast.StarExpr, context Context) (interface{}, error) {
+func evalStarExpr(expr *ast.StarExpr, context Context) (value, error) {
 
 	val, err := eval(expr.X, context)
 	if err != nil {
@@ -366,10 +368,10 @@ func evalStarExpr(expr *ast.StarExpr, context Context) (interface{}, error) {
 		return nil, fmt.Errorf("Expected pointer, found %d ", refVal.Type())
 	}
 
-	return refVal.Elem().Interface(), nil
+	return buildValue(refVal.Elem().Interface()), nil
 }
 
-func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
+func evalSliceExpr(expr *ast.SliceExpr, context Context) (value, error) {
 
 	//Get array object
 	val, err := eval(expr.X, context)
@@ -411,33 +413,35 @@ func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
-		return sl.Slice3(i, j, k).Interface(), nil
+		return buildValue(sl.Slice3(i, j, k).Interface()), nil
 	}
-	return sl.Slice(i, j).Interface(), nil
+	return buildValue(sl.Slice(i, j).Interface()), nil
 }
 
-func evalParenExpr(expr *ast.ParenExpr, context Context) (interface{}, error) {
+func evalParenExpr(expr *ast.ParenExpr, context Context) (value, error) {
 	return eval(expr.X, context)
 }
 
-func evalUnaryExpr(expr *ast.UnaryExpr, context Context) (interface{}, error) {
-	val, err := eval(expr.X, context)
+func evalUnaryExpr(expr *ast.UnaryExpr, context Context) (value, error) {
+	_, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err
 	}
 	switch expr.Op {
+		/*
 	case token.NOT:
 		return evalUnaryExprNOT(val)
 	case token.SUB:
 		return evalUnaryExprSUB(val)
 	case token.AND:
 		return evalUnaryExprAND(val)
+		*/
 	default:
 		return nil, fmt.Errorf("Unary operation %d not implemented", expr.Op)
 	}
 }
 
-func evalBinaryExpr(expr *ast.BinaryExpr, context Context) (interface{}, error) {
+func evalBinaryExpr(expr *ast.BinaryExpr, context Context) (value, error) {
 
 	if expr.Op == token.LAND ||
 		expr.Op == token.LOR {
@@ -457,7 +461,7 @@ func evalBinaryExpr(expr *ast.BinaryExpr, context Context) (interface{}, error) 
 	return evalBinaryExprOp(expr, left, right)
 }
 
-func evalIdent(expr *ast.Ident, context Context) (interface{}, error) {
+func evalIdent(expr *ast.Ident, context Context) (value, error) {
 
 	lname := len(expr.Name)
 
@@ -466,25 +470,29 @@ func evalIdent(expr *ast.Ident, context Context) (interface{}, error) {
 		if expr.Name == "nil" {
 			return nil, nil
 		} else if expr.Name == "len" {
-			return reflLen, nil
+			return buildValue(reflLen), nil
 		}
 	} else if lname == 4 && expr.Name == "true" {
-		return true, nil
+		return buildValue(true), nil
 	} else if lname == 5 && expr.Name == "false" {
-		return false, nil
+		return buildValue(false), nil
 	}
 	//No context, cant return an ident
 	if context == nil {
 		return nil, fmt.Errorf("Context is null, no ident possible for %s", expr.Name)
 	}
 
-	return context.GetIdent(expr.Name)
+  val, err := context.GetIdent(expr.Name)
+	return buildValue(val), err
 }
 
-func evalBasicLit(expr *ast.BasicLit, context Context) (interface{}, error) {
+func evalBasicLit(expr *ast.BasicLit, context Context) (value, error) {
+
 	switch expr.Kind {
 	case token.INT:
-		return strconv.ParseInt(expr.Value, 10, strconv.IntSize)
+		v,e := strconv.ParseInt(expr.Value, 10, strconv.IntSize)
+		return vInt(v), e
+		/*
 	case token.FLOAT:
 		return strconv.ParseFloat(expr.Value, 10)
 	case token.IMAG:
@@ -493,12 +501,13 @@ func evalBasicLit(expr *ast.BasicLit, context Context) (interface{}, error) {
 		return expr.Value, nil
 	case token.STRING:
 		return expr.Value[1 : len(expr.Value)-1], nil
+		*/
 	default:
 		return nil, fmt.Errorf("token type not suported %d %s", expr.Kind, expr.Value)
 	}
 }
 
-func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{}) (interface{}, error) {
+func evalBinaryExprOp(expr *ast.BinaryExpr, left value, right value) (value, error) {
 	var op operation
 	//op = nil
 
@@ -513,14 +522,14 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 		op = opQuo{}
 	case token.REM: // %
 		op = opRem{}
-	case token.EQL: // ==
-		return evalBinaryExprEQL(left, right)
+	//case token.EQL: // ==
+	//	return evalBinaryExprEQL(left, right)
 	case token.LSS: // <
 		op = opLss{}
 	case token.GTR: // >
 		op = opGtr{}
-	case token.NEQ: // !=
-		return evalBinaryExprNEQ(left, right)
+//case token.NEQ: // !=
+//		return evalBinaryExprNEQ(left, right)
 	case token.GEQ: // >=
 		op = opGeq{}
 	case token.LEQ: // <=
@@ -549,18 +558,20 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 	return evalBinary(left, right, tp, op)
 }
 
-func evalBinaryExprOpLazy(expr *ast.BinaryExpr, context Context) (interface{}, error) {
+func evalBinaryExprOpLazy(expr *ast.BinaryExpr, context Context) (value, error) {
 	switch expr.Op {
+		/*
 	case token.LAND: // &&
 		return evalBinaryExprLAND(expr, context)
 	case token.LOR: // ||
 		return evalBinaryExprLOR(expr, context)
+		*/
 	default:
 		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
 	}
 }
-
-func evalUnaryExprSUB(value interface{}) (interface{}, error) {
+/*
+func evalUnaryExprSUB(value interface{}) (value, error) {
 	switch value.(type) {
 	case uint8:
 		return -value.(uint8), nil
@@ -594,7 +605,7 @@ func evalUnaryExprSUB(value interface{}) (interface{}, error) {
 	return nil, fmt.Errorf("Unimplemented not for type %s", reflect.TypeOf(value))
 }
 
-func evalUnaryExprAND(value interface{}) (interface{}, error) {
+func evalUnaryExprAND(value interface{}) (value, error) {
 
 	val := reflect.ValueOf(value)
 
@@ -612,3 +623,4 @@ func evalUnaryExprAND(value interface{}) (interface{}, error) {
 
 	return val.Addr(), nil
 }
+*/

@@ -4,13 +4,14 @@ Copyright (c) 2016 Juan Pascual
 */
 package goScript
 
+/*
 import (
 	"fmt"
 	"go/ast"
 	"reflect"
 )
 
-func evalBinaryExprLAND(expr *ast.BinaryExpr, context Context) (interface{}, error) {
+func evalBinaryExprLAND(expr *ast.BinaryExpr, context Context) (value, error) {
 	left, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err
@@ -35,7 +36,7 @@ func evalBinaryExprLAND(expr *ast.BinaryExpr, context Context) (interface{}, err
 	return rbool, nil
 }
 
-func evalBinaryExprLOR(expr *ast.BinaryExpr, context Context) (interface{}, error) {
+func evalBinaryExprLOR(expr *ast.BinaryExpr, context Context) (value, error) {
 	left, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err
@@ -59,7 +60,7 @@ func evalBinaryExprLOR(expr *ast.BinaryExpr, context Context) (interface{}, erro
 	return rbool, nil
 }
 
-func evalUnaryExprNOT(value interface{}) (interface{}, error) {
+func evalUnaryExprNOT(value interface{}) (value, error) {
 	tp := valType(value)
 
 	if tp.IsNil() {
@@ -166,3 +167,4 @@ func evalUnaryExprNOT(value interface{}) (interface{}, error) {
 	return nil, fmt.Errorf("Unimplemented not for type  %s ", reflect.TypeOf(value))
 
 }
+*/

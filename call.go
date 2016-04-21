@@ -16,7 +16,7 @@ type callSyte struct {
 	calleeVal reflect.Value
 }
 
-func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (interface{}, error) {
+func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (value, error) {
 	callee, err := eval(expr.X, context)
 	if err != nil {
 		return nil, err
@@ -30,18 +30,18 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (interface{}, err
 	sName := expr.Sel.Name
 	_, ok := fieldVal.Type().FieldByName(sName) //Faster than  fieldVal.FieldByName(sName)
 	if ok {
-		return fieldVal.FieldByName(sName).Interface(), nil
+		return buildValue(fieldVal.FieldByName(sName).Interface()), nil
 	}
 	//Not a field, must be a function
-	return callSyte{callee, sName, calleeVal}, nil
+	return buildValue(callSyte{callee.ForceInterface(), sName, calleeVal}), nil
 }
 
-func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
+func evalCallExpr(expr *ast.CallExpr, context Context) (value, error) {
 
 	//Can be optimized if expr is allways evalSelectorExpr or evalIdent
 	//The return value must be a callsite, 10% performance increase on evalSelectorExpr calls
 	//with this optimization
-	val, err := eval(expr.Fun, context) //Find the type called, this calls evalSelectorExpr
+	valV, err := eval(expr.Fun, context) //Find the type called, this calls evalSelectorExpr
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +49,8 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 	//-------------------Check Method------------------------
 	var vaArgsTp reflect.Type
 	var method reflect.Value
+
+	val  := valV.ToInterface()
 
 	callsite, ok := val.(callSyte)
 
@@ -121,5 +123,5 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 	if len(retVal) == 0 {
 		return nil, nil
 	}
-	return retVal[0].Interface(), nil
+	return buildValue(retVal[0].Interface()), nil
 }

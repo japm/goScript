@@ -5,12 +5,13 @@ Copyright (c) 2016 Juan Pascual
 */
 package goScript
 
+/*
 import (
 	"fmt"
 	"reflect"
 )
 
-func evalBinaryExprNEQ(left interface{}, right interface{}) (interface{}, error) {
+func evalBinaryExprNEQ(left interface{}, right interface{}) (value, error) {
 	val, err := evalBinaryExprEQL(left, right)
 	if err != nil {
 		return nil, err
@@ -18,7 +19,8 @@ func evalBinaryExprNEQ(left interface{}, right interface{}) (interface{}, error)
 	return !val.(bool), nil
 }
 
-func evalBinaryExprEQL(left interface{}, right interface{}) (interface{}, error) {
+
+func evalBinaryExprEQL(left interface{}, right interface{}) (value, error) {
 	tp, e := binaryOperTypeL(left, right)
 	if e != nil {
 		return nil, e
@@ -61,3 +63,4 @@ func evalBinaryExprEQL(left interface{}, right interface{}) (interface{}, error)
 	}
 	return nil, fmt.Errorf("Unimplemented == for types  %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
+*/
