@@ -60,12 +60,7 @@ func evalBinaryExprLOR(expr *ast.BinaryExpr, context Context) (interface{}, erro
 }
 
 func evalUnaryExprNOT(value interface{}) (interface{}, error) {
-
-	tp, e := valType(value)
-
-	if e != nil {
-		return nil, e
-	}
+	tp := valType(value)
 
 	if tp.IsNil() {
 		return nil, nil

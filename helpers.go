@@ -29,10 +29,8 @@ func evalBinary(left interface{}, right interface{}, tp typeDesc, oper operation
 		switch left.(type) {
 		case string:
 			return oper.OperStrInterf(left.(string), right)
-
 		case bool:
 			return oper.OperBoolInterf(left.(bool), right)
-
 		case nil:
 			return oper.OperNilLeft(right)
 		}

@@ -11,7 +11,7 @@ import (
 )
 
 type callSyte struct {
-	callee    interface{}
+	callee interface{}
 	fnName    string
 	calleeVal reflect.Value
 }

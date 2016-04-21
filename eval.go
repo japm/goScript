@@ -84,6 +84,7 @@ func (e *Expr) Prepare(expr string) error {
 
 // Eval a prepared sentence
 func (e *Expr) Eval(context interface{}) (val interface{}, err error) {
+
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("Eval paniked. %s", r)
@@ -91,9 +92,16 @@ func (e *Expr) Eval(context interface{}) (val interface{}, err error) {
 	}()
 
 	ctxt := createContext(context)
-
 	val, err = eval(e.expr, ctxt)
+
 	return val, err
+}
+
+//EvalNoRecover without recover on defer
+func (e *Expr) EvalNoRecover(context interface{}) (interface{}, error) {
+
+	ctxt := createContext(context)
+	return eval(e.expr, ctxt)
 }
 
 // EvalInt convenient function casting return type to int
@@ -537,12 +545,8 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 	if e != nil {
 		return nil, e
 	}
-	if tp.IsNil() {
-		return nil, nil
-	}
 
 	return evalBinary(left, right, tp, op)
-
 }
 
 func evalBinaryExprOpLazy(expr *ast.BinaryExpr, context Context) (interface{}, error) {

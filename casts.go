@@ -39,6 +39,7 @@ func (t typeDesc) IsNil() bool {
 func (t typeDesc) IsNumeric() bool {
 	return t.Type == tpInt || t.Type == tpFloat
 }
+
 func (t typeDesc) Float() bool {
 	return t.Type == tpFloat
 }
@@ -48,15 +49,9 @@ func (t typeDesc) Bool() bool {
 }
 
 func binaryOperType(left interface{}, right interface{}) (typeDesc, error) {
-	lType, err := valType(left)
-	if err != nil {
-		return lType, err
-	}
+	lType := valType(left)
 
-	rType, err := valType(right)
-	if err != nil {
-		return lType, err
-	}
+	rType := valType(right)
 
 	if !lType.IsNumeric() {
 		if lType.IsNil() {
@@ -65,36 +60,26 @@ func binaryOperType(left interface{}, right interface{}) (typeDesc, error) {
 		return lType, nil
 	}
 
-	tp := typeDesc{}
-
-	tp.Signed = lType.Signed || rType.Signed
-	if lType.Size > rType.Size {
-		tp.Size = lType.Size
-	} else {
-		tp.Size = rType.Size
+	lType.Signed = lType.Signed || rType.Signed
+	if lType.Size < rType.Size {
+		lType.Size = rType.Size
 	}
 	if lType.Type == tpFloat || rType.Type == tpFloat {
-		tp.Type = tpFloat
+		lType.Type = tpFloat
 	} else {
-		tp.Type = tpInt
+		lType.Type = tpInt
 	}
 
-	tp.PlatformSize = lType.PlatformSize && rType.PlatformSize
+	lType.PlatformSize = lType.PlatformSize && rType.PlatformSize
 
-	return tp, nil
+	return lType, nil
 }
 
 func binaryOperTypeL(left interface{}, right interface{}) (typeDesc, error) {
 
-	lType, err := valType(left)
-	if err != nil {
-		return lType, err
-	}
+	lType := valType(left)
 
-	rType, err := valType(right)
-	if err != nil {
-		return lType, err
-	}
+	rType := valType(right)
 
 	//Bool have precedence here
 	if lType.Bool() {
@@ -134,41 +119,41 @@ func binaryOperTypeL(left interface{}, right interface{}) (typeDesc, error) {
 	return tp, nil
 }
 
-func valType(value interface{}) (typeDesc, error) {
+func valType(value interface{}) (typeDesc) {
 
 	switch value.(type) {
 	case uint8:
-		return typeDesc{tpInt, 8, false, false}, nil
+		return typeDesc{tpInt, 8, false, false}
 	case uint16:
-		return typeDesc{tpInt, 16, false, false}, nil
+		return typeDesc{tpInt, 16, false, false}
 	case uint32:
-		return typeDesc{tpInt, 32, false, false}, nil
+		return typeDesc{tpInt, 32, false, false}
 	case uint64:
-		return typeDesc{tpInt, 64, false, false}, nil
+		return typeDesc{tpInt, 64, false, false}
 	case uint:
-		return typeDesc{tpInt, strconv.IntSize, false, true}, nil
+		return typeDesc{tpInt, strconv.IntSize, false, true}
 	case int8:
-		return typeDesc{tpInt, 8, true, false}, nil
+		return typeDesc{tpInt, 8, true, false}
 	case int16:
-		return typeDesc{tpInt, 16, true, false}, nil
+		return typeDesc{tpInt, 16, true, false}
 	case int32:
-		return typeDesc{tpInt, 32, true, false}, nil
+		return typeDesc{tpInt, 32, true, false}
 	case int64:
-		return typeDesc{tpInt, 64, true, false}, nil
+		return typeDesc{tpInt, 64, true, false}
 	case int:
-		return typeDesc{tpInt, strconv.IntSize, true, true}, nil
+		return typeDesc{tpInt, strconv.IntSize, true, true}
 	case float32:
-		return typeDesc{tpFloat, 32, true, false}, nil
+		return typeDesc{tpFloat, 32, true, false}
 	case float64:
-		return typeDesc{tpFloat, 64, true, false}, nil
+		return typeDesc{tpFloat, 64, true, false}
 	case string:
-		return typeDesc{tpString, 0, false, false}, nil
+		return typeDesc{tpString, 0, false, false}
 	case bool:
-		return typeDesc{tpBool, 0, false, false}, nil
+		return typeDesc{tpBool, 0, false, false}
 	case nil:
-		return typeDesc{tpNil, 0, false, false}, nil
+		return typeDesc{tpNil, 0, false, false}
 	default:
-		return typeDesc{tpPointer, 0, false, false}, nil
+		return typeDesc{tpPointer, 0, false, false}
 	}
 	//return typeDesc{tpNone, 0, false, false}, fmt.Errorf("Unimplemented type size", reflect.TypeOf(value))
 }
@@ -602,50 +587,57 @@ func castInt32(value interface{}) (int32, error) {
 }
 
 func castInt64(value interface{}) (int64, error) {
+	var ret int64
+	var err error
 	switch value.(type) {
 	case uint8:
-		return int64(value.(uint8)), nil
+		ret, err = int64(value.(uint8)), nil
 	case uint16:
-		return int64(value.(uint16)), nil
+		ret, err = int64(value.(uint16)), nil
 	case uint32:
-		return int64(value.(uint32)), nil
+		ret, err = int64(value.(uint32)), nil
 	case uint64:
-		return int64(value.(uint64)), nil
+		ret, err = int64(value.(uint64)), nil
 	case uint:
-		return int64(value.(uint)), nil
+		ret, err = int64(value.(uint)), nil
 	case int8:
-		return int64(value.(int8)), nil
+		ret, err = int64(value.(int8)), nil
 	case int16:
-		return int64(value.(int16)), nil
+		ret, err = int64(value.(int16)), nil
 	case int32:
-		return int64(value.(int32)), nil
+		ret, err = int64(value.(int32)), nil
 	case int64:
-		return value.(int64), nil
+		ret, err = value.(int64), nil
 	case int:
-		return int64(value.(int)), nil
+		ret, err = int64(value.(int)), nil
 	case float32:
-		return int64(value.(float32)), nil
+		ret, err = int64(value.(float32)), nil
 	case float64:
-		return int64(value.(float64)), nil
+		ret, err = int64(value.(float64)), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return int64(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = int64(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return int64(valf), nil
+		ret, err = int64(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to int64 for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to int64 for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castFloat32(value interface{}) (float32, error) {
