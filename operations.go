@@ -9,7 +9,7 @@ import "strings"
 type operation interface {
 	OperF32F32(l float32, r float32) (interface{}, error)
 	OperF64F64(l float64, r float64) (interface{}, error)
-	OperI64I64(l int64, r int64) (interface{}, error)
+	OperI64I64(l int64, r int64) (value, error)
 	OperI32I32(l int32, r int32) (interface{}, error)
 	OperI16I16(l int16, r int16) (interface{}, error)
 	OperI8I8(l int8, r int8) (interface{}, error)
@@ -33,8 +33,8 @@ func (op opAdd) OperF32F32(l float32, r float32) (interface{}, error) {
 func (op opAdd) OperF64F64(l float64, r float64) (interface{}, error) {
 	return l + r, nil
 }
-func (op opAdd) OperI64I64(l int64, r int64) (interface{}, error) {
-	return l + r, nil
+func (op opAdd) OperI64I64(l int64, r int64) (value, error) {
+	return vInt(l + r), nil
 }
 func (op opAdd) OperI32I32(l int32, r int32) (interface{}, error) {
 	return l + r, nil
@@ -88,8 +88,8 @@ func (op opSub) OperF32F32(l float32, r float32) (interface{}, error) {
 func (op opSub) OperF64F64(l float64, r float64) (interface{}, error) {
 	return l - r, nil
 }
-func (op opSub) OperI64I64(l int64, r int64) (interface{}, error) {
-	return l - r, nil
+func (op opSub) OperI64I64(l int64, r int64) (value, error) {
+	return vInt(l - r), nil
 }
 func (op opSub) OperI32I32(l int32, r int32) (interface{}, error) {
 	return l - r, nil
@@ -146,8 +146,8 @@ func (op opMul) OperF32F32(l float32, r float32) (interface{}, error) {
 func (op opMul) OperF64F64(l float64, r float64) (interface{}, error) {
 	return l * r, nil
 }
-func (op opMul) OperI64I64(l int64, r int64) (interface{}, error) {
-	return l * r, nil
+func (op opMul) OperI64I64(l int64, r int64) (value, error) {
+	return vInt(l * r), nil
 }
 func (op opMul) OperI32I32(l int32, r int32) (interface{}, error) {
 	return l * r, nil
@@ -191,7 +191,7 @@ func (op opMul) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 func (op opMul) OperNilLeft(r interface{}) (interface{}, error) {
 	return nil, nil
 }
-
+/*
 type opQuo struct {
 }
 
@@ -1115,3 +1115,4 @@ func (op opGeq) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 func (op opGeq) OperNilLeft(r interface{}) (interface{}, error) {
 	return nil, nil
 }
+*/

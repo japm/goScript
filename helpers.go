@@ -19,8 +19,7 @@ func isEmpty(s string) bool {
 
 func evalBinary(left value, right value, tp typeDesc, oper operation) (value, error) {
 
-  v, e := oper.OperI64I64(left.ToInt64(), right.ToInt64())
-	return buildValue(v), e
+  return oper.OperI64I64(left.ToInt64(), right.ToInt64())
 
 }
 /*

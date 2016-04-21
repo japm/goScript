@@ -518,6 +518,7 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left value, right value) (value, err
 		op = opSub{}
 	case token.MUL: // *
 		op = opMul{}
+		/*
 	case token.QUO: // /
 		op = opQuo{}
 	case token.REM: // %
@@ -546,6 +547,7 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left value, right value) (value, err
 		op = opXor{}
 	case token.AND_NOT: // &^
 		op = opAndNot{}
+		*/
 	default:
 		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
 	}
