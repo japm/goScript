@@ -3,7 +3,7 @@ The MIT License (MIT)
 Copyright (c) 2016 Juan Pascual
 */
 package goScript
-
+/*
 import (
 	"fmt"
 	"go/ast"
@@ -125,3 +125,4 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (value, error) {
 	}
 	return buildValue(retVal[0].Interface()), nil
 }
+*/

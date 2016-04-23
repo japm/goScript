@@ -587,57 +587,53 @@ func castInt32(value interface{}) (int32, error) {
 }
 
 func castInt64(value interface{}) (int64, error) {
-	var ret int64
-	var err error
+
 	switch value.(type) {
 	case uint8:
-		ret, err = int64(value.(uint8)), nil
+		return int64(value.(uint8)), nil
 	case uint16:
-		ret, err = int64(value.(uint16)), nil
+		return int64(value.(uint16)), nil
 	case uint32:
-		ret, err = int64(value.(uint32)), nil
+		return int64(value.(uint32)), nil
 	case uint64:
-		ret, err = int64(value.(uint64)), nil
+		return int64(value.(uint64)), nil
 	case uint:
-		ret, err = int64(value.(uint)), nil
+		return int64(value.(uint)), nil
 	case int8:
-		ret, err = int64(value.(int8)), nil
+		return int64(value.(int8)), nil
 	case int16:
-		ret, err = int64(value.(int16)), nil
+		return int64(value.(int16)), nil
 	case int32:
-		ret, err = int64(value.(int32)), nil
+		return int64(value.(int32)), nil
 	case int64:
-		ret, err = value.(int64), nil
+		return value.(int64), nil
 	case int:
-		ret, err = int64(value.(int)), nil
+		return int64(value.(int)), nil
 	case float32:
-		ret, err = int64(value.(float32)), nil
+		return int64(value.(float32)), nil
 	case float64:
-		ret, err = int64(value.(float64)), nil
+		return int64(value.(float64)), nil
 	case string:
 		vali, e := strconv.ParseInt(value.(string), 10, 64)
 		if e == nil {
-			ret, err = int64(vali), nil
-			break
+			return int64(vali), nil
 		}
 		valf, e := strconv.ParseFloat(value.(string), 10)
 		if e != nil {
-			ret, err = 0, e
-			break
+			return 0, e
 		}
-		ret, err = int64(valf), nil
+		return int64(valf), nil
 	case bool:
 		if value.(bool) {
-			ret, err = 1, nil
+			return 1, nil
 		} else {
-			ret, err = 0, nil
+			return 0, nil
 		}
 	case nil:
-		ret, err = 0, nil
+		return 0, nil
 	default:
-		ret, err = 0, fmt.Errorf("Unimplemented cast to int64 for type %s", reflect.TypeOf(value))
+		return 0, fmt.Errorf("Unimplemented cast to int64 for type %s", reflect.TypeOf(value))
 	}
-	return ret, err
 }
 
 func castFloat32(value interface{}) (float32, error) {

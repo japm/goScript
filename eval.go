@@ -213,10 +213,10 @@ func eval(expr ast.Node, context Context) (value, error) {
 				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 			case *ast.BranchStmt:
 				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-		*/
+
 	case *ast.CallExpr:
 		return evalCallExpr(expr.(*ast.CallExpr), context)
-		/*
+
 			case *ast.CaseClause:
 				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 			case *ast.ChanType:
@@ -287,10 +287,10 @@ func eval(expr ast.Node, context Context) (value, error) {
 				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 			case *ast.SelectStmt:
 				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
-		*/
+
 	case *ast.SelectorExpr:
 		return evalSelectorExpr(expr.(*ast.SelectorExpr), context)
-		/*
+		
 			case *ast.SendStmt:
 				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 		*/
