@@ -24,7 +24,6 @@ func isEmpty(s string) bool {
 	return true
 }
 
-///ConstNode new ast.Node for constant pre evaluation
 type constNodeBasicLit struct {
 	ast.BasicLit
 	value interface{}
@@ -46,7 +45,7 @@ type constNodeBinaryExpr struct {
 }
 
 
-//Evaluates all kinds of ast node types
+//Replace constants in expressions for its values precalculated
 func replaceConstants(expr ast.Node) ast.Node {
 	switch expr.(type) {
 	case *ast.BasicLit:
