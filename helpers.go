@@ -25,22 +25,22 @@ func isEmpty(s string) bool {
 }
 
 ///ConstNode new ast.Node for constant pre evaluation
-type ConstNodeBasicLit struct {
+type constNodeBasicLit struct {
 	ast.BasicLit
 	value interface{}
 }
 
-type ConstNodeIdent struct {
+type constNodeIdent struct {
 	ast.Ident
 	value interface{}
 }
 
-type ConstNodeUnaryExpr struct {
+type constNodeUnaryExpr struct {
 	ast.UnaryExpr
 	value interface{}
 }
 
-type ConstNodeBinaryExpr struct {
+type constNodeBinaryExpr struct {
 	ast.BinaryExpr
 	value interface{}
 }
@@ -54,7 +54,7 @@ func replaceConstants(expr ast.Node) ast.Node {
 		if e != nil {
 			return expr
 		}
-		return &ConstNodeBasicLit{*expr.(*ast.BasicLit), v}
+		return &constNodeBasicLit{*expr.(*ast.BasicLit), v}
 	case *ast.BinaryExpr:
 		bexp := expr.(*ast.BinaryExpr)
 		bexp.X = replaceConstants(bexp.X).(ast.Expr)
@@ -63,7 +63,7 @@ func replaceConstants(expr ast.Node) ast.Node {
 		if e != nil {
 			return expr
 		}
-		return &ConstNodeBinaryExpr{*expr.(*ast.BinaryExpr), v}
+		return &constNodeBinaryExpr{*expr.(*ast.BinaryExpr), v}
 	case *ast.ParenExpr:
 		pexp := expr.(*ast.ParenExpr)
 		pexp.X = replaceConstants(pexp.X).(ast.Expr)
@@ -73,14 +73,14 @@ func replaceConstants(expr ast.Node) ast.Node {
 		if e != nil {
 			return expr
 		}
-		return &ConstNodeIdent{*expr.(*ast.Ident), v}
+		return &constNodeIdent{*expr.(*ast.Ident), v}
 	case *ast.UnaryExpr:
 		v, e := evalUnaryExpr(expr.(*ast.UnaryExpr), nilContext{})
 		if e != nil {
 			fmt.Println(e)
 			return expr
 		}
-		return &ConstNodeUnaryExpr{*expr.(*ast.UnaryExpr), v}
+		return &constNodeUnaryExpr{*expr.(*ast.UnaryExpr), v}
 	case *ast.CallExpr:
 		callexp := expr.(*ast.CallExpr)
 		for key, value := range callexp.Args{

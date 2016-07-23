@@ -45,7 +45,7 @@ func evalBinaryExprLOR(expr *ast.BinaryExpr, context Context) (interface{}, erro
 		return nilInterf, err
 	}
 	if lbool {
-		return true, nil
+		return trueInterf, nil
 	}
 
 	right, err := eval(expr.Y, context)

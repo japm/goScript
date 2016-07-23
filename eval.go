@@ -83,8 +83,8 @@ var nilInterf interface{}
 //Package initialization
 func init() {
 	zeroArg = make([]reflect.Value, 0)
-	trueInterf  = true
-	falseInterf  = false
+	trueInterf = true
+	falseInterf = false
 	nilInterf = nil
 }
 
@@ -94,7 +94,7 @@ func (e *Expr) Prepare(expr string) error {
 	if err != nil {
 		return err
 	}
-  exp = replaceConstants(exp).(ast.Expr)
+	exp = replaceConstants(exp).(ast.Expr)
 	if err != nil {
 		return err
 	}
@@ -226,14 +226,14 @@ func eval(expr ast.Node, context Context) (interface{}, error) {
 		case *ast.BadStmt:
 			return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	*/
-	case *ConstNodeBinaryExpr:
-		return expr.(*ConstNodeBinaryExpr).value, nil
-	case *ConstNodeUnaryExpr:
-		return expr.(*ConstNodeUnaryExpr).value, nil
-	case *ConstNodeBasicLit:
-		return expr.(*ConstNodeBasicLit).value, nil
-	case *ConstNodeIdent:
-		return expr.(*ConstNodeIdent).value, nil
+	case *constNodeBinaryExpr:
+		return expr.(*constNodeBinaryExpr).value, nil
+	case *constNodeUnaryExpr:
+		return expr.(*constNodeUnaryExpr).value, nil
+	case *constNodeBasicLit:
+		return expr.(*constNodeBasicLit).value, nil
+	case *constNodeIdent:
+		return expr.(*constNodeIdent).value, nil
 	case *ast.BasicLit:
 		return evalBasicLit(expr.(*ast.BasicLit), context)
 	case *ast.BinaryExpr:
