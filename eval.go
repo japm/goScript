@@ -94,7 +94,7 @@ func (e *Expr) Prepare(expr string) error {
 	if err != nil {
 		return err
 	}
-	exp = replaceConstants(exp).(ast.Expr)
+	exp = resolveConstants(exp).(ast.Expr)
 	if err != nil {
 		return err
 	}

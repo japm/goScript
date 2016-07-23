@@ -51,7 +51,7 @@ type constNodeParenExpr struct {
 
 
 //Replace constants in expressions for its values precalculated
-func replaceConstants(expr ast.Node) ast.Node {
+func resolveConstants(expr ast.Node) ast.Node {
 	switch expr.(type) {
 	case *ast.BasicLit:
 		v, e := evalBasicLit(expr.(*ast.BasicLit), nil)
@@ -61,8 +61,8 @@ func replaceConstants(expr ast.Node) ast.Node {
 		return &constNodeBasicLit{*expr.(*ast.BasicLit), v}
 	case *ast.BinaryExpr:
 		bexp := expr.(*ast.BinaryExpr)
-		bexp.X = replaceConstants(bexp.X).(ast.Expr)
-		bexp.Y = replaceConstants(bexp.Y).(ast.Expr)
+		bexp.X = resolveConstants(bexp.X).(ast.Expr)
+		bexp.Y = resolveConstants(bexp.Y).(ast.Expr)
 		v, e := evalBinaryExpr(expr.(*ast.BinaryExpr), nilContext{})
 		if e != nil {
 			return expr
@@ -70,13 +70,13 @@ func replaceConstants(expr ast.Node) ast.Node {
 		return &constNodeBinaryExpr{*expr.(*ast.BinaryExpr), v}
 	case *ast.ParenExpr:
 		pexp := expr.(*ast.ParenExpr)
-		pexp.X = replaceConstants(pexp.X).(ast.Expr)
+		pexp.X = resolveConstants(pexp.X).(ast.Expr)
 		v, e := eval(pexp.X, nilContext{})
 		if e != nil {
 			return expr
 		}
 		return &constNodeParenExpr{*expr.(*ast.ParenExpr), v}
-		
+
 	case *ast.Ident:
 		v, e := evalIdent(expr.(*ast.Ident), nilContext{})
 		if e != nil {
@@ -93,18 +93,18 @@ func replaceConstants(expr ast.Node) ast.Node {
 	case *ast.CallExpr:
 		callexp := expr.(*ast.CallExpr)
 		for key, value := range callexp.Args{
-			callexp.Args[key] = replaceConstants(value).(ast.Expr)
+			callexp.Args[key] = resolveConstants(value).(ast.Expr)
 		}
 		return expr
 	case *ast.IndexExpr:
 		idexpr := expr.(*ast.IndexExpr)
-		idexpr.Index =  replaceConstants(idexpr.Index).(ast.Expr)
+		idexpr.Index =  resolveConstants(idexpr.Index).(ast.Expr)
 		return expr
 	case *ast.SliceExpr:
 		slexpr := expr.(*ast.SliceExpr)
-		slexpr.Low =replaceConstants(slexpr.Low).(ast.Expr)
-		slexpr.High =replaceConstants(slexpr.High).(ast.Expr)
-		slexpr.X =replaceConstants(slexpr.X).(ast.Expr)
+		slexpr.Low =resolveConstants(slexpr.Low).(ast.Expr)
+		slexpr.High =resolveConstants(slexpr.High).(ast.Expr)
+		slexpr.X =resolveConstants(slexpr.X).(ast.Expr)
 		return expr
 	default:
 		return expr
