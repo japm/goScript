@@ -96,6 +96,22 @@ func TestCallBasics(t *testing.T) {
 		t.Errorf("Expected 5 returned %d", val)
 	}
 
+	exp := &Expr{}
+	err = exp.Prepare("a.Test6(2, 3)")
+
+	if err != nil {
+		t.Error("err not nil", err)
+		return
+	}
+
+	val, err = exp.Eval(ctxt)
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(float64) != 5 {
+		t.Errorf("Expected 5 returned %d", val)
+	}
+
 }
 func TestIdent(t *testing.T) {
 
@@ -186,6 +202,32 @@ func TestSlice2(t *testing.T) {
 		t.Error("Expected slice of 2 get ", val)
 	}
 }
+
+func TestSlice3(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	a := make([]int, 3)
+	a[0] = 3
+	ctxt["a"] = a
+
+	exp := &Expr{}
+	err := exp.Prepare("a[0:2]")
+
+	if err != nil {
+		t.Error("err not nil", err)
+		return
+	}
+
+	val, err := exp.Eval(ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if len(val.([]int)) != 2 {
+		t.Error("Expected slice of 2 get ", val)
+	}
+}
+
+
 func TestArray1(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	a := []int{3, 1, 2, 3}
@@ -207,6 +249,29 @@ func TestArray2(t *testing.T) {
 	ctxt["a"] = a
 
 	val, err := Eval("a[0:2]", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if len(val.([]int)) != 2 {
+		t.Error("Expected slice of 2 get ", val)
+	}
+}
+
+func TestArray3(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	a := []int{0, 1, 2, 3}
+	ctxt["a"] = a
+
+	exp := &Expr{}
+	err := exp.Prepare("a[0:2]")
+
+	if err != nil {
+		t.Error("err not nil", err)
+		return
+	}
+
+	val, err := exp.Eval(ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
@@ -238,6 +303,30 @@ func TestMap2(t *testing.T) {
 	ctxt["a"] = &a
 
 	val, err := Eval("(*a)[\"a\"]", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 3 {
+		t.Error("Expected 3 get ", val)
+	}
+}
+
+func TestMap3(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	a := make(map[string]int)
+	a["a"] = 3
+	ctxt["a"] = &a
+
+	exp := &Expr{}
+	err := exp.Prepare("(*a)[\"a\"]")
+
+	if err != nil {
+		t.Error("err not nil", err)
+		return
+	}
+
+	val, err := exp.Eval(ctxt)
 
 	if err != nil {
 		t.Error("err not nil", err)
