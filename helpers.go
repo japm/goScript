@@ -85,6 +85,22 @@ func replaceConstants(expr ast.Node) ast.Node {
 			return expr
 		}
 		return &ConstNodeUnaryExpr{*expr.(*ast.UnaryExpr), v, &expr}
+	case *ast.CallExpr:
+		callexp := expr.(*ast.CallExpr)
+		for key, value := range callexp.Args{
+			callexp.Args[key] = replaceConstants(value).(ast.Expr)
+		}
+		return expr
+	case *ast.IndexExpr:
+		idexpr := expr.(*ast.IndexExpr)
+		idexpr.Index =  replaceConstants(idexpr.Index).(ast.Expr)
+		return expr
+	case *ast.SliceExpr:
+		slexpr := expr.(*ast.SliceExpr)
+		slexpr.Low =replaceConstants(slexpr.Low).(ast.Expr)
+		slexpr.High =replaceConstants(slexpr.High).(ast.Expr)
+		slexpr.X =replaceConstants(slexpr.X).(ast.Expr)
+		return expr		
 	default:
 		return expr
 	}
