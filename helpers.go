@@ -44,6 +44,11 @@ type constNodeBinaryExpr struct {
 	value interface{}
 }
 
+type constNodeParenExpr struct {
+	ast.ParenExpr
+	value interface{}
+}
+
 
 //Replace constants in expressions for its values precalculated
 func replaceConstants(expr ast.Node) ast.Node {
@@ -66,7 +71,12 @@ func replaceConstants(expr ast.Node) ast.Node {
 	case *ast.ParenExpr:
 		pexp := expr.(*ast.ParenExpr)
 		pexp.X = replaceConstants(pexp.X).(ast.Expr)
-		return expr
+		v, e := eval(pexp.X, nilContext{})
+		if e != nil {
+			return expr
+		}
+		return &constNodeParenExpr{*expr.(*ast.ParenExpr), v}
+		
 	case *ast.Ident:
 		v, e := evalIdent(expr.(*ast.Ident), nilContext{})
 		if e != nil {

@@ -234,6 +234,8 @@ func eval(expr ast.Node, context Context) (interface{}, error) {
 		return expr.(*constNodeBasicLit).value, nil
 	case *constNodeIdent:
 		return expr.(*constNodeIdent).value, nil
+	case *constNodeParenExpr:
+		return expr.(*constNodeParenExpr).value, nil
 	case *ast.BasicLit:
 		return evalBasicLit(expr.(*ast.BasicLit), context)
 	case *ast.BinaryExpr:
