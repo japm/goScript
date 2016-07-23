@@ -19,7 +19,7 @@ type callSyte struct {
 func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (interface{}, error) {
 	callee, err := eval(expr.X, context)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 
 	calleeVal := reflect.ValueOf(callee)
@@ -43,7 +43,7 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 	//with this optimization
 	val, err := eval(expr.Fun, context) //Find the type called, this calls evalSelectorExpr
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 
 	//-------------------Check Method------------------------
@@ -56,14 +56,14 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 		//Not a callSyte, must be a Ident(args), so Ident must be a function
 		method = reflect.ValueOf(val)
 		if method.Kind() != reflect.Func {
-			return nil, fmt.Errorf("Waiting callsite found %s", reflect.TypeOf(val))
+			return nilInterf, fmt.Errorf("Waiting callsite found %s", reflect.TypeOf(val))
 		}
 	} else {
 		//A callSyte so must be f.x(args)
 		caleeVal := callsite.calleeVal
 		method = caleeVal.MethodByName(callsite.fnName)
 		if !method.IsValid() {
-			return nil, fmt.Errorf("Method %s not found", callsite.fnName)
+			return nilInterf, fmt.Errorf("Method %s not found", callsite.fnName)
 		}
 	}
 	mType := method.Type()
@@ -71,13 +71,13 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 
 	if !mType.IsVariadic() {
 		if len(expr.Args) != numArgs {
-			return nil, fmt.Errorf("Method alguments count mismatch. Expected %d get %d", numArgs, len(expr.Args))
+			return nilInterf, fmt.Errorf("Method alguments count mismatch. Expected %d get %d", numArgs, len(expr.Args))
 		}
 	} else {
 		numArgs = numArgs - 1
 		vaArgsTp = mType.In(numArgs).Elem() //Type declared
 		if len(expr.Args) < numArgs {
-			return nil, fmt.Errorf("Method alguments count mismatch. Expected at least %d get %d", (numArgs - 1), len(expr.Args))
+			return nilInterf, fmt.Errorf("Method alguments count mismatch. Expected at least %d get %d", (numArgs - 1), len(expr.Args))
 		}
 	}
 
@@ -93,7 +93,7 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 
 		val, err := eval(value, context)
 		if err != nil {
-			return nil, err
+			return nilInterf, err
 		}
 		rVal := reflect.ValueOf(val)
 		var tArg reflect.Type //Method argument type
@@ -107,7 +107,7 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 		tVal := rVal.Type() //Passed parameter type
 		if tVal != tArg {
 			if !tVal.ConvertibleTo(tArg) {
-				return nil, fmt.Errorf("Method argument %d type mismatch. Expected %s get %s", key, tArg, tVal)
+				return nilInterf, fmt.Errorf("Method argument %d type mismatch. Expected %s get %s", key, tArg, tVal)
 			}
 			rVal = rVal.Convert(tArg)
 		}
@@ -119,7 +119,7 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 
 	//Evaluate result
 	if len(retVal) == 0 {
-		return nil, nil
+		return nilInterf, nil
 	}
 	return retVal[0].Interface(), nil
 }

@@ -48,11 +48,13 @@ func (t typeDesc) Bool() bool {
 	return t.Type == tpBool
 }
 
+
 func binaryOperType(left interface{}, right interface{}) (typeDesc, error) {
 	lType := valType(left)
 
 	rType := valType(right)
 
+  //Left type governs type
 	if !lType.IsNumeric() {
 		if lType.IsNil() {
 			return rType, nil
@@ -60,14 +62,14 @@ func binaryOperType(left interface{}, right interface{}) (typeDesc, error) {
 		return lType, nil
 	}
 
+  //Left numeric, take the more general type
 	lType.Signed = lType.Signed || rType.Signed
 	if lType.Size < rType.Size {
 		lType.Size = rType.Size
 	}
-	if lType.Type == tpFloat || rType.Type == tpFloat {
+
+	if rType.Type == tpFloat {
 		lType.Type = tpFloat
-	} else {
-		lType.Type = tpInt
 	}
 
 	lType.PlatformSize = lType.PlatformSize && rType.PlatformSize
@@ -119,7 +121,7 @@ func binaryOperTypeL(left interface{}, right interface{}) (typeDesc, error) {
 	return tp, nil
 }
 
-func valType(value interface{}) (typeDesc) {
+func valType(value interface{}) typeDesc {
 
 	switch value.(type) {
 	case uint8:

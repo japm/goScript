@@ -32,7 +32,7 @@ type mapContext struct {
 func (ctx mapContext) GetIdent(name string) (val interface{}, err error) {
 	val, ok := ctx.mp[name]
 	if !ok {
-		return nil, fmt.Errorf("Symbol %s not found", name)
+		return nilInterf, fmt.Errorf("Symbol %s not found", name)
 	}
 	return val, nil
 }
@@ -53,10 +53,20 @@ func (ctx reflectContext) GetIdent(name string) (val interface{}, err error) {
 	fld := ctx.val.FieldByName(name)
 	ok := fld.IsValid()
 	if !ok {
-		return nil, fmt.Errorf("Symbol %s not found", name)
+		return nilInterf, fmt.Errorf("Symbol %s not found", name)
 	}
 
 	return fld.Interface(), nil
+}
+
+//Internal reflect context
+//We can store a map to cache propertys
+//and aliviate the use of reflect
+type nilContext struct {
+}
+
+func (ctx nilContext) GetIdent(name string) (val interface{}, err error) {
+	return nilInterf, fmt.Errorf("Symbol %s not resolvable in nil context", name)
 }
 
 // Expr expresion holder, allows sentence preparation
@@ -66,15 +76,25 @@ type Expr struct {
 
 //Constant for zero arg calls
 var zeroArg []reflect.Value
+var trueInterf interface{}
+var falseInterf interface{}
+var nilInterf interface{}
 
 //Package initialization
 func init() {
 	zeroArg = make([]reflect.Value, 0)
+	trueInterf  = true
+	falseInterf  = false
+	nilInterf = nil
 }
 
 // Prepare sentence for evaluation and reuse
 func (e *Expr) Prepare(expr string) error {
 	exp, err := parser.ParseExpr(expr)
+	if err != nil {
+		return err
+	}
+  exp = replaceConstants(exp).(ast.Expr)
 	if err != nil {
 		return err
 	}
@@ -125,7 +145,7 @@ func Eval(expr string, context interface{}) (val interface{}, err error) {
 	exp, err := parser.ParseExpr(expr)
 
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 
 	ctxt := createContext(context)
@@ -173,13 +193,17 @@ func createContext(context interface{}) Context {
 		ctxt = reflectContext{rval}
 	default:
 		var ok bool
-		ctxt, ok = context.(Context)
-		if !ok {
-			rval := reflect.ValueOf(context)
-			if rval.Kind() == reflect.Ptr {
-				rval = rval.Elem()
+		if context == nil {
+			ctxt = nilContext{}
+		} else {
+			ctxt, ok = context.(Context)
+			if !ok {
+				rval := reflect.ValueOf(context)
+				if rval.Kind() == reflect.Ptr {
+					rval = rval.Elem()
+				}
+				ctxt = reflectContext{rval}
 			}
-			ctxt = reflectContext{rval}
 		}
 	}
 
@@ -202,6 +226,14 @@ func eval(expr ast.Node, context Context) (interface{}, error) {
 		case *ast.BadStmt:
 			return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 	*/
+	case *ConstNodeBinaryExpr:
+		return expr.(*ConstNodeBinaryExpr).value, nil
+	case *ConstNodeUnaryExpr:
+		return expr.(*ConstNodeUnaryExpr).value, nil
+	case *ConstNodeBasicLit:
+		return expr.(*ConstNodeBasicLit).value, nil
+	case *ConstNodeIdent:
+		return expr.(*ConstNodeIdent).value, nil
 	case *ast.BasicLit:
 		return evalBasicLit(expr.(*ast.BasicLit), context)
 	case *ast.BinaryExpr:
@@ -315,7 +347,7 @@ func eval(expr ast.Node, context Context) (interface{}, error) {
 				return nil, fmt.Errorf("%s not suported", reflect.TypeOf(expr))
 		*/
 	default:
-		return nil, fmt.Errorf("Default %s not suported", reflect.TypeOf(expr))
+		return nilInterf, fmt.Errorf("Default %s not suported", reflect.TypeOf(expr))
 	}
 }
 
@@ -323,12 +355,12 @@ func evalIndexExpr(expr *ast.IndexExpr, context Context) (interface{}, error) {
 
 	val, err := eval(expr.X, context)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 
 	idx, err := eval(expr.Index, context)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	var retVal reflect.Value
 	v := reflect.ValueOf(val)
@@ -339,15 +371,15 @@ func evalIndexExpr(expr *ast.IndexExpr, context Context) (interface{}, error) {
 		vk == reflect.Slice {
 		i, err := castInt(idx)
 		if err != nil {
-			return nil, err
+			return nilInterf, err
 		}
 		retVal = v.Index(i)
 
 	} else {
-		return nil, fmt.Errorf("Unexpected indexer [] type %s ", v)
+		return nilInterf, fmt.Errorf("Unexpected indexer [] type %s ", v)
 	}
 	if !retVal.IsValid() {
-		return nil, nil
+		return nilInterf, nil
 	}
 
 	return retVal.Interface(), nil
@@ -358,12 +390,12 @@ func evalStarExpr(expr *ast.StarExpr, context Context) (interface{}, error) {
 
 	val, err := eval(expr.X, context)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 
 	refVal := reflect.ValueOf(val)
 	if refVal.Kind() != reflect.Ptr {
-		return nil, fmt.Errorf("Expected pointer, found %d ", refVal.Type())
+		return nilInterf, fmt.Errorf("Expected pointer, found %d ", refVal.Type())
 	}
 
 	return refVal.Elem().Interface(), nil
@@ -374,7 +406,7 @@ func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
 	//Get array object
 	val, err := eval(expr.X, context)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	sl := reflect.ValueOf(val)
 
@@ -382,7 +414,7 @@ func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
 	vk := sl.Kind()
 	if vk != reflect.Array &&
 		vk != reflect.Slice {
-		return nil, fmt.Errorf("Expected array, found %d ", sl.Type())
+		return nilInterf, fmt.Errorf("Expected array, found %d ", sl.Type())
 	}
 
 	//calculate i,j,j from a[i:j:k]
@@ -392,7 +424,7 @@ func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
 	} else {
 		i, err = evalInt(expr.Low, context)
 		if err != nil {
-			return nil, err
+			return nilInterf, err
 		}
 	}
 
@@ -401,7 +433,7 @@ func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
 	} else {
 		j, err = evalInt(expr.High, context)
 		if err != nil {
-			return nil, err
+			return nilInterf, err
 		}
 	}
 
@@ -409,7 +441,7 @@ func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
 	if expr.Slice3 {
 		k, err = evalInt(expr.Max, context)
 		if err != nil {
-			return nil, err
+			return nilInterf, err
 		}
 		return sl.Slice3(i, j, k).Interface(), nil
 	}
@@ -423,7 +455,7 @@ func evalParenExpr(expr *ast.ParenExpr, context Context) (interface{}, error) {
 func evalUnaryExpr(expr *ast.UnaryExpr, context Context) (interface{}, error) {
 	val, err := eval(expr.X, context)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	switch expr.Op {
 	case token.NOT:
@@ -432,8 +464,10 @@ func evalUnaryExpr(expr *ast.UnaryExpr, context Context) (interface{}, error) {
 		return evalUnaryExprSUB(val)
 	case token.AND:
 		return evalUnaryExprAND(val)
+	case token.ADD:
+		return val, nil
 	default:
-		return nil, fmt.Errorf("Unary operation %d not implemented", expr.Op)
+		return nilInterf, fmt.Errorf("Unary operation %d not implemented", expr.Op)
 	}
 }
 
@@ -446,12 +480,12 @@ func evalBinaryExpr(expr *ast.BinaryExpr, context Context) (interface{}, error) 
 
 	left, err := eval(expr.X, context)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 
 	right, err := eval(expr.Y, context)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 
 	return evalBinaryExprOp(expr, left, right)
@@ -464,20 +498,16 @@ func evalIdent(expr *ast.Ident, context Context) (interface{}, error) {
 	//Resolve reserved value-words
 	if lname == 3 {
 		if expr.Name == "nil" {
-			return nil, nil
+			return nilInterf, nil
 		} else if expr.Name == "len" {
 			return reflLen, nil
 		}
 	} else if lname == 4 && expr.Name == "true" {
-		return true, nil
+		return trueInterf, nil
 	} else if lname == 5 && expr.Name == "false" {
-		return false, nil
+		return falseInterf, nil
 	}
-	//No context, cant return an ident
-	if context == nil {
-		return nil, fmt.Errorf("Context is null, no ident possible for %s", expr.Name)
-	}
-
+	//Context must never be null here
 	return context.GetIdent(expr.Name)
 }
 
@@ -488,13 +518,13 @@ func evalBasicLit(expr *ast.BasicLit, context Context) (interface{}, error) {
 	case token.FLOAT:
 		return strconv.ParseFloat(expr.Value, 10)
 	case token.IMAG:
-		return nil, fmt.Errorf("token.IMAG not suported")
+		return nilInterf, fmt.Errorf("token.IMAG not suported")
 	case token.CHAR:
 		return expr.Value, nil
 	case token.STRING:
 		return expr.Value[1 : len(expr.Value)-1], nil
 	default:
-		return nil, fmt.Errorf("token type not suported %d %s", expr.Kind, expr.Value)
+		return nilInterf, fmt.Errorf("token type not suported %d %s", expr.Kind, expr.Value)
 	}
 }
 
@@ -538,12 +568,12 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 	case token.AND_NOT: // &^
 		op = opAndNot{}
 	default:
-		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
+		return nilInterf, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
 	}
 
 	tp, e := binaryOperType(left, right)
 	if e != nil {
-		return nil, e
+		return nilInterf, e
 	}
 
 	return evalBinary(left, right, tp, op)
@@ -556,7 +586,7 @@ func evalBinaryExprOpLazy(expr *ast.BinaryExpr, context Context) (interface{}, e
 	case token.LOR: // ||
 		return evalBinaryExprLOR(expr, context)
 	default:
-		return nil, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
+		return nilInterf, fmt.Errorf("evalBinaryExprOp not implemented for %d", expr.Op)
 	}
 }
 
@@ -589,9 +619,9 @@ func evalUnaryExprSUB(value interface{}) (interface{}, error) {
 	case bool:
 		return !value.(bool), nil
 	case nil:
-		return nil, nil
+		return nilInterf, nil
 	}
-	return nil, fmt.Errorf("Unimplemented not for type %s", reflect.TypeOf(value))
+	return nilInterf, fmt.Errorf("Unimplemented not for type %s", reflect.TypeOf(value))
 }
 
 func evalUnaryExprAND(value interface{}) (interface{}, error) {
@@ -599,16 +629,141 @@ func evalUnaryExprAND(value interface{}) (interface{}, error) {
 	val := reflect.ValueOf(value)
 
 	if !val.CanAddr() {
-		return nil, fmt.Errorf("Value is not addressable %s", val)
+		return nilInterf, fmt.Errorf("Value is not addressable %s", val)
 	}
 
 	vk := val.Kind()
 	if vk == reflect.Chan || vk == reflect.Func || vk == reflect.Map ||
 		vk == reflect.Ptr || vk == reflect.Slice {
 		if val.IsNil() {
-			return nil, fmt.Errorf("Value is nill, not addressable %s", val)
+			return nilInterf, fmt.Errorf("Value is nill, not addressable %s", val)
 		}
 	}
 
 	return val.Addr(), nil
+}
+
+func evalBinary(left interface{}, right interface{}, tp typeDesc, oper operation) (interface{}, error) {
+	if tp.IsNil() {
+		return nilInterf, nil
+	}
+	if !tp.IsNumeric() {
+		switch left.(type) {
+		case string:
+			return oper.OperStrInterf(left.(string), right)
+		case bool:
+			return oper.OperBoolInterf(left.(bool), right)
+		case nil:
+			return oper.OperNilLeft(right)
+		}
+	} else if tp.Signed {
+		if tp.Float() {
+
+			if tp.Size == 32 {
+				l, err := castFloat32(left)
+				if err != nil {
+					return nilInterf, err
+				}
+				r, err := castFloat32(right)
+				if err != nil {
+					return nilInterf, err
+				}
+				return oper.OperF32F32(l, r)
+			}
+			l, err := castFloat64(left)
+			if err != nil {
+				return nilInterf, err
+			}
+			r, err := castFloat64(right)
+			if err != nil {
+				return nilInterf, err
+			}
+			return oper.OperF64F64(l, r)
+
+		} else if tp.Size == 64 {
+			l, err := castInt64(left)
+			if err != nil {
+				return nilInterf, err
+			}
+			r, err := castInt64(right)
+			if err != nil {
+				return nilInterf, err
+			}
+			return oper.OperI64I64(l, r)
+
+		} else if tp.Size == 32 {
+			l, err := castInt32(left)
+			if err != nil {
+				return nilInterf, err
+			}
+			r, err := castInt32(right)
+			if err != nil {
+				return nilInterf, err
+			}
+			return oper.OperI32I32(l, r)
+		} else if tp.Size == 16 {
+			l, err := castInt16(left)
+			if err != nil {
+				return nilInterf, err
+			}
+			r, err := castInt16(right)
+			if err != nil {
+				return nilInterf, err
+			}
+			return oper.OperI16I16(l, r)
+		} else if tp.Size == 8 {
+			l, err := castInt8(left)
+			if err != nil {
+				return nilInterf, err
+			}
+			r, err := castInt8(right)
+			if err != nil {
+				return nilInterf, err
+			}
+			return oper.OperI8I8(l, r)
+		}
+	} else {
+		if tp.Size == 64 {
+			l, err := castUint64(left)
+			if err != nil {
+				return nilInterf, err
+			}
+			r, err := castUint64(right)
+			if err != nil {
+				return nilInterf, err
+			}
+			return oper.OperUI64UI64(l, r)
+		} else if tp.Size == 32 {
+			l, err := castUint32(left)
+			if err != nil {
+				return nilInterf, err
+			}
+			r, err := castUint32(right)
+			if err != nil {
+				return nilInterf, err
+			}
+			return oper.OperUI32UI32(l, r)
+		} else if tp.Size == 16 {
+			l, err := castUint16(left)
+			if err != nil {
+				return nilInterf, err
+			}
+			r, err := castUint16(right)
+			if err != nil {
+				return nilInterf, err
+			}
+			return oper.OperUI16UI16(l, r)
+		} else if tp.Size == 8 {
+			l, err := castUint8(left)
+			if err != nil {
+				return nilInterf, err
+			}
+			r, err := castUint8(right)
+			if err != nil {
+				return nilInterf, err
+			}
+			return oper.OperUI8UI8(l, r)
+		}
+	}
+	return nilInterf, fmt.Errorf("Unimplemented op for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }

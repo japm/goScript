@@ -13,7 +13,7 @@ import (
 func evalBinaryExprNEQ(left interface{}, right interface{}) (interface{}, error) {
 	val, err := evalBinaryExprEQL(left, right)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return !val.(bool), nil
 }
@@ -21,21 +21,21 @@ func evalBinaryExprNEQ(left interface{}, right interface{}) (interface{}, error)
 func evalBinaryExprEQL(left interface{}, right interface{}) (interface{}, error) {
 	tp, e := binaryOperTypeL(left, right)
 	if e != nil {
-		return nil, e
+		return nilInterf, e
 	}
 	if tp.IsNil() {
-		return nil, nil
+		return nilInterf, nil
 	}
 	if tp.Bool() {
 
 		l, err := castBool(left)
 		if err != nil {
-			return nil, err
+			return nilInterf, err
 		}
 
 		r, err := castBool(right)
 		if err != nil {
-			return nil, err
+			return nilInterf, err
 		}
 
 		return l == r, nil
@@ -45,15 +45,15 @@ func evalBinaryExprEQL(left interface{}, right interface{}) (interface{}, error)
 		case string:
 			val, err := castString(right)
 			if err != nil {
-				return nil, err
+				return nilInterf, err
 			}
 			return left.(string) == val, nil
 		case nil:
 			switch right.(type) {
 			case nil:
-				return true, nil
+				return trueInterf, nil
 			}
-			return nil, nil
+			return nilInterf, nil
 		}
 	} else {
 		op := opEql{}

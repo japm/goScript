@@ -67,11 +67,11 @@ func (op opAdd) OperStrInterf(l string, r interface{}) (interface{}, error) {
 func (op opAdd) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall + valr, nil
 }
@@ -116,7 +116,7 @@ func (op opSub) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opSub) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	val, err := castString(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return strings.Replace(l, val, "", -1), nil
 }
@@ -124,11 +124,11 @@ func (op opSub) OperStrInterf(l string, r interface{}) (interface{}, error) {
 func (op opSub) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall - valr, nil
 }
@@ -173,18 +173,18 @@ func (op opMul) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opMul) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	val, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return strings.Repeat(l, val), nil
 }
 func (op opMul) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall * valr, nil
 }
@@ -229,22 +229,22 @@ func (op opQuo) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opQuo) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	vall, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall / valr, nil
 }
 func (op opQuo) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall / valr, nil
 }
@@ -258,22 +258,22 @@ type opRem struct {
 func (op opRem) OperF32F32(l float32, r float32) (interface{}, error) {
 	li, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li % ri, nil
 }
 func (op opRem) OperF64F64(l float64, r float64) (interface{}, error) {
 	li, err := castInt64(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castInt64(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li % ri, nil
 }
@@ -306,27 +306,27 @@ func (op opRem) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opRem) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	vall, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall % valr, nil
 }
 func (op opRem) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall % valr, nil
 }
 func (op opRem) OperNilLeft(r interface{}) (interface{}, error) {
-	return nil, nil
+	return nilInterf, nil
 }
 
 type opAnd struct {
@@ -335,22 +335,22 @@ type opAnd struct {
 func (op opAnd) OperF32F32(l float32, r float32) (interface{}, error) {
 	li, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li & ri, nil
 }
 func (op opAnd) OperF64F64(l float64, r float64) (interface{}, error) {
 	li, err := castInt64(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castInt64(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li & ri, nil
 }
@@ -383,27 +383,27 @@ func (op opAnd) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opAnd) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	vall, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall & valr, nil
 }
 func (op opAnd) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall & valr, nil
 }
 func (op opAnd) OperNilLeft(r interface{}) (interface{}, error) {
-	return nil, nil
+	return nilInterf, nil
 }
 
 type opOr struct {
@@ -412,22 +412,22 @@ type opOr struct {
 func (op opOr) OperF32F32(l float32, r float32) (interface{}, error) {
 	li, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li | ri, nil
 }
 func (op opOr) OperF64F64(l float64, r float64) (interface{}, error) {
 	li, err := castInt64(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castInt64(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li | ri, nil
 }
@@ -460,27 +460,27 @@ func (op opOr) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opOr) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	vall, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall | valr, nil
 }
 func (op opOr) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall | valr, nil
 }
 func (op opOr) OperNilLeft(r interface{}) (interface{}, error) {
-	return nil, nil
+	return nilInterf, nil
 }
 
 type opShl struct {
@@ -489,22 +489,22 @@ type opShl struct {
 func (op opShl) OperF32F32(l float32, r float32) (interface{}, error) {
 	li, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castUint(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li << ri, nil
 }
 func (op opShl) OperF64F64(l float64, r float64) (interface{}, error) {
 	li, err := castInt64(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castUint64(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li << ri, nil
 }
@@ -513,28 +513,28 @@ func (op opShl) OperI64I64(l int64, r int64) (interface{}, error) {
 
 	ri, err := castUint64(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return l << ri, nil
 }
 func (op opShl) OperI32I32(l int32, r int32) (interface{}, error) {
 	ri, err := castUint32(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return l << ri, nil
 }
 func (op opShl) OperI16I16(l int16, r int16) (interface{}, error) {
 	ri, err := castUint16(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return l << ri, nil
 }
 func (op opShl) OperI8I8(l int8, r int8) (interface{}, error) {
 	ri, err := castUint8(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return l << ri, nil
 }
@@ -554,27 +554,27 @@ func (op opShl) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opShl) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	vall, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castUint(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall << valr, nil
 }
 func (op opShl) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castUint(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall << valr, nil
 }
 func (op opShl) OperNilLeft(r interface{}) (interface{}, error) {
-	return nil, nil
+	return nilInterf, nil
 }
 
 type opShr struct {
@@ -583,22 +583,22 @@ type opShr struct {
 func (op opShr) OperF32F32(l float32, r float32) (interface{}, error) {
 	li, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castUint(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li >> ri, nil
 }
 func (op opShr) OperF64F64(l float64, r float64) (interface{}, error) {
 	li, err := castInt64(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castUint64(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li >> ri, nil
 }
@@ -606,44 +606,44 @@ func (op opShr) OperF64F64(l float64, r float64) (interface{}, error) {
 func (op opShr) OperI64I64(l int64, r int64) (interface{}, error) {
 	li, err := castInt64(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castUint64(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li >> ri, nil
 }
 func (op opShr) OperI32I32(l int32, r int32) (interface{}, error) {
 	li, err := castInt32(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castUint32(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li >> ri, nil
 }
 func (op opShr) OperI16I16(l int16, r int16) (interface{}, error) {
 	li, err := castInt16(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castUint16(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li >> ri, nil
 }
 func (op opShr) OperI8I8(l int8, r int8) (interface{}, error) {
 	li, err := castInt8(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castUint8(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li >> ri, nil
 }
@@ -663,27 +663,27 @@ func (op opShr) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opShr) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	vall, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castUint(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall >> valr, nil
 }
 func (op opShr) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castUint(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall >> valr, nil
 }
 func (op opShr) OperNilLeft(r interface{}) (interface{}, error) {
-	return nil, nil
+	return nilInterf, nil
 }
 
 type opXor struct {
@@ -692,22 +692,22 @@ type opXor struct {
 func (op opXor) OperF32F32(l float32, r float32) (interface{}, error) {
 	li, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li ^ ri, nil
 }
 func (op opXor) OperF64F64(l float64, r float64) (interface{}, error) {
 	li, err := castInt64(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castInt64(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li ^ ri, nil
 }
@@ -740,27 +740,27 @@ func (op opXor) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opXor) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	vall, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall ^ valr, nil
 }
 func (op opXor) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall ^ valr, nil
 }
 func (op opXor) OperNilLeft(r interface{}) (interface{}, error) {
-	return nil, nil
+	return nilInterf, nil
 }
 
 type opAndNot struct {
@@ -769,22 +769,22 @@ type opAndNot struct {
 func (op opAndNot) OperF32F32(l float32, r float32) (interface{}, error) {
 	li, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li &^ ri, nil
 }
 func (op opAndNot) OperF64F64(l float64, r float64) (interface{}, error) {
 	li, err := castInt64(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	ri, err := castInt64(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return li &^ ri, nil
 }
@@ -817,27 +817,27 @@ func (op opAndNot) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opAndNot) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	vall, err := castInt(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall &^ valr, nil
 }
 func (op opAndNot) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall &^ valr, nil
 }
 func (op opAndNot) OperNilLeft(r interface{}) (interface{}, error) {
-	return nil, nil
+	return nilInterf, nil
 }
 
 type opLeq struct {
@@ -877,23 +877,23 @@ func (op opLeq) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opLeq) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	valr, err := castString(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return l <= valr, nil
 }
 func (op opLeq) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall <= valr, nil
 }
 func (op opLeq) OperNilLeft(r interface{}) (interface{}, error) {
-	return nil, nil
+	return nilInterf, nil
 }
 
 type opEql struct {
@@ -933,14 +933,14 @@ func (op opEql) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opEql) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	valr, err := castString(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return l == valr, nil
 }
 func (op opEql) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	valr, err := castBool(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return l == valr, nil
 }
@@ -985,23 +985,23 @@ func (op opLss) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opLss) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	valr, err := castString(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return l < valr, nil
 }
 func (op opLss) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall < valr, nil
 }
 func (op opLss) OperNilLeft(r interface{}) (interface{}, error) {
-	return nil, nil
+	return nilInterf, nil
 }
 
 type opGtr struct {
@@ -1041,23 +1041,23 @@ func (op opGtr) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opGtr) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	valr, err := castString(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return l > valr, nil
 }
 func (op opGtr) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall > valr, nil
 }
 func (op opGtr) OperNilLeft(r interface{}) (interface{}, error) {
-	return nil, nil
+	return nilInterf, nil
 }
 
 type opGeq struct {
@@ -1097,21 +1097,21 @@ func (op opGeq) OperUI8UI8(l uint8, r uint8) (interface{}, error) {
 func (op opGeq) OperStrInterf(l string, r interface{}) (interface{}, error) {
 	valr, err := castString(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return l >= valr, nil
 }
 func (op opGeq) OperBoolInterf(l bool, r interface{}) (interface{}, error) {
 	vall, err := castIntFromBool(l)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	valr, err := castInt(r)
 	if err != nil {
-		return nil, err
+		return nilInterf, err
 	}
 	return vall >= valr, nil
 }
 func (op opGeq) OperNilLeft(r interface{}) (interface{}, error) {
-	return nil, nil
+	return nilInterf, nil
 }

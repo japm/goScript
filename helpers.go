@@ -5,8 +5,11 @@ Copyright (c) 2016 Juan Pascual
 package goScript
 
 import (
+	"go/ast"
 	"fmt"
-	"reflect"
+	//"reflect"
+	//"time"
+
 )
 
 func isEmpty(s string) bool {
@@ -21,126 +24,68 @@ func isEmpty(s string) bool {
 	return true
 }
 
-func evalBinary(left interface{}, right interface{}, tp typeDesc, oper operation) (interface{}, error) {
-	if tp.IsNil() {
-		return nil, nil
-	}
-	if !tp.IsNumeric() {
-		switch left.(type) {
-		case string:
-			return oper.OperStrInterf(left.(string), right)
-		case bool:
-			return oper.OperBoolInterf(left.(bool), right)
-		case nil:
-			return oper.OperNilLeft(right)
-		}
-	} else if tp.Signed {
-		if tp.Float() {
-			if tp.Size == 32 {
-				l, err := castFloat32(left)
-				if err != nil {
-					return nil, err
-				}
-				r, err := castFloat32(right)
-				if err != nil {
-					return nil, err
-				}
-				return oper.OperF32F32(l, r)
-			}
-			l, err := castFloat64(left)
-			if err != nil {
-				return nil, err
-			}
-			r, err := castFloat64(right)
-			if err != nil {
-				return nil, err
-			}
-			return oper.OperF64F64(l, r)
+///ConstNode new ast.Node for constant pre evaluation
+type ConstNodeBasicLit struct {
+	ast.BasicLit
+	value interface{}
+	node  *ast.Node
+}
 
-		} else if tp.Size == 64 {
-			l, err := castInt64(left)
-			if err != nil {
-				return nil, err
-			}
-			r, err := castInt64(right)
-			if err != nil {
-				return nil, err
-			}
-			return oper.OperI64I64(l, r)
+type ConstNodeIdent struct {
+	ast.Ident
+	value interface{}
+	node  *ast.Node
+}
 
-		} else if tp.Size == 32 {
-			l, err := castInt32(left)
-			if err != nil {
-				return nil, err
-			}
-			r, err := castInt32(right)
-			if err != nil {
-				return nil, err
-			}
-			return oper.OperI32I32(l, r)
-		} else if tp.Size == 16 {
-			l, err := castInt16(left)
-			if err != nil {
-				return nil, err
-			}
-			r, err := castInt16(right)
-			if err != nil {
-				return nil, err
-			}
-			return oper.OperI16I16(l, r)
-		} else if tp.Size == 8 {
-			l, err := castInt8(left)
-			if err != nil {
-				return nil, err
-			}
-			r, err := castInt8(right)
-			if err != nil {
-				return nil, err
-			}
-			return oper.OperI8I8(l, r)
+type ConstNodeUnaryExpr struct {
+	ast.UnaryExpr
+	value interface{}
+	node  *ast.Node
+}
+
+type ConstNodeBinaryExpr struct {
+	ast.BinaryExpr
+	value interface{}
+	node  *ast.Node
+}
+
+
+//Evaluates all kinds of ast node types
+func replaceConstants(expr ast.Node) ast.Node {
+	switch expr.(type) {
+	case *ast.BasicLit:
+		v, e := evalBasicLit(expr.(*ast.BasicLit), nil)
+		if e != nil {
+			return expr
 		}
-	} else {
-		if tp.Size == 64 {
-			l, err := castUint64(left)
-			if err != nil {
-				return nil, err
-			}
-			r, err := castUint64(right)
-			if err != nil {
-				return nil, err
-			}
-			return oper.OperUI64UI64(l, r)
-		} else if tp.Size == 32 {
-			l, err := castUint32(left)
-			if err != nil {
-				return nil, err
-			}
-			r, err := castUint32(right)
-			if err != nil {
-				return nil, err
-			}
-			return oper.OperUI32UI32(l, r)
-		} else if tp.Size == 16 {
-			l, err := castUint16(left)
-			if err != nil {
-				return nil, err
-			}
-			r, err := castUint16(right)
-			if err != nil {
-				return nil, err
-			}
-			return oper.OperUI16UI16(l, r)
-		} else if tp.Size == 8 {
-			l, err := castUint8(left)
-			if err != nil {
-				return nil, err
-			}
-			r, err := castUint8(right)
-			if err != nil {
-				return nil, err
-			}
-			return oper.OperUI8UI8(l, r)
+		return &ConstNodeBasicLit{*expr.(*ast.BasicLit), v, &expr}
+	case *ast.BinaryExpr:
+		bexp := expr.(*ast.BinaryExpr)
+		bexp.X = replaceConstants(bexp.X).(ast.Expr)
+		bexp.Y = replaceConstants(bexp.Y).(ast.Expr)
+		v, e := evalBinaryExpr(expr.(*ast.BinaryExpr), nilContext{})
+		if e != nil {
+			return expr
 		}
+		return &ConstNodeBinaryExpr{*expr.(*ast.BinaryExpr), v, &expr}
+	case *ast.ParenExpr:
+		pexp := expr.(*ast.ParenExpr)
+		pexp.X = replaceConstants(pexp.X).(ast.Expr)
+		return expr
+	case *ast.Ident:
+		v, e := evalIdent(expr.(*ast.Ident), nilContext{})
+		if e != nil {
+			return expr
+		}
+		return &ConstNodeIdent{*expr.(*ast.Ident), v, &expr}
+	case *ast.UnaryExpr:
+		v, e := evalUnaryExpr(expr.(*ast.UnaryExpr), nilContext{})
+		if e != nil {
+			fmt.Println(e)
+			return expr
+		}
+		return &ConstNodeUnaryExpr{*expr.(*ast.UnaryExpr), v, &expr}
+	default:
+		return expr
 	}
-	return nil, fmt.Errorf("Unimplemented op for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 }
