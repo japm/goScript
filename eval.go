@@ -397,7 +397,7 @@ func evalStarExpr(expr *ast.StarExpr, context Context) (interface{}, error) {
 
 	refVal := reflect.ValueOf(val)
 	if refVal.Kind() != reflect.Ptr {
-		return nilInterf, fmt.Errorf("Expected pointer, found %d ", refVal.Type())
+		return nilInterf, fmt.Errorf("Expected pointer, found %v ", refVal.Type())
 	}
 
 	return refVal.Elem().Interface(), nil
@@ -416,7 +416,7 @@ func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
 	vk := sl.Kind()
 	if vk != reflect.Array &&
 		vk != reflect.Slice {
-		return nilInterf, fmt.Errorf("Expected array, found %d ", sl.Type())
+		return nilInterf, fmt.Errorf("Expected array, found %v ", sl.Type())
 	}
 
 	//calculate i,j,j from a[i:j:k]
