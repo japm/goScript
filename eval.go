@@ -59,9 +59,8 @@ func (ctx reflectContext) GetIdent(name string) (val interface{}, err error) {
 	return fld.Interface(), nil
 }
 
-//Internal reflect context
-//We can store a map to cache propertys
-//and aliviate the use of reflect
+//Internal nil context
+//it doesnt resolve any symbol
 type nilContext struct {
 }
 
@@ -90,10 +89,15 @@ func init() {
 
 // Prepare sentence for evaluation and reuse
 func (e *Expr) Prepare(expr string) error {
+
+	//call Golang pareexpr function
 	exp, err := parser.ParseExpr(expr)
 	if err != nil {
 		return err
 	}
+
+	//resolve constants to its values
+	//to avoid unnecesary conversions
 	exp = resolveConstants(exp).(ast.Expr)
 	if err != nil {
 		return err
@@ -111,7 +115,10 @@ func (e *Expr) Eval(context interface{}) (val interface{}, err error) {
 		}
 	}()
 
+	//create context for evaluation
 	ctxt := createContext(context)
+
+	//evaluate the prepared sentence
 	val, err = eval(e.expr, ctxt)
 
 	return val, err
@@ -120,7 +127,10 @@ func (e *Expr) Eval(context interface{}) (val interface{}, err error) {
 //EvalNoRecover without recover on defer
 func (e *Expr) EvalNoRecover(context interface{}) (interface{}, error) {
 
+	//create context for evaluation
 	ctxt := createContext(context)
+
+	//evaluate the prepared sentence
 	return eval(e.expr, ctxt)
 }
 
@@ -172,6 +182,8 @@ func evalInt(expr ast.Node, context Context) (int, error) {
 }
 
 //Creates the apropiate execution identificaion resolver
+//It creates one of the especialized context or
+//can resolve a custom context provided by the user
 func createContext(context interface{}) Context {
 	var ctxt Context
 	switch context.(type) {
@@ -196,8 +208,10 @@ func createContext(context interface{}) Context {
 		if context == nil {
 			ctxt = nilContext{}
 		} else {
+			//A custom context can be used, resolve it
 			ctxt, ok = context.(Context)
 			if !ok {
+				//Not a custom context, default to a reflect context
 				rval := reflect.ValueOf(context)
 				if rval.Kind() == reflect.Ptr {
 					rval = rval.Elem()
@@ -355,6 +369,7 @@ func eval(expr ast.Node, context Context) (interface{}, error) {
 
 func evalIndexExpr(expr *ast.IndexExpr, context Context) (interface{}, error) {
 
+	//Resolve X[Y]
 	val, err := eval(expr.X, context)
 	if err != nil {
 		return nilInterf, err
@@ -364,6 +379,7 @@ func evalIndexExpr(expr *ast.IndexExpr, context Context) (interface{}, error) {
 	if err != nil {
 		return nilInterf, err
 	}
+
 	var retVal reflect.Value
 	v := reflect.ValueOf(val)
 	vk := v.Kind()
@@ -510,6 +526,7 @@ func evalIdent(expr *ast.Ident, context Context) (interface{}, error) {
 		return falseInterf, nil
 	}
 	//Context must never be null here
+	//and must resolve the ident or error
 	return context.GetIdent(expr.Name)
 }
 
@@ -534,6 +551,9 @@ func evalBinaryExprOp(expr *ast.BinaryExpr, left interface{}, right interface{})
 	var op operation
 	//op = nil
 
+	//Each operation has it implementation
+	//for all types available, with some exceptions
+	//for convenience
 	switch expr.Op {
 	case token.ADD: // +
 		op = opAdd{}
