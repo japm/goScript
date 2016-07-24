@@ -146,7 +146,7 @@ func BenchmarkSumConstant(b *testing.B) {
 	ctxt["a"] = 1
 
 	exp := &Expr{}
-	err := exp.Prepare("1+0")
+	err := exp.Prepare("1+0+(1-1)")
 
 	if err != nil {
 		fmt.Println(err)

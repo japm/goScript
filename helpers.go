@@ -5,11 +5,10 @@ Copyright (c) 2016 Juan Pascual
 package goScript
 
 import (
-	"go/ast"
 	"fmt"
+	"go/ast"
 	//"reflect"
 	//"time"
-
 )
 
 func isEmpty(s string) bool {
@@ -48,7 +47,6 @@ type constNodeParenExpr struct {
 	ast.ParenExpr
 	value interface{}
 }
-
 
 //Replace constants in expressions for its values precalculated
 func resolveConstants(expr ast.Node) ast.Node {
@@ -92,19 +90,19 @@ func resolveConstants(expr ast.Node) ast.Node {
 		return &constNodeUnaryExpr{*expr.(*ast.UnaryExpr), v}
 	case *ast.CallExpr:
 		callexp := expr.(*ast.CallExpr)
-		for key, value := range callexp.Args{
+		for key, value := range callexp.Args {
 			callexp.Args[key] = resolveConstants(value).(ast.Expr)
 		}
 		return expr
 	case *ast.IndexExpr:
 		idexpr := expr.(*ast.IndexExpr)
-		idexpr.Index =  resolveConstants(idexpr.Index).(ast.Expr)
+		idexpr.Index = resolveConstants(idexpr.Index).(ast.Expr)
 		return expr
 	case *ast.SliceExpr:
 		slexpr := expr.(*ast.SliceExpr)
-		slexpr.Low =resolveConstants(slexpr.Low).(ast.Expr)
-		slexpr.High =resolveConstants(slexpr.High).(ast.Expr)
-		slexpr.X =resolveConstants(slexpr.X).(ast.Expr)
+		slexpr.Low = resolveConstants(slexpr.Low).(ast.Expr)
+		slexpr.High = resolveConstants(slexpr.High).(ast.Expr)
+		slexpr.X = resolveConstants(slexpr.X).(ast.Expr)
 		return expr
 	default:
 		return expr

@@ -48,13 +48,12 @@ func (t typeDesc) Bool() bool {
 	return t.Type == tpBool
 }
 
-
 func binaryOperType(left interface{}, right interface{}) (typeDesc, error) {
 	lType := valType(left)
 
 	rType := valType(right)
 
-  //Left type governs type
+	//Left type governs type
 	if !lType.IsNumeric() {
 		if lType.IsNil() {
 			return rType, nil
@@ -62,7 +61,7 @@ func binaryOperType(left interface{}, right interface{}) (typeDesc, error) {
 		return lType, nil
 	}
 
-  //Left numeric, take the more general type
+	//Left numeric, take the more general type
 	lType.Signed = lType.Signed || rType.Signed
 	if lType.Size < rType.Size {
 		lType.Size = rType.Size
