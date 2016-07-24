@@ -1,8 +1,7 @@
-/*
-Package goScript
-The MIT License (MIT)
-Copyright (c) 2016 Juan Pascual
-*/
+//Package goScript, javascript Eval() for go
+//The MIT License (MIT)
+//Copyright (c) 2016 Juan Pascual
+
 package goScript
 
 import (
