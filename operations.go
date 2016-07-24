@@ -6,6 +6,9 @@ package goScript
 
 import "strings"
 
+//Each operaction must be resolved for each type allowed
+//The caller is responsable for converting the parameters
+//for the type it considers reasonable
 type operation interface {
 	OperF32F32(l float32, r float32) (interface{}, error)
 	OperF64F64(l float64, r float64) (interface{}, error)

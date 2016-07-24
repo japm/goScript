@@ -23,6 +23,9 @@ func isEmpty(s string) bool {
 	return true
 }
 
+
+//AST structires  with values resolved for constants
+//specialized by each expression
 type constNodeBasicLit struct {
 	ast.BasicLit
 	value interface{}
@@ -49,6 +52,7 @@ type constNodeParenExpr struct {
 }
 
 //Replace constants in expressions for its values precalculated
+//using AST nodes with values.
 func resolveConstants(expr ast.Node) ast.Node {
 	switch expr.(type) {
 	case *ast.BasicLit:
