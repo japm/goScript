@@ -227,7 +227,6 @@ func TestSlice3(t *testing.T) {
 	}
 }
 
-
 func TestArray1(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	a := []int{3, 1, 2, 3}
@@ -351,4 +350,60 @@ func TestStar1(t *testing.T) {
 		t.Error("Expected 3 get ", val)
 	}
 
+}
+
+func TestStringIndexer1(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "xyz"
+
+	val, err := Eval("a[0]", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+
+	if val.(uint8) != "xyz"[0] {
+		t.Error("Expected x get ", val)
+	}
+}
+
+func TestStringIndexer2(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "xyz"
+
+	val, err := Eval("a[1]", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+
+	if val.(uint8) != "xyz"[1] {
+		t.Error("Expected y get ", val)
+	}
+}
+
+func TestStringIndexer3(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "xyz"
+
+	_, err := Eval("a[10]", ctxt)
+
+	if err == nil {
+		t.Error("err nil")
+	}
+}
+
+func TestStringIndexer4(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = "xyz"
+
+	val, err := Eval("a[0:2]", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+
+	if val.(string) != "xyz"[0:2] {
+		t.Error("Expected xy get ", val)
+	}
 }

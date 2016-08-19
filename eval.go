@@ -386,7 +386,8 @@ func evalIndexExpr(expr *ast.IndexExpr, context Context) (interface{}, error) {
 	if vk == reflect.Map {
 		retVal = v.MapIndex(reflect.ValueOf(idx))
 	} else if vk == reflect.Array ||
-		vk == reflect.Slice {
+		vk == reflect.Slice ||
+		vk == reflect.String {
 		i, err := castInt(idx)
 		if err != nil {
 			return nilInterf, err
@@ -431,7 +432,8 @@ func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
 	//Check the type
 	vk := sl.Kind()
 	if vk != reflect.Array &&
-		vk != reflect.Slice {
+		vk != reflect.Slice &&
+		vk != reflect.String {
 		return nilInterf, fmt.Errorf("Expected array, found %v ", sl.Type())
 	}
 
