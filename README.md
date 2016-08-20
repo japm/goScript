@@ -16,10 +16,10 @@ in a given context.
   * True && 0 = false
   * Left operand governs the type 1 + "1" = 2,  "1" + 1 = "11"
 
-* Map, slice and array indexer access
+* Map, slice, array and string indexer access
 
 * Full control over evaluation context.
-  * Generic map[string]interface{} or map[string]interface{} contexts
+  * Generic map[string]interface{} / *map[string]interface{} contexts
   * Any struct with its fields as variables
   * Custom Context for implentation/user defined context.
 
@@ -29,7 +29,7 @@ in a given context.
 
 * 1) Rock solid expression evaluation.
 * 2) Enrich evaluation context
-* 3) Full script program implementation
+* 3) Full script program implementation 
 * 4) Performance optimizations
 
 #Examples
