@@ -434,7 +434,7 @@ func evalSliceExpr(expr *ast.SliceExpr, context Context) (interface{}, error) {
 	if vk != reflect.Array &&
 		vk != reflect.Slice &&
 		vk != reflect.String {
-		return nilInterf, fmt.Errorf("Expected array, found %v ", sl.Type())
+		return nilInterf, fmt.Errorf("Expected array/slice/string, found %v ", sl.Type())
 	}
 
 	//calculate i,j,j from a[i:j:k]
