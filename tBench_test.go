@@ -197,3 +197,23 @@ func BenchmarkFunc1(b *testing.B) {
 	}
 	ret = val
 }
+
+func BenchmarkFunc2(b *testing.B) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["OneFn"] = OneFn
+
+	exp := &Expr{}
+	err := exp.Prepare("OneFn()")
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	var val interface{}
+	for n := 0; n < b.N; n++ {
+		val, _ = exp.EvalNoRecover(ctxt)
+	}
+	ret = val
+}

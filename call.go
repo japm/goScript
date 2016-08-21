@@ -10,10 +10,10 @@ import (
 	"reflect"
 )
 
-type callSyte struct {
-	callee    interface{}
-	fnName    string
-	calleeVal reflect.Value
+type callSite struct {
+	callee  interface{}
+	fnName  string
+	isValid bool
 }
 
 func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (interface{}, error) {
@@ -32,16 +32,27 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (interface{}, err
 	if ok {
 		return fieldVal.FieldByIndex(fbnVal.Index).Interface(), nil
 	}
-	//Not a field, must be a function
-	return callSyte{callee, sName, calleeVal}, nil
+
+	mval := fieldVal.MethodByName(sName)
+	if !mval.IsValid() {
+		return nilInterf, fmt.Errorf("Selector %s not field nor method", sName)
+	}
+
+	//Return function pointer
+	return mval.Pointer(), nil
+}
+
+func evalSelectorExprCall(expr *ast.SelectorExpr, context Context) (interface{}, error, callSite) {
+	callee, err := eval(expr.X, context)
+	if err != nil {
+		return nilInterf, err, callSite{isValid: false}
+	}
+	return nil, nil, callSite{callee, expr.Sel.Name, true}
 }
 
 func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 
-	//Can be optimized if expr is allways evalSelectorExpr or evalIdent
-	//The return value must be a callsite, 10% performance increase on evalSelectorExpr calls
-	//with this optimization
-	val, err := eval(expr.Fun, context) //Find the type called, this calls evalSelectorExpr
+	val, err, callsite := evalFromCall(expr.Fun, context) //Find the type called, this calls evalSelectorExpr
 	if err != nil {
 		return nilInterf, err
 	}
@@ -50,17 +61,15 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 	var vaArgsTp reflect.Type
 	var method reflect.Value
 
-	callsite, ok := val.(callSyte)
-
-	if !ok {
-		//Not a callSyte, must be a Ident(args), so Ident must be a function
+	if !callsite.isValid {
+		//Not a callSite, must be a Ident(args), so Ident must be a function
 		method = reflect.ValueOf(val)
 		if method.Kind() != reflect.Func {
-			return nilInterf, fmt.Errorf("Waiting callsite found %s", reflect.TypeOf(val))
+			return nilInterf, fmt.Errorf("Waiting reflect.Func found %v", reflect.TypeOf(val))
 		}
 	} else {
-		//A callSyte so must be f.x(args)
-		caleeVal := callsite.calleeVal
+		//A callSite so must be f.x(args)
+		caleeVal := reflect.ValueOf(callsite.callee)
 		method = caleeVal.MethodByName(callsite.fnName)
 		if !method.IsValid() {
 			return nilInterf, fmt.Errorf("Method %s not found", callsite.fnName)
