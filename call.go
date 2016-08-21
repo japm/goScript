@@ -39,7 +39,7 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (interface{}, err
 	}
 
 	//Return function pointer
-	return mval.Pointer(), nil
+	return mval.Interface(), nil
 }
 
 func evalSelectorExprCall(expr *ast.SelectorExpr, context Context) (interface{}, callSite, error) {
