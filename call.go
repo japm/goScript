@@ -42,18 +42,18 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (interface{}, err
 	return mval.Pointer(), nil
 }
 
-func evalSelectorExprCall(expr *ast.SelectorExpr, context Context) (interface{}, error, callSite) {
+func evalSelectorExprCall(expr *ast.SelectorExpr, context Context) (interface{}, callSite, error) {
 	callee, err := eval(expr.X, context)
 	if err != nil {
-		return nilInterf, err, callSite{isValid: false}
+		return nilInterf, callSite{isValid: false}, err
 	}
-	return nil, nil, callSite{callee, expr.Sel.Name, true}
+	return nil, callSite{callee, expr.Sel.Name, true}, nil
 }
 
 func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 
 	//Find the type called, this calls evalSelectorExpr/ evalIdent
-	val, err, callsite := evalFromCall(expr.Fun, context)
+	val, callsite, err := evalFromCall(expr.Fun, context)
 	if err != nil {
 		return nilInterf, err
 	}

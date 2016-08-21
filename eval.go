@@ -368,17 +368,17 @@ func eval(expr ast.Node, context Context) (interface{}, error) {
 }
 
 //Evaluates all kinds of ast node types
-func evalFromCall(expr ast.Node, context Context) (interface{}, error, callSite) {
+func evalFromCall(expr ast.Node, context Context) (interface{}, callSite, error) {
 	//fmt.Println(reflect.TypeOf(expr), time.Now().UnixNano()/int64(10000), expr)
 	switch expr.(type) {
 	case *ast.Ident:
 		i, e := evalIdent(expr.(*ast.Ident), context)
-		return i, e, callSite{isValid: false}
+		return i, callSite{isValid: false}, e
 	case *ast.SelectorExpr:
 		return evalSelectorExprCall(expr.(*ast.SelectorExpr), context)
 	default:
 		i, e := eval(expr, context)
-		return i, e, callSite{isValid: false}
+		return i, callSite{isValid: false}, e
 	}
 }
 
