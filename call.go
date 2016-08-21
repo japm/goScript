@@ -52,7 +52,8 @@ func evalSelectorExprCall(expr *ast.SelectorExpr, context Context) (interface{},
 
 func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 
-	val, err, callsite := evalFromCall(expr.Fun, context) //Find the type called, this calls evalSelectorExpr
+	//Find the type called, this calls evalSelectorExpr/ evalIdent
+	val, err, callsite := evalFromCall(expr.Fun, context)
 	if err != nil {
 		return nilInterf, err
 	}
