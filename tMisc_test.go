@@ -23,6 +23,7 @@ func (a helper) Test5(x int, z ...interface{}) []interface{} {
 }
 
 func (a *helper) TestPtr1() int {
+	a.A = 5
 	return 1
 }
 
@@ -36,8 +37,11 @@ func OneFn() int {
 
 func TestCallBasics(t *testing.T) {
 	ctxt := make(map[string]interface{})
-	ctxt["a"] = helper{1}
-	ctxt["a1"] = new(helper)
+	h := helper{1}
+	ptrh := new(helper)
+
+	ctxt["a"] = h
+	ctxt["a1"] = ptrh
 
 	val, err := Eval("a.Test()", ctxt)
 	if err != nil {
@@ -90,6 +94,10 @@ func TestCallBasics(t *testing.T) {
 	}
 	if val.(int) != 1 {
 		t.Errorf("Expected 1 returned %d", val)
+	}
+
+	if ptrh.A != 5 {
+		t.Errorf("Expected h.A 5 returned %d", val)
 	}
 
 	val, err = Eval("a.Test6(2, 3)", ctxt)
