@@ -64,7 +64,6 @@ func BenchmarkUnary1(b *testing.B) {
 	ret = val
 }
 
-
 func BenchmarkSum1(b *testing.B) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = 1
@@ -166,6 +165,26 @@ func BenchmarkMul1(b *testing.B) {
 
 	exp := &Expr{}
 	err := exp.Prepare("2 * a")
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	var val interface{}
+	for n := 0; n < b.N; n++ {
+		val, _ = exp.EvalNoRecover(ctxt)
+	}
+	ret = val
+}
+
+func BenchmarkFunc1(b *testing.B) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = helper{1}
+
+	exp := &Expr{}
+	err := exp.Prepare("a.Test()")
 
 	if err != nil {
 		fmt.Println(err)

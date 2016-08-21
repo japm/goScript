@@ -30,6 +30,10 @@ func (a helper) Test6(x float64, y float64) float64 {
 	return x + y
 }
 
+func OneFn() int {
+	return 1
+}
+
 func TestCallBasics(t *testing.T) {
 	ctxt := make(map[string]interface{})
 	ctxt["a"] = helper{1}
@@ -168,6 +172,21 @@ func TestIdent4(t *testing.T) {
 	}
 	if val.(float64) != 1.4 {
 		t.Error("Expected 1.4 get ", val)
+	}
+}
+
+func TestIdentFn(t *testing.T) {
+
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = OneFn
+
+	val, err := Eval("a()", ctxt)
+
+	if err != nil {
+		t.Error("err not nil", err)
+	}
+	if val.(int) != 1 {
+		t.Error("Expected 1 get ", val)
 	}
 }
 

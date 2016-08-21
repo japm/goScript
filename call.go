@@ -28,9 +28,9 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (interface{}, err
 		fieldVal = calleeVal.Elem() //FieldByName panics on pointers
 	}
 	sName := expr.Sel.Name
-	_, ok := fieldVal.Type().FieldByName(sName) //Faster than  fieldVal.FieldByName(sName)
+	fbnVal, ok := fieldVal.Type().FieldByName(sName) //Faster than  fieldVal.FieldByName(sName)
 	if ok {
-		return fieldVal.FieldByName(sName).Interface(), nil
+		return fieldVal.FieldByIndex(fbnVal.Index).Interface(), nil
 	}
 	//Not a field, must be a function
 	return callSyte{callee, sName, calleeVal}, nil
@@ -86,34 +86,34 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 	if len(expr.Args) == 0 {
 		args = zeroArg //Zero arg constant
 	} else {
+
 		args = make([]reflect.Value, len(expr.Args))
-	}
 
-	for key, value := range expr.Args {
+		for key, value := range expr.Args {
 
-		val, err := eval(value, context)
-		if err != nil {
-			return nilInterf, err
-		}
-		rVal := reflect.ValueOf(val)
-		var tArg reflect.Type //Method argument type
-
-		//If true we are in the variadic parameters
-		if key >= numArgs {
-			tArg = vaArgsTp
-		} else {
-			tArg = mType.In(key)
-		}
-		tVal := rVal.Type() //Passed parameter type
-		if tVal != tArg {
-			if !tVal.ConvertibleTo(tArg) {
-				return nilInterf, fmt.Errorf("Method argument %d type mismatch. Expected %s get %s", key, tArg, tVal)
+			val, err := eval(value, context)
+			if err != nil {
+				return nilInterf, err
 			}
-			rVal = rVal.Convert(tArg)
-		}
-		args[key] = rVal
-	}
+			rVal := reflect.ValueOf(val)
+			var tArg reflect.Type //Method argument type
 
+			//If true we are in the variadic parameters
+			if key >= numArgs {
+				tArg = vaArgsTp
+			} else {
+				tArg = mType.In(key)
+			}
+			tVal := rVal.Type() //Passed parameter type
+			if tVal != tArg {
+				if !tVal.ConvertibleTo(tArg) {
+					return nilInterf, fmt.Errorf("Method argument %d type mismatch. Expected %s get %s", key, tArg, tVal)
+				}
+				rVal = rVal.Convert(tArg)
+			}
+			args[key] = rVal
+		}
+	}
 	//Call
 	retVal := method.Call(args)
 
