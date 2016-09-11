@@ -160,377 +160,435 @@ func valType(value interface{}) typeDesc {
 }
 
 func castUint8(value interface{}) (uint8, error) {
+	var ret uint8
+	var err error
 	switch value.(type) {
 	case uint8:
-		return value.(uint8), nil
+		ret, err = value.(uint8), nil
 	case uint16:
-		return uint8(value.(uint16)), nil
+		ret, err = uint8(value.(uint16)), nil
 	case uint32:
-		return uint8(value.(uint32)), nil
+		ret, err = uint8(value.(uint32)), nil
 	case uint64:
-		return uint8(value.(uint64)), nil
+		ret, err = uint8(value.(uint64)), nil
 	case uint:
-		return uint8(value.(uint)), nil
+		ret, err = uint8(value.(uint)), nil
 	case int8:
-		return uint8(value.(int8)), nil
+		ret, err = uint8(value.(int8)), nil
 	case int16:
-		return uint8(value.(int16)), nil
+		ret, err = uint8(value.(int16)), nil
 	case int32:
-		return uint8(value.(int32)), nil
+		ret, err = uint8(value.(int32)), nil
 	case int64:
-		return uint8(value.(int64)), nil
+		ret, err = uint8(value.(int64)), nil
 	case int:
-		return uint8(value.(int)), nil
+		ret, err = uint8(value.(int)), nil
 	case float32:
-		return uint8(value.(float32)), nil
+		ret, err = uint8(value.(float32)), nil
 	case float64:
-		return uint8(value.(float64)), nil
+		ret, err = uint8(value.(float64)), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return uint8(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = uint8(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return uint8(valf), nil
+		ret, err = uint8(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to uint8 for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to uint8 for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castUint16(value interface{}) (uint16, error) {
+	var ret uint16
+	var err error
 	switch value.(type) {
 	case uint8:
-		return uint16(value.(uint8)), nil
+		ret, err = uint16(value.(uint8)), nil
 	case uint16:
-		return value.(uint16), nil
+		ret, err = value.(uint16), nil
 	case uint32:
-		return uint16(value.(uint32)), nil
+		ret, err = uint16(value.(uint32)), nil
 	case uint64:
-		return uint16(value.(uint64)), nil
+		ret, err = uint16(value.(uint64)), nil
 	case uint:
-		return uint16(value.(uint)), nil
+		ret, err = uint16(value.(uint)), nil
 	case int8:
-		return uint16(value.(int8)), nil
+		ret, err = uint16(value.(int8)), nil
 	case int16:
-		return uint16(value.(int16)), nil
+		ret, err = uint16(value.(int16)), nil
 	case int32:
-		return uint16(value.(int32)), nil
+		ret, err = uint16(value.(int32)), nil
 	case int64:
-		return uint16(value.(int64)), nil
+		ret, err = uint16(value.(int64)), nil
 	case int:
-		return uint16(value.(int)), nil
+		ret, err = uint16(value.(int)), nil
 	case float32:
-		return uint16(value.(float32)), nil
+		ret, err = uint16(value.(float32)), nil
 	case float64:
-		return uint16(value.(float64)), nil
+		ret, err = uint16(value.(float64)), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return uint16(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = uint16(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return uint16(valf), nil
+		ret, err = uint16(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to uint16 for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to uint16 for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castUint32(value interface{}) (uint32, error) {
+	var ret uint32
+	var err error
 	switch value.(type) {
 	case uint8:
-		return uint32(value.(uint8)), nil
+		ret, err = uint32(value.(uint8)), nil
 	case uint16:
-		return uint32(value.(uint16)), nil
+		ret, err = uint32(value.(uint16)), nil
 	case uint32:
-		return value.(uint32), nil
+		ret, err = value.(uint32), nil
 	case uint64:
-		return uint32(value.(uint64)), nil
+		ret, err = uint32(value.(uint64)), nil
 	case uint:
-		return uint32(value.(uint)), nil
+		ret, err = uint32(value.(uint)), nil
 	case int8:
-		return uint32(value.(int8)), nil
+		ret, err = uint32(value.(int8)), nil
 	case int16:
-		return uint32(value.(int16)), nil
+		ret, err = uint32(value.(int16)), nil
 	case int32:
-		return uint32(value.(int32)), nil
+		ret, err = uint32(value.(int32)), nil
 	case int64:
-		return uint32(value.(int64)), nil
+		ret, err = uint32(value.(int64)), nil
 	case int:
-		return uint32(value.(int)), nil
+		ret, err = uint32(value.(int)), nil
 	case float32:
-		return uint32(value.(float32)), nil
+		ret, err = uint32(value.(float32)), nil
 	case float64:
-		return uint32(value.(float64)), nil
+		ret, err = uint32(value.(float64)), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return uint32(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = uint32(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return uint32(valf), nil
+		ret, err = uint32(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to uint32 for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to uint32 for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castUint(value interface{}) (uint, error) {
+	var ret uint
+	var err error
 	switch value.(type) {
 	case uint8:
-		return uint(value.(uint8)), nil
+		ret, err = uint(value.(uint8)), nil
 	case uint16:
-		return uint(value.(uint16)), nil
+		ret, err = uint(value.(uint16)), nil
 	case uint32:
-		return uint(value.(uint32)), nil
+		ret, err = uint(value.(uint32)), nil
 	case uint64:
-		return uint(value.(uint64)), nil
+		ret, err = uint(value.(uint64)), nil
 	case uint:
-		return value.(uint), nil
+		ret, err = value.(uint), nil
 	case int8:
-		return uint(value.(int8)), nil
+		ret, err = uint(value.(int8)), nil
 	case int16:
-		return uint(value.(int16)), nil
+		ret, err = uint(value.(int16)), nil
 	case int32:
-		return uint(value.(int32)), nil
+		ret, err = uint(value.(int32)), nil
 	case int64:
-		return uint(value.(int64)), nil
+		ret, err = uint(value.(int64)), nil
 	case int:
-		return uint(value.(int)), nil
+		ret, err = uint(value.(int)), nil
 	case float32:
-		return uint(value.(float32)), nil
+		ret, err = uint(value.(float32)), nil
 	case float64:
-		return uint(value.(float64)), nil
+		ret, err = uint(value.(float64)), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return uint(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = uint(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return uint(valf), nil
+		ret, err = uint(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to uint for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to uint for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castUint64(value interface{}) (uint64, error) {
+	var ret uint64
+	var err error
 	switch value.(type) {
 	case uint8:
-		return uint64(value.(uint8)), nil
+		ret, err = uint64(value.(uint8)), nil
 	case uint16:
-		return uint64(value.(uint16)), nil
+		ret, err = uint64(value.(uint16)), nil
 	case uint32:
-		return uint64(value.(uint32)), nil
+		ret, err = uint64(value.(uint32)), nil
 	case uint64:
-		return value.(uint64), nil
+		ret, err = value.(uint64), nil
 	case uint:
-		return uint64(value.(uint)), nil
+		ret, err = uint64(value.(uint)), nil
 	case int8:
-		return uint64(value.(int8)), nil
+		ret, err = uint64(value.(int8)), nil
 	case int16:
-		return uint64(value.(int16)), nil
-	case int:
-		return uint64(value.(int)), nil
+		ret, err = uint64(value.(int16)), nil
+	case int32:
+		ret, err = uint64(value.(int32)), nil
 	case int64:
-		return uint64(value.(int64)), nil
+		ret, err = uint64(value.(int64)), nil
+	case int:
+		ret, err = uint64(value.(int)), nil
 	case float32:
-		return uint64(value.(float32)), nil
+		ret, err = uint64(value.(float32)), nil
 	case float64:
-		return uint64(value.(float64)), nil
+		ret, err = uint64(value.(float64)), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return uint64(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = uint64(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return uint64(valf), nil
+		ret, err = uint64(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to uint64 for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to uint64 for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castInt8(value interface{}) (int8, error) {
+	var ret int8
+	var err error
 	switch value.(type) {
 	case uint8:
-		return int8(value.(uint8)), nil
+		ret, err = int8(value.(uint8)), nil
 	case uint16:
-		return int8(value.(uint16)), nil
+		ret, err = int8(value.(uint16)), nil
 	case uint32:
-		return int8(value.(uint32)), nil
+		ret, err = int8(value.(uint32)), nil
 	case uint64:
-		return int8(value.(uint64)), nil
+		ret, err = int8(value.(uint64)), nil
 	case uint:
-		return int8(value.(uint)), nil
+		ret, err = int8(value.(uint)), nil
 	case int8:
-		return value.(int8), nil
+		ret, err = value.(int8), nil
 	case int16:
-		return int8(value.(int16)), nil
+		ret, err = int8(value.(int16)), nil
 	case int32:
-		return int8(value.(int32)), nil
+		ret, err = int8(value.(int32)), nil
 	case int64:
-		return int8(value.(int64)), nil
+		ret, err = int8(value.(int64)), nil
 	case int:
-		return int8(value.(int)), nil
+		ret, err = int8(value.(int)), nil
 	case float32:
-		return int8(value.(float32)), nil
+		ret, err = int8(value.(float32)), nil
 	case float64:
-		return int8(value.(float64)), nil
+		ret, err = int8(value.(float64)), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return int8(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = int8(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return int8(valf), nil
+		ret, err = int8(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to int8 for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to int8 for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castInt16(value interface{}) (int16, error) {
+	var ret int16
+	var err error
 	switch value.(type) {
 	case uint8:
-		return int16(value.(uint8)), nil
+		ret, err = int16(value.(uint8)), nil
 	case uint16:
-		return int16(value.(uint16)), nil
+		ret, err = int16(value.(uint16)), nil
 	case uint32:
-		return int16(value.(uint32)), nil
+		ret, err = int16(value.(uint32)), nil
 	case uint64:
-		return int16(value.(uint64)), nil
+		ret, err = int16(value.(uint64)), nil
 	case uint:
-		return int16(value.(uint)), nil
+		ret, err = int16(value.(uint)), nil
 	case int8:
-		return int16(value.(int8)), nil
+		ret, err = int16(value.(int8)), nil
 	case int16:
-		return value.(int16), nil
+		ret, err = value.(int16), nil
 	case int32:
-		return int16(value.(int32)), nil
+		ret, err = int16(value.(int32)), nil
 	case int64:
-		return int16(value.(int64)), nil
+		ret, err = int16(value.(int64)), nil
 	case int:
-		return int16(value.(int)), nil
+		ret, err = int16(value.(int)), nil
 	case float32:
-		return int16(value.(float32)), nil
+		ret, err = int16(value.(float32)), nil
 	case float64:
-		return int16(value.(float64)), nil
+		ret, err = int16(value.(float64)), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return int16(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = int16(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return int16(valf), nil
+		ret, err = int16(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to int16 for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to int16 for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castInt(value interface{}) (int, error) {
+	var ret int
+	var err error
 	switch value.(type) {
 	case uint8:
-		return int(value.(uint8)), nil
+		ret, err = int(value.(uint8)), nil
 	case uint16:
-		return int(value.(uint16)), nil
+		ret, err = int(value.(uint16)), nil
 	case uint32:
-		return int(value.(uint32)), nil
+		ret, err = int(value.(uint32)), nil
 	case uint64:
-		return int(value.(uint64)), nil
+		ret, err = int(value.(uint64)), nil
 	case uint:
-		return int(value.(uint)), nil
+		ret, err = int(value.(uint)), nil
 	case int8:
-		return int(value.(int8)), nil
+		ret, err = int(value.(int8)), nil
 	case int16:
-		return int(value.(int16)), nil
+		ret, err = int(value.(int16)), nil
 	case int32:
-		return int(value.(int32)), nil
+		ret, err = int(value.(int32)), nil
 	case int64:
-		return int(value.(int64)), nil
+		ret, err = int(value.(int64)), nil
 	case int:
-		return value.(int), nil
+		ret, err = value.(int), nil
 	case float32:
-		return int(value.(float32)), nil
+		ret, err = int(value.(float32)), nil
 	case float64:
-		return int(value.(float64)), nil
+		ret, err = int(value.(float64)), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return int(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = int(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return int(valf), nil
+		ret, err = int(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to int for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to int for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castIntFromBool(value bool) (int, error) {
@@ -541,50 +599,57 @@ func castIntFromBool(value bool) (int, error) {
 }
 
 func castInt32(value interface{}) (int32, error) {
+	var ret int32
+	var err error
 	switch value.(type) {
 	case uint8:
-		return int32(value.(uint8)), nil
+		ret, err = int32(value.(uint8)), nil
 	case uint16:
-		return int32(value.(uint16)), nil
+		ret, err = int32(value.(uint16)), nil
 	case uint32:
-		return int32(value.(uint32)), nil
+		ret, err = int32(value.(uint32)), nil
 	case uint64:
-		return int32(value.(uint64)), nil
+		ret, err = int32(value.(uint64)), nil
 	case uint:
-		return int32(value.(uint)), nil
+		ret, err = int32(value.(uint)), nil
 	case int8:
-		return int32(value.(int8)), nil
+		ret, err = int32(value.(int8)), nil
 	case int16:
-		return int32(value.(int16)), nil
+		ret, err = int32(value.(int16)), nil
 	case int32:
-		return value.(int32), nil
+		ret, err = value.(int32), nil
 	case int64:
-		return int32(value.(int64)), nil
+		ret, err = int32(value.(int64)), nil
 	case int:
-		return int32(value.(int)), nil
+		ret, err = int32(value.(int)), nil
 	case float32:
-		return int32(value.(float32)), nil
+		ret, err = int32(value.(float32)), nil
 	case float64:
-		return int32(value.(float64)), nil
+		ret, err = int32(value.(float64)), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return int32(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = int32(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return int32(valf), nil
+		ret, err = int32(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to int32 for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to uint32 for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castInt64(value interface{}) (int64, error) {
@@ -642,179 +707,204 @@ func castInt64(value interface{}) (int64, error) {
 }
 
 func castFloat32(value interface{}) (float32, error) {
+	var ret float32
+	var err error
 	switch value.(type) {
 	case uint8:
-		return float32(value.(uint8)), nil
+		ret, err = float32(value.(uint8)), nil
 	case uint16:
-		return float32(value.(uint16)), nil
+		ret, err = float32(value.(uint16)), nil
 	case uint32:
-		return float32(value.(uint32)), nil
+		ret, err = float32(value.(uint32)), nil
 	case uint64:
-		return float32(value.(uint64)), nil
+		ret, err = float32(value.(uint64)), nil
 	case uint:
-		return float32(value.(uint)), nil
+		ret, err = float32(value.(uint)), nil
 	case int8:
-		return float32(value.(int8)), nil
+		ret, err = float32(value.(int8)), nil
 	case int16:
-		return float32(value.(int16)), nil
+		ret, err = float32(value.(int16)), nil
 	case int32:
-		return float32(value.(int32)), nil
+		ret, err = float32(value.(int32)), nil
 	case int64:
-		return float32(value.(int64)), nil
+		ret, err = float32(value.(int64)), nil
 	case int:
-		return float32(value.(int)), nil
+		ret, err = float32(value.(int)), nil
 	case float32:
-		return value.(float32), nil
+		ret, err = value.(float32), nil
 	case float64:
-		return float32(value.(float64)), nil
+		ret, err = float32(value.(float64)), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return float32(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = float32(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return float32(valf), nil
+		ret, err = float32(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to float32 for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to float32 for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castFloat64(value interface{}) (float64, error) {
+	var ret float64
+	var err error
 	switch value.(type) {
 	case uint8:
-		return float64(value.(uint8)), nil
+		ret, err = float64(value.(uint8)), nil
 	case uint16:
-		return float64(value.(uint16)), nil
+		ret, err = float64(value.(uint16)), nil
 	case uint32:
-		return float64(value.(uint32)), nil
+		ret, err = float64(value.(uint32)), nil
 	case uint64:
-		return float64(value.(uint64)), nil
+		ret, err = float64(value.(uint64)), nil
 	case uint:
-		return float64(value.(uint)), nil
+		ret, err = float64(value.(uint)), nil
 	case int8:
-		return float64(value.(int8)), nil
+		ret, err = float64(value.(int8)), nil
 	case int16:
-		return float64(value.(int16)), nil
+		ret, err = float64(value.(int16)), nil
 	case int32:
-		return float64(value.(int32)), nil
+		ret, err = float64(value.(int32)), nil
 	case int64:
-		return float64(value.(int64)), nil
+		ret, err = float64(value.(int64)), nil
 	case int:
-		return float64(value.(int)), nil
+		ret, err = float64(value.(int)), nil
 	case float32:
-		return float64(value.(float32)), nil
+		ret, err = float64(value.(float32)), nil
 	case float64:
-		return value.(float64), nil
+		ret, err = value.(float64), nil
 	case string:
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return float64(vali), nil
+		vali, e := strconv.ParseInt(value.(string), 10, 64)
+		if e == nil {
+			ret, err = float64(vali), nil
+			break
 		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return 0, err
+		valf, e := strconv.ParseFloat(value.(string), 10)
+		if e != nil {
+			ret, err = 0, e
+			break
 		}
-		return float64(valf), nil
+		ret, err = float64(valf), nil
 	case bool:
 		if value.(bool) {
-			return 1, nil
+			ret, err = 1, nil
+		} else {
+			ret, err = 0, nil
 		}
-		return 0, nil
 	case nil:
-		return 0, nil
+		ret, err = 0, nil
+	default:
+		ret, err = 0, fmt.Errorf("Unimplemented cast to float64 for type %s", reflect.TypeOf(value))
 	}
-	return 0, fmt.Errorf("Unimplemented cast to int64 for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castBool(value interface{}) (bool, error) {
+	var ret bool
+	var err error
+
 	switch value.(type) {
 	case uint8:
-		return value.(uint8) != uint8(0), nil
+		ret, err = value.(uint8) != uint8(0), nil
 	case uint16:
-		return value.(uint16) != uint16(0), nil
+		ret, err = value.(uint16) != uint16(0), nil
 	case uint32:
-		return value.(uint32) != uint32(0), nil
+		ret, err = value.(uint32) != uint32(0), nil
 	case uint64:
-		return value.(uint64) != uint64(0), nil
+		ret, err = value.(uint64) != uint64(0), nil
 	case uint:
-		return value.(uint) != uint(0), nil
+		ret, err = value.(uint) != uint(0), nil
 	case int8:
-		return value.(int8) != int8(0), nil
+		ret, err = value.(int8) != int8(0), nil
 	case int16:
-		return value.(int16) != int16(0), nil
+		ret, err = value.(int16) != int16(0), nil
 	case int32:
-		return value.(int32) != 0, nil
+		ret, err = value.(int32) != 0, nil
 	case int64:
-		return value.(int64) != int64(0), nil
+		ret, err = value.(int64) != int64(0), nil
 	case int:
-		return value.(int) != 0, nil
+		ret, err = value.(int) != 0, nil
 	case float32:
-		return value.(float32) != float32(0), nil
+		ret, err = value.(float32) != float32(0), nil
 	case float64:
-		return value.(float64) != float64(0), nil
+		ret, err = value.(float64) != float64(0), nil
 	case string:
-		valb, err := strconv.ParseBool(value.(string))
-		if err == nil {
-			return valb, nil
+		valb, e := strconv.ParseBool(value.(string))
+		if e == nil {
+			ret, err = valb, nil
+		} else {
+			vali, e := strconv.ParseInt(value.(string), 10, 64)
+			if e == nil {
+				ret, err = vali != 0, nil
+			} else {
+				valf, e := strconv.ParseFloat(value.(string), 10)
+				if e != nil {
+					ret, err = false, e
+				} else {
+					ret, err = valf != float64(0), nil
+				}
+			}
 		}
-		vali, err := strconv.ParseInt(value.(string), 10, 64)
-		if err == nil {
-			return vali != 0, nil
-		}
-		valf, err := strconv.ParseFloat(value.(string), 10)
-		if err != nil {
-			return false, err
-		}
-		return valf != float64(0), nil
+
 	case bool:
-		return value.(bool), nil
+		ret, err = value.(bool), nil
 	case nil:
-		return false, nil
+		ret, err = false, nil
 	}
-	return false, fmt.Errorf("Unimplemented cast to bool for type %s", reflect.TypeOf(value))
+	return ret, err
 }
 
 func castString(value interface{}) (string, error) {
+	var ret string
+	var err error
 	switch value.(type) {
 	case uint8:
-		return strconv.FormatUint(uint64(value.(uint8)), 10), nil
+		ret, err = strconv.FormatUint(uint64(value.(uint8)), 10), nil
 	case uint16:
-		return strconv.FormatUint(uint64(value.(uint16)), 10), nil
+		ret, err = strconv.FormatUint(uint64(value.(uint16)), 10), nil
 	case uint32:
-		return strconv.FormatUint(uint64(value.(uint32)), 10), nil
+		ret, err = strconv.FormatUint(uint64(value.(uint32)), 10), nil
 	case uint64:
-		return strconv.FormatUint(value.(uint64), 10), nil
+		ret, err = strconv.FormatUint(value.(uint64), 10), nil
 	case uint:
-		return strconv.FormatUint(uint64(value.(uint)), 10), nil
+		ret, err = strconv.FormatUint(uint64(value.(uint)), 10), nil
 	case int8:
-		return strconv.FormatInt(int64(value.(int8)), 10), nil
+		ret, err = strconv.FormatInt(int64(value.(int8)), 10), nil
 	case int16:
-		return strconv.FormatInt(int64(value.(int16)), 10), nil
+		ret, err = strconv.FormatInt(int64(value.(int16)), 10), nil
 	case int32:
-		return strconv.FormatInt(int64(value.(int32)), 10), nil
+		ret, err = strconv.FormatInt(int64(value.(int32)), 10), nil
 	case int64:
-		return strconv.FormatInt(value.(int64), 10), nil
+		ret, err = strconv.FormatInt(value.(int64), 10), nil
 	case int:
-		return strconv.FormatInt(int64(value.(int)), 10), nil
+		ret, err = strconv.FormatInt(int64(value.(int)), 10), nil
 	case float32:
-		return strconv.FormatFloat(float64(value.(float32)), 'f', -1, 32), nil
+		ret, err = strconv.FormatFloat(float64(value.(float32)), 'f', -1, 32), nil
 	case float64:
-		return strconv.FormatFloat(value.(float64), 'f', -1, 64), nil
+		ret, err = strconv.FormatFloat(value.(float64), 'f', -1, 64), nil
 	case string:
-		return value.(string), nil
+		ret, err = value.(string), nil
 	case bool:
-		return strconv.FormatBool(value.(bool)), nil
+		ret, err = strconv.FormatBool(value.(bool)), nil
 	case nil:
-		return "", nil
+		ret, err = "", nil
+	default:
+		ret, err = "", fmt.Errorf("Unimplemented cast to string for type %s", reflect.TypeOf(value))
 	}
-	return "", fmt.Errorf("Unimplemented cast to string for type %s", reflect.TypeOf(value))
+	return ret, err
 }
