@@ -21,13 +21,24 @@ func evalSelectorExpr(expr *ast.SelectorExpr, context Context) (interface{}, err
 	if err != nil {
 		return nilInterf, err
 	}
+	sName := expr.Sel.Name
+
+	//If callee is a context, then resolve with getIdent
+	calleeContext, ok := callee.(Context)
+	if ok {
+		return calleeContext.GetIdent(sName)
+	}
+	calleeContextPtr, ok := callee.(*Context)
+	if ok {
+		return (*calleeContextPtr).GetIdent(sName)
+	}
 
 	calleeVal := reflect.ValueOf(callee)
 	fieldVal := calleeVal
 	if fieldVal.Kind() == reflect.Ptr {
 		fieldVal = calleeVal.Elem() //FieldByName panics on pointers
 	}
-	sName := expr.Sel.Name
+
 	fbnVal, ok := fieldVal.Type().FieldByName(sName) //Faster than  fieldVal.FieldByName(sName)
 	if ok {
 		return fieldVal.FieldByIndex(fbnVal.Index).Interface(), nil

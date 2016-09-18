@@ -25,10 +25,10 @@ type helper struct {
 	A int
 }
 
-type helper2 struct {
+type customCtxt struct {
 }
 
-func (a helper2) GetIdent(name string) (val interface{}, err error) {
+func (a customCtxt) GetIdent(name string) (val interface{}, err error) {
 	return name, nil
 }
 
@@ -77,10 +77,28 @@ func TestCtxMapBasics(t *testing.T) {
 	if err == nil {
 		t.Error("Expected err", err)
 	}
+
+}
+
+func TestCtxIdent(t *testing.T) {
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = customCtxt{}
+	ctxt["c"] = &customCtxt{}
+
+	val, _ := Eval("a.b", ctxt)
+	if val.(string) != "b" {
+		t.Error("Expected b get ", val)
+	}
+
+	val, _ = Eval("c.b", ctxt)
+	if val.(string) != "b" {
+		t.Error("Expected b get ", val)
+	}
+
 }
 
 func TestCtxContextBasics(t *testing.T) {
-	ctxt := helper2{}
+	ctxt := customCtxt{}
 	val, err := Eval("azf", ctxt)
 	if err != nil {
 		t.Error("err not nil", err)
@@ -89,7 +107,7 @@ func TestCtxContextBasics(t *testing.T) {
 		t.Error("Expected a get ", val)
 	}
 
-	ctxt2 := &helper2{}
+	ctxt2 := &customCtxt{}
 	val, err = Eval("azf", ctxt2)
 	if err != nil {
 		t.Error("err not nil", err)
