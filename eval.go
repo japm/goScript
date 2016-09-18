@@ -24,6 +24,16 @@ type Context interface {
 	GetIdent(name string) (val interface{}, err error)
 }
 
+//Context allows custom identification resolver
+type CallableContext interface {
+	GetCallable(name string) (val Callable, err error)
+}
+
+//A Callable function
+type Callable interface {
+	Call(args []interface{}) (val interface{}, err error)
+}
+
 //Internal map context
 type mapContext struct {
 	mp map[string]interface{}
@@ -75,6 +85,7 @@ type Expr struct {
 
 //Constant for zero arg calls
 var zeroArg []reflect.Value
+var zeroArgInterf []interface{}
 var trueInterf interface{}
 var falseInterf interface{}
 var nilInterf interface{}
@@ -82,6 +93,7 @@ var nilInterf interface{}
 //Package initialization
 func init() {
 	zeroArg = make([]reflect.Value, 0)
+	zeroArgInterf = make([]interface{}, 0)
 	trueInterf = true
 	falseInterf = false
 	nilInterf = nil
@@ -372,7 +384,7 @@ func evalFromCall(expr ast.Node, context Context) (interface{}, callSite, error)
 	//fmt.Println(reflect.TypeOf(expr), time.Now().UnixNano()/int64(10000), expr)
 	switch expr.(type) {
 	case *ast.Ident:
-		i, e := evalIdent(expr.(*ast.Ident), context)
+		i, e := evalIdentFromCall(expr.(*ast.Ident), context)
 		return i, callSite{isValid: false}, e
 	case *ast.SelectorExpr:
 		return evalSelectorExprCall(expr.(*ast.SelectorExpr), context)
@@ -545,6 +557,19 @@ func evalIdent(expr *ast.Ident, context Context) (interface{}, error) {
 	//Context must never be null here
 	//and must resolve the ident or error
 	return context.GetIdent(expr.Name)
+}
+
+func evalIdentFromCall(expr *ast.Ident, context Context) (interface{}, error) {
+
+	callable, ok := context.(CallableContext)
+	if ok {
+		i, err := callable.GetCallable(expr.Name)
+		if err == nil {
+			return i, err
+		}
+	}
+	return evalIdent(expr, context)
+
 }
 
 func evalBasicLit(expr *ast.BasicLit, context Context) (interface{}, error) {

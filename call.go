@@ -58,7 +58,7 @@ func evalSelectorExprCall(expr *ast.SelectorExpr, context Context) (interface{},
 	if err != nil {
 		return nilInterf, callSite{isValid: false}, err
 	}
-	return nil, callSite{callee, expr.Sel.Name, true}, nil
+	return nilInterf, callSite{callee, expr.Sel.Name, true}, nil
 }
 
 func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
@@ -72,24 +72,59 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 	//-------------------Check Method------------------------
 	var vaArgsTp reflect.Type
 	var method reflect.Value
+	var methodCallable Callable
+	var isCallable bool
 
 	if !callsite.isValid {
 		//Not a callSite, must be a Ident(args), so Ident must be a function
-		method = reflect.ValueOf(val)
-		if method.Kind() != reflect.Func {
-			return nilInterf, fmt.Errorf("Waiting reflect.Func found %v", reflect.TypeOf(val))
+		if val == nil {
+			return nilInterf, fmt.Errorf("Waiting reflect.Func/Callable found %v", "nil")
+		}
+		methodCallable, isCallable = val.(Callable)
+		if !isCallable {
+			method = reflect.ValueOf(val)
+			if method.Kind() != reflect.Func {
+				return nilInterf, fmt.Errorf("Waiting reflect.Func found %v", reflect.TypeOf(val))
+			}
 		}
 	} else {
-		//A callSite so must be f.x(args)
-		caleeVal := reflect.ValueOf(callsite.callee)
-		method = caleeVal.MethodByName(callsite.fnName)
-		if !method.IsValid() {
-			return nilInterf, fmt.Errorf("Method %s not found", callsite.fnName)
+		callableContext, ok := callsite.callee.(CallableContext)
+		if ok {
+			methodCallable, err = callableContext.GetCallable(callsite.fnName)
+			isCallable = (err == nil)
+		} else {
+			isCallable = false
+		}
+		if !isCallable {
+			//A callSite so must be f.x(args)
+			caleeVal := reflect.ValueOf(callsite.callee)
+			method = caleeVal.MethodByName(callsite.fnName)
+			if !method.IsValid() {
+				return nilInterf, fmt.Errorf("Method %s not found", callsite.fnName)
+			}
 		}
 	}
+	if isCallable {
+		var args []interface{}
+		if len(expr.Args) == 0 {
+			args = zeroArgInterf //Zero arg constant
+		} else {
+			args = make([]interface{}, len(expr.Args))
+
+			for key, value := range expr.Args {
+
+				val, err := eval(value, context)
+				if err != nil {
+					return nilInterf, err
+				}
+				args[key] = val
+			}
+		}
+		return methodCallable.Call(args)
+	}
+
 	mType := method.Type()
 	numArgs := mType.NumIn()
-
 	if !mType.IsVariadic() {
 		if len(expr.Args) != numArgs {
 			return nilInterf, fmt.Errorf("Method alguments count mismatch. Expected %d get %d", numArgs, len(expr.Args))
@@ -143,4 +178,5 @@ func evalCallExpr(expr *ast.CallExpr, context Context) (interface{}, error) {
 		return nilInterf, nil
 	}
 	return retVal[0].Interface(), nil
+
 }
