@@ -707,127 +707,154 @@ func evalUnaryExprAND(value interface{}) (interface{}, error) {
 	return val.Addr(), nil
 }
 
-func evalBinary(left interface{}, right interface{}, tp typeDesc, oper operation) (interface{}, error) {
+func evalBinary(left interface{}, right interface{}, tp typeDesc, oper operation) (ret interface{}, err error) {
+
 	if tp.IsNil() {
-		return nilInterf, nil
-	}
-	if !tp.IsNumeric() {
+		ret, err = nilInterf, nil
+	} else if !tp.IsNumeric() {
 		switch left.(type) {
 		case string:
-			return oper.OperStrInterf(left.(string), right)
+			ret, err = oper.OperStrInterf(left.(string), right)
 		case bool:
-			return oper.OperBoolInterf(left.(bool), right)
+			ret, err = oper.OperBoolInterf(left.(bool), right)
 		case nil:
-			return oper.OperNilLeft(right)
+			ret, err = oper.OperNilLeft(right)
 		}
 	} else if tp.Signed {
 		if tp.Float() {
 
 			if tp.Size == 32 {
-				l, err := castFloat32(left)
-				if err != nil {
-					return nilInterf, err
+				l, e := castFloat32(left)
+				if e != nil {
+					ret, err = nilInterf, e
+					goto ret
 				}
-				r, err := castFloat32(right)
-				if err != nil {
-					return nilInterf, err
+				r, e := castFloat32(right)
+				if e != nil {
+					ret, err = nilInterf, e
+					goto ret
 				}
-				return oper.OperF32F32(l, r)
+				ret, err = oper.OperF32F32(l, r)
+			} else {
+				l, e := castFloat64(left)
+				if e != nil {
+					ret, err = nilInterf, e
+					goto ret
+				}
+				r, e := castFloat64(right)
+				if e != nil {
+					ret, err = nilInterf, e
+					goto ret
+				}
+				ret, err = oper.OperF64F64(l, r)
 			}
-			l, err := castFloat64(left)
-			if err != nil {
-				return nilInterf, err
-			}
-			r, err := castFloat64(right)
-			if err != nil {
-				return nilInterf, err
-			}
-			return oper.OperF64F64(l, r)
-
 		} else if tp.Size == 64 {
-			l, err := castInt64(left)
-			if err != nil {
-				return nilInterf, err
+			l, e := castInt64(left)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			r, err := castInt64(right)
-			if err != nil {
-				return nilInterf, err
+			r, e := castInt64(right)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			return oper.OperI64I64(l, r)
+			ret, err = oper.OperI64I64(l, r)
 
 		} else if tp.Size == 32 {
-			l, err := castInt32(left)
-			if err != nil {
-				return nilInterf, err
+			l, e := castInt32(left)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			r, err := castInt32(right)
-			if err != nil {
-				return nilInterf, err
+			r, e := castInt32(right)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			return oper.OperI32I32(l, r)
+			ret, err = oper.OperI32I32(l, r)
 		} else if tp.Size == 16 {
-			l, err := castInt16(left)
-			if err != nil {
-				return nilInterf, err
+			l, e := castInt16(left)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			r, err := castInt16(right)
-			if err != nil {
-				return nilInterf, err
+			r, e := castInt16(right)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			return oper.OperI16I16(l, r)
+			ret, err = oper.OperI16I16(l, r)
 		} else if tp.Size == 8 {
-			l, err := castInt8(left)
-			if err != nil {
-				return nilInterf, err
+			l, e := castInt8(left)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			r, err := castInt8(right)
-			if err != nil {
-				return nilInterf, err
+			r, e := castInt8(right)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			return oper.OperI8I8(l, r)
+			ret, err = oper.OperI8I8(l, r)
+		} else {
+			ret, err = nilInterf, fmt.Errorf("Unimplemented op for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 		}
 	} else {
 		if tp.Size == 64 {
-			l, err := castUint64(left)
-			if err != nil {
-				return nilInterf, err
+			l, e := castUint64(left)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			r, err := castUint64(right)
+			r, e := castUint64(right)
 			if err != nil {
-				return nilInterf, err
+				ret, err = nilInterf, e
+				goto ret
 			}
-			return oper.OperUI64UI64(l, r)
+			ret, err = oper.OperUI64UI64(l, r)
 		} else if tp.Size == 32 {
-			l, err := castUint32(left)
-			if err != nil {
-				return nilInterf, err
+			l, e := castUint32(left)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			r, err := castUint32(right)
+			r, e := castUint32(right)
 			if err != nil {
-				return nilInterf, err
+				ret, err = nilInterf, e
+				goto ret
 			}
 			return oper.OperUI32UI32(l, r)
 		} else if tp.Size == 16 {
-			l, err := castUint16(left)
-			if err != nil {
-				return nilInterf, err
+			l, e := castUint16(left)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			r, err := castUint16(right)
-			if err != nil {
-				return nilInterf, err
+			r, e := castUint16(right)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			return oper.OperUI16UI16(l, r)
+			ret, err = oper.OperUI16UI16(l, r)
 		} else if tp.Size == 8 {
-			l, err := castUint8(left)
-			if err != nil {
-				return nilInterf, err
+			l, e := castUint8(left)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			r, err := castUint8(right)
-			if err != nil {
-				return nilInterf, err
+			r, e := castUint8(right)
+			if e != nil {
+				ret, err = nilInterf, e
+				goto ret
 			}
-			return oper.OperUI8UI8(l, r)
+			ret, err = oper.OperUI8UI8(l, r)
+		} else {
+			ret, err = nilInterf, fmt.Errorf("Unimplemented op for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
 		}
 	}
-	return nilInterf, fmt.Errorf("Unimplemented op for types %s and %s", reflect.TypeOf(left), reflect.TypeOf(right))
+
+ret:
+	return
+
 }
