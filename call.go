@@ -190,12 +190,13 @@ func getMethodToCall(val interface{}, callsite callSite) (method reflect.Value, 
 		//Not a callSite, must be a Ident(args), so Ident must be a function
 		if val == nil {
 			err = fmt.Errorf("Waiting reflect.Func/Callable found %v", "nil")
-		}
-		methodCallable, isCallable = val.(Callable)
-		if !isCallable {
-			method = reflect.ValueOf(val)
-			if method.Kind() != reflect.Func {
-				err = fmt.Errorf("Waiting reflect.Func found %v", reflect.TypeOf(val))
+		} else {
+			methodCallable, isCallable = val.(Callable)
+			if !isCallable {
+				method = reflect.ValueOf(val)
+				if method.Kind() != reflect.Func {
+					err = fmt.Errorf("Waiting reflect.Func found %v", reflect.TypeOf(val))
+				}
 			}
 		}
 	} else {
