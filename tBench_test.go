@@ -217,3 +217,22 @@ func BenchmarkFunc2(b *testing.B) {
 	}
 	ret = val
 }
+
+func BenchmarkCmp(b *testing.B) {
+	ctxt := make(map[string]interface{})
+	ctxt["a"] = 1
+
+	exp := &Expr{}
+	err := exp.Prepare("a <= 1")
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	var val interface{}
+	for n := 0; n < b.N; n++ {
+		val, _ = exp.EvalNoRecover(ctxt)
+	}
+	ret = val
+}
